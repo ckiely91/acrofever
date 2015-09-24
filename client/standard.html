@@ -1,0 +1,29 @@
+<template name="standard">
+<div id="main" class="container">
+{{> loginButtons}}
+
+{{#if currentUser}}
+	{{> yield}}
+{{else}}
+You're not logged in!!!(cunt)
+
+{{/if}}
+</div>
+</template>
+
+<template name="loading">
+	{{> spinner}}
+</template>
+
+<template name="home">
+Fuck you
+</template>
+
+<template name="lobbyBrowser">
+Lobby browser fucko
+</template>
+
+<template name="gameLobby">
+It's a single lobby you son of a bitch<br>
+{{lobbyId}}
+</template>
