@@ -20,12 +20,10 @@ spacebars
 check
 ecmascript
 accounts-password
-twbs:bootstrap
-ian:accounts-ui-bootstrap-3
 momentjs:moment
 sacha:spin
 fortawesome:fontawesome
-softwarerero:accounts-t9n
-suxez:jasny-bootstrap
 kadira:flow-router
 kadira:blaze-layout
+poetic:materialize-scss
+useraccounts:materialize
