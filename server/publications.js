@@ -9,37 +9,21 @@ Meteor.publish('lobbyChat', function(lobbyId) {
 	if (!this.userId)
 		return [];
 	
-	return LobbyChat.find({lobbyId: lobbyId});
+	return LobbyChat.find({lobbyId: lobbyId}, {sort: {created: -1}});
 });
 
-Meteor.publish('officialLobbiesList', function() {
+Meteor.publish('lobbies', function() {
 	if (!this.userId)
 		return [];
 	
-	return OfficialLobbies.find({}, {fields: {
-		//TODO: specify fields to return or not return
+	return Lobbies.find({}, {fields: {
+		players: true,
+		name: true,
+		official: true,
+		type: true,
+		currentGame: true,
+		config: true
 	}});
 });
-
-Meteor.publish('customLobbiesList', function(limit) {
-	if (!this.userId)
-		return [];
-	
-	return CustomLobbies.find({}, {sort: {created: -1}, limit: limit});
-});
-
-Meteor.publish('singleLobby', function(lobbyId) {
-	if (!this.userId)
-		return [];
-
-	if (OfficialLobbies.findOne(lobbyId)) {
-		return OfficialLobbies.find({_id: lobbyId});
-	} else if (CustomLobbies.findOne(lobbyId)) {
-		return CustomLobbies.find({_id: lobbyId});
-	}
-
-	return [];
-});
-
 
 //Acro specific stuff

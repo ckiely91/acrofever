@@ -1,6 +1,5 @@
 Games = new Mongo.Collection('games');
-OfficialLobbies = new Mongo.Collection('officialLobbies');
-CustomLobbies = new Mongo.Collection('customLobbies');
+Lobbies = new Mongo.Collection('lobbies');
 GlobalChat = new Mongo.Collection('globalChat');
 LobbyChat = new Mongo.Collection('lobbyChat');
 

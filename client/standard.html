@@ -1,9 +1,9 @@
-<template name="standard">
+<template name="global">
 <div id="main" class="container">
 {{> loginButtons}}
 
 {{#if currentUser}}
-	{{> yield}}
+	{{> Template.dynamic template=main}}
 {{else}}
 You're not logged in!!!(cunt)
 
@@ -11,19 +11,19 @@ You're not logged in!!!(cunt)
 </div>
 </template>
 
-<template name="loading">
-	{{> spinner}}
-</template>
-
 <template name="home">
 Fuck you
 </template>
 
-<template name="lobbyBrowser">
-Lobby browser fucko
-</template>
-
-<template name="gameLobby">
+<template name="lobby">
 It's a single lobby you son of a bitch<br>
 {{lobbyId}}
+</template>
+
+<template name="play">
+{{#if ready}}
+do stuff
+{{else}}
+{{> spinner}}
+{{/if}}
 </template>

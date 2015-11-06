@@ -27,4 +27,5 @@ sacha:spin
 fortawesome:fontawesome
 softwarerero:accounts-t9n
 suxez:jasny-bootstrap
-iron:router
+kadira:flow-router
+kadira:blaze-layout
