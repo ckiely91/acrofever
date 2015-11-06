@@ -28,3 +28,6 @@ fortawesome:fontawesome
 softwarerero:accounts-t9n
 suxez:jasny-bootstrap
 iron:router
+materialize:materialize
+poetic:materialize-scss
+useraccounts:materialize
