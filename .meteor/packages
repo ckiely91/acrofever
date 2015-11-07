@@ -25,5 +25,9 @@ sacha:spin
 fortawesome:fontawesome
 kadira:flow-router
 kadira:blaze-layout
-poetic:materialize-scss
 useraccounts:materialize
+useraccounts:flow-routing
+poetic:materialize-scss
+fourseven:scss
+meteorhacks:subs-manager
+reactive-var

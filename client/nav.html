@@ -3,11 +3,12 @@
     <div class="container">
       <div class="nav-wrapper">
         <a href="#" class="brand-logo">
-          <img alt="UserAccounts" width="25" height="25" src="/imgs/ua-logo.png">
+          Acrofever
         </a>
         <ul id="nav-mobile" class="right side-nav fixed">
-          <li class="{{isActiveRoute regex='home'}}"><a href="{{pathFor 'home'}}">Home</a></li>
-          <li class="{{isActiveRoute regex='private'}}"><a href="{{pathFor 'private'}}">Private</a></li>
+          <li class="{{#if isOnRoute 'home'}}active{{/if}}"><a href="{{getRoutePath 'home'}}">Home</a></li>
+          <li class="{{#if isOnRoute 'play'}}active{{/if}}"><a href="{{getRoutePath 'play'}}">Play</a></li>
+
           <li>{{> atNavButton }}</li>
         </ul>
         <a class="button-collapse" href="#" data-activates="nav-mobile"><i class="mdi-navigation-menu"></i></a>

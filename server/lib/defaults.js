@@ -25,23 +25,24 @@ AcroSettingsDefaults = {
 	}
 };
 
-OfficialLobbyDefaults = [
+DefaultLobbies = [
 	{
 		name: "acro_expert",
 		displayName: "Experts",
-		game: "Acrofever",
-		owner: Meteor.settings.adminId,
+		type: "acrofever",
 		players: [],
 		config: AcroSettingsDefaults.expert,
-		games: []
+		currentGame: null,
+		official: true
 	},
 	{
 		name: "acro_beginner",
 		displayName: "Beginners",
-		game: "Acrofever",
-		owner: Meteor.settings.adminId,
+		game: "acrofever",
 		players: [],
 		config: AcroSettingsDefaults.beginner,
-		games: []
+		games: [],
+		currentGame: null,
+		official: true
 	}
 ];

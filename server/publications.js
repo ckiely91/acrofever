@@ -1,7 +1,4 @@
 Meteor.publish('globalChat', function() {
-	if (!this.userId)
-		return [];
-
 	return GlobalChat.find({}, {sort: {created: -1}, limit: 100});
 });
 
@@ -13,12 +10,9 @@ Meteor.publish('lobbyChat', function(lobbyId) {
 });
 
 Meteor.publish('lobbies', function() {
-	if (!this.userId)
-		return [];
-	
 	return Lobbies.find({}, {fields: {
 		players: true,
-		name: true,
+		displayName: true,
 		official: true,
 		type: true,
 		currentGame: true,
