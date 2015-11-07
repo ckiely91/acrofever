@@ -20,4 +20,11 @@ Meteor.publish('lobbies', function() {
 	}});
 });
 
+Meteor.publish('otherPlayers', function(playerIdList) {
+	return Meteor.users.find({_id: {$in: playerIdList}}, {fields: {
+		username: true,
+		avatar: true
+	}});
+});
+
 //Acro specific stuff

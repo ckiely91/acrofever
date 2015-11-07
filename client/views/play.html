@@ -1,0 +1,36 @@
+<template name="play">
+	<div class="container">
+		<h3>Play Acrofever</h3>
+		<p>Join a lobby below</p>
+
+		{{#if ready}}
+			<table class="" id="lobbyList">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Last active</th>
+						<th>Players</th>
+					</tr>
+				</thead>
+				<tbody>
+					{{#each lobbies}}
+						{{> lobbyRow}}
+					{{/each}}
+				</tbody>
+			</table>
+		{{else}}
+			<i class="fa fa-spin fa-spinner"></i>
+		{{/if}}
+	</div>
+	<div class="container">
+		{{> globalChat}}
+	</div>
+</template>
+
+<template name="lobbyRow">
+	<tr class="lobbyRow">
+		<td>{{displayName}}</td>
+		<td></td>
+		<td>{{arrayLength players}}</td>
+	</tr>
+</template>
