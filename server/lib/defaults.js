@@ -38,7 +38,7 @@ DefaultLobbies = [
 	{
 		name: "acro_beginner",
 		displayName: "Beginners",
-		game: "acrofever",
+		type: "acrofever",
 		players: [],
 		config: AcroSettingsDefaults.beginner,
 		games: [],

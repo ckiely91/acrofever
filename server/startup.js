@@ -10,7 +10,7 @@ Meteor.startup(function() {
 		if (!insertedLobby.currentGame) {
 			//insert first game
 			var gameId = Games.insert({
-				type: 'Acrofever',
+				type: 'acrofever',
 			    lobbyId: insertedLobby._id,
 			    active: false,
 			    currentPhase: 'category',

@@ -1,0 +1,73 @@
+<template name="lobby">
+	{{#if ready}}
+		{{#with lobby}}
+		<div class="ui stackable grid">
+			<div class="five wide column">
+				<div class="ui raised segments">
+					<div class="ui segment">
+						{{#if inLobby}}
+							<button id="leaveLobby" class="ui fluid button">Leave lobby</button>
+						{{else}}
+							<button id="joinLobby" class="ui primary fluid button">Join lobby</button>
+						{{/if}}
+					</div>
+					<div class="ui segment">
+						<h3 class="ui header">Scores</h3>
+						<table class="ui unstackable table">
+							<tbody>
+								{{#each scores}}
+									{{> scoresPlayerRow}}
+								{{/each}}
+							</tbody>
+						</table>
+					</div>
+					<div class="ui segment">
+						<h3 class="ui header">Chat</h3>
+						{{> lobbyChat}}
+					</div>
+				</div>
+			</div>
+			<div class="eleven wide column">
+				<div class="ui raised segment">
+					{{> game}}
+				</div>
+			</div>
+		</div>
+		{{/with}}	
+	{{else}}
+		<div class="ui active loader"></div>
+	{{/if}}
+</template>
+
+<template name="scoresPlayerRow">
+	<tr>
+		<td>
+			<h4 class="ui image header">
+		        <img src="//placehold.it/100x100" class="ui mini circular image">
+		        <div class="content">
+		            Gary
+		        <div class="sub header">Current leader</div>
+		        </div>
+		    </h4>
+		</td>
+		<td>3</td>
+	</tr>
+</template>
+
+<template name="lobbyChat">
+Put your lobby chat here bruv
+</template>
+
+<template name="game">
+	{{#if ready}}
+		{{#with game}}
+			{{#if active}}
+				{{#with gamePhase this}}{{> Template.dynamic template=this}}{{/with}}
+			{{else}}
+				Waiting for players...
+			{{/if}}
+		{{/with}}
+	{{else}}
+		<div class="ui active loader"></div>
+	{{/if}}
+</template>
