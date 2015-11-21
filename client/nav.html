@@ -1,7 +1,7 @@
 <template name="nav">
-<div class="ui fixed inverted menu">
+<div class="ui inverted menu">
   <div class="ui container">
-    <a href="#" class="header item">
+    <a href="#" id="brandHeader" class="header item">
       Acrofever
     </a>
     <a href="{{getRoutePath 'home'}}" class="item {{#if isOnRoute 'home'}}active{{/if}}">Home</a>

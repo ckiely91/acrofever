@@ -27,4 +27,11 @@ Meteor.publish('otherPlayers', function(playerIdList) {
 	}});
 });
 
+Meteor.publish('currentGame', function(currentGame) {
+	if (!this.userId || !currentGame)
+		return [];
+
+	return Games.find({_id: currentGame});
+});
+
 //Acro specific stuff
