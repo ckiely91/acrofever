@@ -19,7 +19,7 @@ Meteor.methods({
 			if (!game.active && lobby.players.length >= Meteor.settings.minimumPlayers) {
 				//game is inactive but we now have the minimum players. Start the game!
 
-				GameFunctions.makeGameActive(lobby.currentGame);
+				GameManager.makeGameActive(lobby.currentGame);
 			}
 
 		} else {
