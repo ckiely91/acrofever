@@ -11,12 +11,14 @@ Template.lobby.helpers({
 });
 
 Template.lobby.events({
-	'click #joinLobby': function() {
+	'click #joinLobby': function(event) {
 		var lobbyId = FlowRouter.getParam('lobbyId');
+		$(event.currentTarget).addClass('loading');
 		Meteor.call('joinOrLeaveOfficialLobby', lobbyId, true);
 	},
-	'click #leaveLobby': function() {
+	'click #leaveLobby': function(event) {
 		var lobbyId = FlowRouter.getParam('lobbyId');
+		$(event.currentTarget).addClass('loading');
 		Meteor.call('joinOrLeaveOfficialLobby', lobbyId, false);
 	}
 })

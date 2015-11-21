@@ -1,6 +1,7 @@
 <template name="lobby">
 	{{#if ready}}
 		{{#with lobby}}
+		<h2 class="ui header"><span>{{type}} :: </span>{{displayName}}</h2>
 		<div class="ui stackable grid">
 			<div class="five wide column">
 				<div class="ui raised segments">
@@ -64,7 +65,10 @@ Put your lobby chat here bruv
 			{{#if active}}
 				{{#with gamePhase this}}{{> Template.dynamic template=this}}{{/with}}
 			{{else}}
-				Waiting for players...
+				<h3 class="ui center aligned icon header">
+					<i class="user icon"></i>
+					Waiting for more players...
+				</h3>
 			{{/if}}
 		{{/with}}
 	{{else}}
