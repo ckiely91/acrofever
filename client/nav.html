@@ -1,18 +1,12 @@
 <template name="nav">
-  <nav>
-    <div class="container">
-      <div class="nav-wrapper">
-        <a href="#" class="brand-logo">
-          Acrofever
-        </a>
-        <ul id="nav-mobile" class="right side-nav fixed">
-          <li class="{{#if isOnRoute 'home'}}active{{/if}}"><a href="{{getRoutePath 'home'}}">Home</a></li>
-          <li class="{{#if isOnRoute 'play'}}active{{/if}}"><a href="{{getRoutePath 'play'}}">Play</a></li>
-
-          <li>{{> atNavButton }}</li>
-        </ul>
-        <a class="button-collapse" href="#" data-activates="nav-mobile"><i class="mdi-navigation-menu"></i></a>
-      </div>
-    </div>
-  </nav>
+<div class="ui fixed inverted menu">
+  <div class="ui container">
+    <a href="#" class="header item">
+      Acrofever
+    </a>
+    <a href="{{getRoutePath 'home'}}" class="item {{#if isOnRoute 'home'}}active{{/if}}">Home</a>
+    <a href="{{getRoutePath 'play'}}" class="item {{#if isOnRoute 'play'}}active{{/if}}">Play</a>
+    <div class="item">{{> atNavButton}}</div>
+  </div>
+</div>
 </template>

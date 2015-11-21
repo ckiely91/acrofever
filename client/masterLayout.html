@@ -1,7 +1,7 @@
 <template name="masterLayout">
-  <div id="content">
     {{> nav}}
-    {{> Template.dynamic template=main}}
-  </div>
-  {{> footer}}
+    <div class="ui main grid container">
+    	{{> Template.dynamic template=main}}
+    	{{> footer}}
+    </div>
 </template>
