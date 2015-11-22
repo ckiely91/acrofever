@@ -15,6 +15,18 @@
 						<h3 class="ui header">Scores</h3>
 						<table class="ui unstackable table">
 							<tbody>
+									<tr>
+										<td>
+											<h4 class="ui image header">
+										        <img src="//placehold.it/100x100" class="ui mini circular image">
+										        <div class="content">
+										            Gary
+										        <div class="sub header">Current leader</div>
+										        </div>
+										    </h4>
+										</td>
+										<td>3</td>
+									</tr>
 								{{#each scores}}
 									{{> scoresPlayerRow}}
 								{{/each}}
@@ -55,7 +67,33 @@
 </template>
 
 <template name="lobbyChat">
-Put your lobby chat here bruv
+    <form id="chat-input-form" class="ui form">
+        <input type="text" id="chat-input-box" class="ui input" placeholder="Type here to chat..." autocomplete="off">
+    </form>
+    <div id="chat-messages" class="ui segment">
+        <div class="ui relaxed divided list">
+            {{#each chats}}
+                <div class="item">
+                    <div class="content">
+                        <div class="header">{{username id}} {{friendlytime time}}</div>
+                        {{message}}
+                    </div>
+                </div>
+            {{/each}}
+            <div class="item">
+                <div class="content">
+                    <div class="header">Alan</div>
+                    Nice one Baz
+                </div>
+            </div>
+            <div class="item">
+                <div class="content">
+                    <div class="header">Jeff</div>
+                    My name is jeff
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <template name="game">

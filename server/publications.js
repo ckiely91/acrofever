@@ -5,7 +5,7 @@ Meteor.publish('globalChat', function() {
 Meteor.publish('lobbyChat', function(lobbyId) {
 	if (!this.userId)
 		return [];
-	
+
 	return LobbyChat.find({lobbyId: lobbyId}, {sort: {created: -1}});
 });
 
