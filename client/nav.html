@@ -1,12 +1,12 @@
 <template name="nav">
-<div class="ui inverted menu">
-  <div class="ui container">
-    <a href="#" id="brandHeader" class="header item">
-      Acrofever
-    </a>
-    <a href="{{getRoutePath 'home'}}" class="item {{#if isOnRoute 'home'}}active{{/if}}">Home</a>
-    <a href="{{getRoutePath 'play'}}" class="item {{#if isOnRoute 'play'}}active{{/if}}">Play</a>
-    <div class="item">{{> atNavButton}}</div>
-  </div>
-</div>
+	<div class="ui inverted menu" id="mainNav">
+		<div class="ui container">
+			<a href="#" id="brandHeader" class="header item">
+			  Acrofever
+			</a>
+			<a href="{{getRoutePath 'home'}}" class="item {{#if isOnRoute 'home'}}active{{/if}}">Home</a>
+			<a href="{{getRoutePath 'play'}}" class="item {{#if isOnRoute 'play'}}active{{/if}}">Play</a>
+			<div class="item">{{> atNavButton}}</div>
+		</div>
+	</div>
 </template>
