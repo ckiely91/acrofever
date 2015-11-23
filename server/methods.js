@@ -16,7 +16,7 @@ Meteor.methods({
 			lobby = Lobbies.findOne(lobbyId);
 			var game = Games.findOne(lobby.currentGame);
 
-			if (!game.active && lobby.players.length >= Meteor.settings.minimumPlayers) {
+			if (!game.active && lobby.players.length >= Meteor.settings[game.type].minimumPlayers) {
 				//game is inactive but we now have the minimum players. Start the game!
 
 				GameManager.makeGameActive(lobby.currentGame);

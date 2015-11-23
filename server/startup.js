@@ -1,4 +1,15 @@
 Meteor.startup(function() {
+	//Loggly initialisation
+	Logger = new Loggly({
+		token: Meteor.settings.loggly.token,
+		subdomain: Meteor.settings.loggly.subdomain,
+		auth: {
+			username: Meteor.settings.loggly.username,
+			password: Meteor.settings.loggly.password
+		},
+		json: true
+	});
+
 	// _.each(OfficialDefaultLobbiesyDefaults, function(lobby) {
 	// 	OfficialLobbies.upsert({name: lobby.name}, {$set: lobby});
 	// });

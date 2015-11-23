@@ -5,8 +5,10 @@ AcroSettingsDefaults = {
 		votingTimeout: 45000,
 		endOfRoundTimeout: 20000,
 		hallOfFameTimeout: 60000,
-		winnerPoints: 3,
+		winnerPoints: 2,
+		votedPoints: 1,
 		votedForWinnerPoints: 1,
+		notVotedNegativePoints: 1,
 		minAcroLength: 3,
 		maxAcroLength: 7,
 		endGamePoints: 15
@@ -17,8 +19,10 @@ AcroSettingsDefaults = {
 		votingTimeout: 45000,
 		endOfRoundTimeout: 20000,
 		hallOfFameTimeout: 60000,
-		winnerPoints: 3,
+		winnerPoints: 2,
+		votedPoints: 1,
 		votedForWinnerPoints: 1,
+		notVotedNegativePoints: 1,
 		minAcroLength: 3,
 		maxAcroLength: 7,
 		endGamePoints: 15
