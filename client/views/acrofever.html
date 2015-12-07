@@ -1,3 +1,9 @@
 <template name="acrofever-category">
-Category phase!
+{{#with lobby}}
+	{{#with game this}}
+		{{> countdown endTime=endTime}}
+
+		Category phase!
+	{{/with}}
+{{/with}}
 </template>

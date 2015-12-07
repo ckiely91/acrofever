@@ -2,10 +2,6 @@ Template.lobby.helpers({
 	ready: function() {
 		return lobbySubs.ready();
 	},
-	lobby: function() {
-		var lobby = Lobbies.findOne(FlowRouter.getParam('lobbyId'));
-		return lobby;
-	},
 	scores: function(lobby) {
 		var game = Games.findOne(lobby.currentGame);
 		if (game) {
@@ -87,6 +83,9 @@ Template.scoresPlayerRow.helpers({
 					leaders.push(playerId);
 				}
 			});
+
+			if (highPoints === 0)
+				return;
 
 			if (leaders.indexOf(id) > -1) {
 				if (leaders.length > 1) {

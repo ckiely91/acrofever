@@ -88,7 +88,8 @@
 
 <template name="game">
 	{{#if ready}}
-		{{#with game}}
+	{{#with lobby}}
+		{{#with game this}}
 			{{#if active}}
 				{{#with gamePhase this}}{{> Template.dynamic template=this}}{{/with}}
 			{{else}}
@@ -98,6 +99,7 @@
 				</h3>
 			{{/if}}
 		{{/with}}
+	{{/with}}
 	{{else}}
 		<div class="ui active loader"></div>
 	{{/if}}
