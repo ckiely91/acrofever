@@ -4,6 +4,8 @@ Meteor.methods({
 		if (!userId)
 			throw new Meteor.Error('403', 'You must be logged in to do that');
 
+		check(message, checkValidChatString);
+
 		LobbyChat.update({lobbyId: lobbyId}, 
 			{$push: 
 				{chats: {

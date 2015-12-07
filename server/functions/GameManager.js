@@ -5,11 +5,11 @@ GameManager.makeGameActive = function(gameId) {
 	//this function assumes that checks have already been made to ensure this game SHOULD go active
 	var game = Games.findOne(gameId);
 
-	console.log('Making game ' + gameId + 'active');
+	console.log('Making game ' + gameId + ' active');
 
 	if (!game || game.active) {
 		Logger.warn('GameManager.makeGameActive was called on a nonexistent or already active game', {gameId: gameId});
-		console.log('GameManager.makeGameActive was called on a nonexistent or already active game: ' + gameId);
+		console.error('GameManager.makeGameActive was called on a nonexistent or already active game: ' + gameId);
 		return;
 	}
 
@@ -18,10 +18,10 @@ GameManager.makeGameActive = function(gameId) {
 
 	if (!activeTimeout || moment().isAfter(activeTimeout)) {
 		//create a new game!!
-		GameFunctions.startNewGame(game.lobbyId);
+		GameManager.startNewGame(game.lobbyId);
 	} else {
 		//reactivate this game in a new round
-		GameFunctions.startNewRound(game.lobbyId, true);
+		GameManager.startNewRound(game.lobbyId, true);
 	}
 }
 
@@ -62,7 +62,7 @@ GameManager.startNewGame = function(lobbyId, type) {
 		var players = Lobbies.findOne(lobbyId).players;
 
 		_.each(players, function(playerId) {
-			scores[playerId] = 0;
+			newGame.scores[playerId] = 0;
 		});
 
 		var gameId = Games.insert(newGame);
