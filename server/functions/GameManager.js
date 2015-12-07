@@ -69,9 +69,8 @@ GameManager.startNewGame = function(lobbyId, type) {
 
 		Logger.info('New game started', {lobbyId: lobbyId, gameId: gameId});
 
-		GameManager.startNewRound(lobbyId);
 		Lobbies.update(lobbyId, {$push: {games: gameId}, $set: {currentGame: gameId}, $currentDate: {lastUpdated: true}});
-
+		GameManager.startNewRound(lobbyId);
 
 	} catch(err) {
 		console.error(err);
@@ -119,13 +118,15 @@ GameManager.startNewRound = function(lobbyId, setActive) {
 		if (setActive)
 			setObj.active = true;
 
+		console.log(setObj);
+
 		Games.update(lobby.currentGame, {$set: setObj, $push: {rounds: round}, $inc: {currentRound: 1}, $currentDate: {lastUpdated: true}});
 
-		Logger.info('New round started', {lobbyId: lobbyId, gameId: gameId});
+		Logger.info('New round started', {lobbyId: lobbyId, gameId: lobby.currentGame});
 
 		Meteor.setTimeout(function() {
 			// Advance to acro phase
-			GameManager.advancePhase(gameId, 'acrofever', 'category');
+			GameManager.advancePhase(lobby.currentGame, 'acrofever', 'category');
 		}, categoryTimeout);
 
 	} catch(err) {
@@ -133,7 +134,7 @@ GameManager.startNewRound = function(lobbyId, setActive) {
 		Logger.error('Error starting new round', {
 			error: err,
 			lobbyId: lobbyId,
-			gameId: gameId
+			gameId: lobby.currentGame
 		});
 	}
 }

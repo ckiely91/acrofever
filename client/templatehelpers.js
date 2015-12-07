@@ -1,6 +1,6 @@
 Template.registerHelper("username", function(id, capitalise) {
   return displayname(id, capitalise);
-  });
+});
 
 Template.registerHelper("friendlytime", function(time) {
   return moment(time).fromNow();
@@ -13,7 +13,7 @@ displayname = function(id, capitalise) {
 	}
 
 	if (user.profile) {
-		var displayname = user.profile.name || user.username;
+		var displayname = user.profile.name;
 	} else {
 		var displayname = user.username;
 	}

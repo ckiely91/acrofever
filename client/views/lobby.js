@@ -3,7 +3,21 @@ Template.lobby.helpers({
 		return lobbySubs.ready();
 	},
 	lobby: function() {
-		return Lobbies.findOne(FlowRouter.getParam('lobbyId'));
+		var lobby = Lobbies.findOne(FlowRouter.getParam('lobbyId'));
+		return lobby;
+	},
+	scores: function(lobby) {
+		var game = Games.findOne(lobby.currentGame);
+		if (game) {
+			var array = [];
+			_.each(game.scores, function(score, userId) {
+				array.push({
+					id: userId,
+					score: score
+				});
+			});
+			return array;
+		}
 	},
 	inLobby: function() {
 		return (this.players && this.players.indexOf(Meteor.userId()) > -1);
@@ -27,6 +41,10 @@ Template.lobby.onCreated(function() {
 	var self = this;
 	self.autorun(function() {
 		lobbySubs.subscribe('lobbies');
+		var currentLobby = Lobbies.findOne(FlowRouter.getParam('lobbyId'));
+		if (currentLobby) {
+			Meteor.subscribe('otherPlayers', currentLobby.players);
+		}
 	});
 });
 
@@ -54,8 +72,38 @@ Template.game.onCreated(function() {
 	});
 });
 
+Template.scoresPlayerRow.helpers({
+	leader: function(id) {
+		var game = Games.findOne(Lobbies.findOne(FlowRouter.getParam('lobbyId')).currentGame);
+		var highPoints = 0;
+		var leaders = [];
+
+		if (game) {
+			_.each(game.scores, function(score, playerId) {
+				if (score > highPoints) {
+					highPoints = score;
+					leaders = [playerId];
+				} else if (score === highPoints) {
+					leaders.push(playerId);
+				}
+			});
+
+			if (leaders.indexOf(id) > -1) {
+				if (leaders.length > 1) {
+					return "Tied for leader";
+				} else {
+					return "Current leader";
+				}
+			}
+		}
+	}
+});
+
 Template.lobbyChat.onCreated(function() {
-	Meteor.subscribe('lobbyChat', FlowRouter.getParam('lobbyId'));
+	var self = this;
+	self.autorun(function() {
+		Meteor.subscribe('lobbyChat', FlowRouter.getParam('lobbyId'));
+	});
 });
 
 Template.lobbyChat.events({
@@ -73,6 +121,11 @@ Template.lobbyChat.helpers({
 		return Template.instance().ready.get();
 	},
 	chats : function() {
-		return LobbyChat.find().fetch()[0].chats.reverse();
+		var lobbyId = FlowRouter.getParam('lobbyId');
+		var lobby = LobbyChat.findOne({lobbyId:lobbyId});
+		if (lobby)
+			return lobby.chats.reverse();
+		else
+			return [];
 	}
 });

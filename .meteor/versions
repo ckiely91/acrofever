@@ -84,6 +84,7 @@ templating-tools@1.0.0
 tracker@1.0.9
 ui@1.0.8
 underscore@1.0.4
+underscorestring:underscore.string@3.2.2
 url@1.0.5
 useraccounts:core@1.12.4
 useraccounts:flow-routing@1.12.4

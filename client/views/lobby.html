@@ -16,19 +16,7 @@
 						<h3 class="ui header">Scores</h3>
 						<table class="ui unstackable table">
 							<tbody>
-									<tr>
-										<td>
-											<h4 class="ui image header">
-										        <img src="//placehold.it/100x100" class="ui mini circular image">
-										        <div class="content">
-										            Gary
-										        <div class="sub header">Current leader</div>
-										        </div>
-										    </h4>
-										</td>
-										<td>3</td>
-									</tr>
-								{{#each scores}}
+								{{#each scores this}}
 									{{> scoresPlayerRow}}
 								{{/each}}
 							</tbody>
@@ -53,17 +41,18 @@
 </template>
 
 <template name="scoresPlayerRow">
+{{data}}
 	<tr>
 		<td>
 			<h4 class="ui image header">
 		        <img src="//placehold.it/100x100" class="ui mini circular image">
 		        <div class="content">
-		            Gary
-		        <div class="sub header">Current leader</div>
+		            {{username id true}}
+		        <div class="sub header">{{leader id}}</div>
 		        </div>
 		    </h4>
 		</td>
-		<td>3</td>
+		<td>{{score}}</td>
 	</tr>
 </template>
 
