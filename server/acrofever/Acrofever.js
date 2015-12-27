@@ -80,9 +80,13 @@ Acrofever.goToVotingPhase = function(gameId) {
 	var lobby = Lobbies.findOne(game.lobbyId),
 		votingTimeout = lobby.config.votingTimeout;
 
+	//shuffle the players array
+	var players = _.shuffle(game.players);
+
 	Games.update(gameId, {$set: {
 		currentPhase: 'voting',
-		endTime: moment().add(votingTimeout, 'milliseconds').toDate()
+		endTime: moment().add(votingTimeout, 'milliseconds').toDate(),
+		players: players
 	}});
 
 	Meteor.setTimeout(function() {

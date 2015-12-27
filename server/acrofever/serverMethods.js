@@ -1,8 +1,8 @@
 Meteor.methods({
 	acrofeverChooseCategory: function(gameId, category) {
-		var game = standardAcrofeverMethodChecks(gameId, 'category', true, category);
+		var userId = this.userId;
+		var game = standardAcrofeverMethodChecks(gameId, userId, 'category', true, category);
 
-		var userId = Meteor.userId();
 		var currentRound = game.rounds[game.currentRound - 1];
 
 		if (currentRound.categoryChooser !== userId)
@@ -12,10 +12,10 @@ Meteor.methods({
 		GameManager.advancePhase(gameId, 'acrofever', 'category', category);
 	},
 	acrofeverSubmitAcro: function(gameId, acro) {
-		var game = standardAcrofeverMethodChecks(gameId, 'acro', true, acro);
+		var userId = this.userId;
+		var game = standardAcrofeverMethodChecks(gameId, userId, 'acro', true, acro);
 		var roundIndex = game.currentRound - 1;
 		var currentRound = game.rounds[roundIndex];
-		var userId = Meteor.userId();
 
 		// check if this user in the current round
 		if (!currentRound.players[userId])
@@ -53,14 +53,13 @@ Meteor.methods({
 	}
 });
 
-function standardAcrofeverMethodChecks(gameId, phase, inputRequired, inputString) {
+standardAcrofeverMethodChecks = function(gameId, userId, phase, inputRequired, inputString) {
 	if (inputRequired) {
 		check(inputString, String);
 		if (inputString.length < 1 || inputString.length > 300)
 			throw new Meteor.Error('invalid-input', 'Provided input is too long or too short');
 	}
 
-	var userId = Meteor.userId();
 	var game = Games.findOne(gameId);
 
 	if (!userId || !game)
