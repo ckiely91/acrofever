@@ -1,14 +1,17 @@
+<!-- CATEGORY PHASE START -->
 <template name="acrofever-category">
 {{#with game lobby}}
 	{{> countdownHeader endTime=endTime header=currentAcro}}
 
-	<div class="ui divider"></div>
+	<div class="ui divider" style="margin-bottom:2em"></div>
 
 	{{#if isCategoryChooser this}}
 		{{> chooseCategory}}
 	{{else}}
 		<h3 class="ui center aligned disabled header">{{categoryChooserUsername this}} is picking a category...</h3>
 	{{/if}}
+
+	<div class="ui hidden divider"></div>
 {{/with}}
 </template>
 
@@ -42,26 +45,31 @@
 	<div class="ui active centered inline loader"></div>
 {{/unless}}
 </template>
+<!-- CATEGORY PHASE END -->
 
+<!-- ACRO PHASE START -->
 <template name="acrofever-acro">
 {{#with game lobby}}
 	{{> countdownHeader endTime=endTime header=currentAcro subheader=currentCategory}}
 
-	<div class="ui divider"></div>
+	<div class="ui divider" style="margin-bottom:2em"></div>
 
 	{{> submitAcro}}
+
+	<div class="ui hidden divider"></div>
 {{/with}}
 </template>
 
 <template name="submitAcro">
 	<div class="ui ten column centered grid">
 		<div class="ten wide center aligned column">
-		{{#unless hasChosenAcro}}
-			{{> submitAcroForm hasChosenAcro=hasChosenAcro game=this}}
-		{{else}}
-			<p><strong>Submitted acro:</strong> {{playerAcro this}}<br>
-			(<a href="#" id="changeAcro">change?</a>)</p>
-		{{/unless}}
+			<h3 class="ui header">Write your Acro</h3>
+			{{#unless hasChosenAcro}}
+				{{> submitAcroForm hasChosenAcro=hasChosenAcro game=this}}
+			{{else}}
+				<p><strong>Submitted acro:</strong> {{playerAcro this}}<br>
+				(<a href="#" id="changeAcro">change?</a>)</p>
+			{{/unless}}
 		</div>
 	</div>
 </template>
@@ -75,3 +83,35 @@
 		<div class="ui error message"></div>
 	</form>
 </template>
+<!-- ACRO PHASE END -->
+
+<!-- VOTING PHASE START -->
+<template name="acrofever-voting">
+{{#with game lobby}}
+	{{> countdownHeader endTime=endTime header=currentAcro subheader=currentCategory}}
+
+	<div class="ui divider" style="margin-bottom:2em"></div>
+
+	{{> acroVoting}}
+
+	<div class="ui hidden divider"></div>
+
+{{/with}}
+</template>
+
+<template name="acroVoting">
+	<div class="ui ten column centered grid">
+		<div class="ten wide center aligned column">
+			<h3 class="ui header">Vote for your favourite</h3>
+			<div class="ui fluid vertical text menu">
+				{{#each roundAcros}}
+					<a href="#" class="{{#if votedForThisAcro .. id}}active{{/if}} item" data-id="{{id}}">
+						{{acro}} {{#if votedForThisAcro .. id}}<i class="check icon"></i>{{/if}}
+					</a>
+				{{/each}}
+			</div>
+		</div>
+	</div>
+</template>
+
+<!-- VOTING PHASE END -->

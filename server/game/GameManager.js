@@ -167,6 +167,9 @@ GameManager.advancePhase = function(gameId, type, currentPhase, category) {
 				case 'acro':
 					Acrofever.goToVotingPhase(gameId);
 					break;
+				case 'voting':
+					Acrofever.goToEndRoundPhase(gameId);
+					break;
 				default:
 					console.error('Unknown phase ' + currentPhase);
 			}

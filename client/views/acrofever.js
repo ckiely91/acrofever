@@ -150,3 +150,35 @@ Template.submitAcroForm.onRendered(function() {
 		}
 	});
 });
+
+Template.acroVoting.helpers({
+	roundAcros: function() {
+		var game = this;
+		var round = getCurrentRound(game);
+		var acros = [];
+
+		_.each(round.players, function(player, playerId) {
+			if (playerId !== Meteor.userId() && player.submission) {
+				acros.push({
+					id: playerId,
+					acro: player.submission.acro
+				});
+			}
+		});
+
+		return acros;
+	},
+	votedForThisAcro: function(game, id) {
+		var round = getCurrentRound(game);
+		var thisPlayer = round.players[Meteor.userId()];
+		return (thisPlayer.vote === id);
+	}
+});
+
+Template.acroVoting.events({
+	'click a': function(evt, template) {
+		evt.preventDefault();
+		var id = $(evt.currentTarget).data().id;
+		Meteor.call('acrofeverVoteForAcro', template.data._id, id);
+	}
+})
