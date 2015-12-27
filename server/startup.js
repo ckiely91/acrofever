@@ -27,12 +27,5 @@ Meteor.startup(function() {
 			});
 			Lobbies.update(insertedLobby._id, {$set: {currentGame: gameId}, $push: {games: gameId}});
 		}
-
-		var lobbyChat = {
-			lobbyId: insertedLobby._id,
-			chats: []
-		};
-
-		LobbyChat.upsert({lobbyId: insertedLobby._id}, {$setOnInsert: lobbyChat});
 	});
 });

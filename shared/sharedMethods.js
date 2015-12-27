@@ -6,14 +6,13 @@ Meteor.methods({
 
 		check(message, checkValidChatString);
 
-		LobbyChat.update({lobbyId: lobbyId}, 
-			{$push: 
-				{chats: {
-					"time":new Date(),
-					"id":userId,
-					"message":message}
-				}
-			}
-		);
+		var chat = {
+			lobbyId: lobbyId,
+            user: Meteor.userId(),
+            time: new Date(),
+            message: message
+        };
+
+        LobbyChat.insert(chat);
 	}
 });
