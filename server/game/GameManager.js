@@ -94,9 +94,13 @@ GameManager.startNewRound = function(lobbyId, setActive) {
 
 		var players = lobby.players;
 
+		//Select a random player to choose a category
+		var categoryChooser = _.sample(players);
+
 		var round = {
 			acronym: Acrofever.generateAcronym(),
-			players: {}
+			players: {},
+			categoryChooser: categoryChooser
 		};
 
 		_.each(players, function(playerId) {
@@ -140,6 +144,13 @@ GameManager.startNewRound = function(lobbyId, setActive) {
 }
 
 GameManager.advancePhase = function(gameId, type, currentPhase, category) {
+	var game = Games.findOne(gameId, {fields: {
+		currentPhase: true
+	}});
+
+	if (game.currentPhase !== currentPhase)
+		return;
+
 	Logger.info('Advancing game phase', {
 		gameId: gameId,
 		type: type,

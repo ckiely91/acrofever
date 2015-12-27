@@ -3,7 +3,35 @@
 	{{#with game this}}
 		{{> countdown endTime=endTime}}
 
-		Category phase!
+		{{#if isCategoryChooser this}}
+			{{> chooseCategory}}
+		{{else}}
+			{{categoryChooserUsername this}} is picking a category
+		{{/if}}
 	{{/with}}
 {{/with}}
+</template>
+
+<template name="chooseCategory">
+	<h3 class="ui header">You're picking the category!</h3>
+	<div class="ui stackable two column very relaxed grid" style="position:relative">
+		<div class="column">
+			<div class="ui relaxed celled list">
+				{{#each randomCategories}}
+					<a href="#" class="item categoryListItem">{{this}}</a>
+				{{/each}}
+			</div>
+		</div>
+		<div class="ui vertical divider">
+			OR
+		</div>
+		<div class="column">
+			<form class="ui form">
+				<div class="field">
+					<input name="customCategory" placeholder="Custom category" required>
+				</div>
+				<button class="ui primary button">Go</button>
+			</form>
+		</div>
+	</div>
 </template>

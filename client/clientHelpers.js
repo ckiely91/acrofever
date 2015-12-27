@@ -49,3 +49,11 @@ displayname = function(id, capitalise) {
 	}
 	return displayname;
 }
+
+getCurrentRound = function(game) {
+	return game.rounds[game.currentRound - 1];
+}
+
+getRandomCategories = function() {
+	return _.sample(DefaultCategories, 4);
+}
