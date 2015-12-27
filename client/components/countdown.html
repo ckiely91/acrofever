@@ -1,6 +1,14 @@
-<template name="countdown">
-	<h3 class="ui center aligned icon header">
-		<i class="clock icon"></i>
-		{{countdown endTime}}
-	</h3>
+<template name="countdownHeader">
+	<div class="ui stackable grid">
+		<div class="four wide column">
+			<h3 class="ui center aligned icon header">
+				<i class="clock icon"></i>
+				{{countdown endTime}}
+			</h3>
+		</div>
+		<div class="twelve wide column">
+			<h1 class="ui center aligned header phaseHeader">{{header}}</h1>
+			<h3 class="ui center aligned header">{{subheader}}</h3>
+		</div>
+	</div>
 </template>

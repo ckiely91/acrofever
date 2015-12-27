@@ -32,6 +32,21 @@ Template.registerHelper('countdown', function(endTime) {
 	return moment(diff).format('m:ss');
 });
 
+Template.registerHelper('currentAcro', function() {
+	var lobby = Lobbies.findOne(FlowRouter.getParam('lobbyId'));
+	var game = Games.findOne(lobby.currentGame);
+	var round = getCurrentRound(game);
+	var acro = round.acronym;
+	return acro.join('. ');
+});
+
+Template.registerHelper('currentCategory', function() {
+	var lobby = Lobbies.findOne(FlowRouter.getParam('lobbyId'));
+	var game = Games.findOne(lobby.currentGame);
+	var round = getCurrentRound(game);
+	return round.category;
+});
+
 displayname = function(id, capitalise) {
 	var user = Meteor.users.findOne(id);
 	if (!user) {

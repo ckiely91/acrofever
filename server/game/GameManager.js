@@ -104,7 +104,7 @@ GameManager.startNewRound = function(lobbyId, setActive) {
 		};
 
 		_.each(players, function(playerId) {
-			players[playerId] = {
+			round.players[playerId] = {
 				votes: 0,
 				votePoints: 0,
 				votedForWinnerPoints: 0,

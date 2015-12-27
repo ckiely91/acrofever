@@ -73,7 +73,7 @@ Acrofever.goToAcroPhase = function(gameId, category) {
 }
 
 Acrofever.goToVotingPhase = function(gameId) {
-	var game = ensureCorrectPhase(gameId, 'category');
+	var game = ensureCorrectPhase(gameId, 'acro');
 
 	if (!game) return;
 
@@ -152,7 +152,7 @@ function ensureCorrectPhase(gameId, phase) {
 		return game;
 	}
 
-	return;
+	console.log('ensureCorrectPhase failed - game should be in ' + phase + ' phase');
 }
 
 function getWinnerAndAwardPoints(game) {
