@@ -164,7 +164,25 @@
 		</td>
 		<td>{{submission.acro}}</td>
 		<td>{{votes}}</td>
-		<td>{{totalPoints}}</td>
+		<td><a class="ui grey circular label">{{totalPoints}}</a></td>
 	</tr>
 </template>
 <!-- ENDROUND PHASE END -->
+
+<!-- ENDGAME PHASE START -->
+<template name="acrofever-endgame">
+	{{#with game lobby}}
+		{{#with winnerHeader this}}
+			{{> countdownHeader}}
+		{{/with}}
+
+		<div class="ui divider" style="margin-bottom:2em"></div>
+
+		
+
+		<div class="ui hidden divider"></div>
+
+	{{/with}}
+</template>
+
+<!-- ENDGAME PHASE END -->

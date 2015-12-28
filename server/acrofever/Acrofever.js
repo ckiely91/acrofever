@@ -171,8 +171,7 @@ function getWinnerAndAwardPoints(game) {
 			- If there is one ultimate winner, go to end game with winner user(s)
 	*/
 
-	var lobby = Lobbies.findOne(game.lobbyId),
-		queuedLogs = [];
+	var lobby = Lobbies.findOne(game.lobbyId);
 
 	var round = game.rounds[game.currentRound - 1],
 		highestVotes = 0,
@@ -186,10 +185,6 @@ function getWinnerAndAwardPoints(game) {
 		} else if (player.submission) {
 			//player submitted an acro but didn't vote! dock 'em
 			player.notVotedNegativePoints = lobby.config.notVotedNegativePoints;
-			queuedLogs.push({
-				time: moment().toDate(),
-				message: "@{userIdToDisplayName:" + playerId + "} submitted an acro but didn't vote! -" + lobby.config.notVotedNegativePoints + " points"
-			});
 		}
 	});
 
@@ -213,10 +208,6 @@ function getWinnerAndAwardPoints(game) {
 	} else {
 		//break the tie with timeLeft
 		winner = _.last(_.sortBy(winners, 'timeLeft')).id;
-		queuedLogs.push({
-			time: moment().toDate(),
-			message: "@{userIdToDisplayName:" + winner + "} won the tiebreak because they submitted the fastest"
-		});
 	}
 
 	round.winner = winner;
@@ -237,7 +228,7 @@ function getWinnerAndAwardPoints(game) {
 		game.scores[playerId] += score;
 
 		var newScore = game.scores[playerId];
-		if (newScore > endGamePoints) {
+		if (newScore >= endGamePoints) {
 			if (newScore > ultimateHighScore) {
 				ultimateWinners = [{id: playerId, score: newScore}];
 			} else if (newScore === ultimateHighScore) {
@@ -262,20 +253,22 @@ function getWinnerAndAwardPoints(game) {
 	};
 
 	Games.update(game._id, {$set: setObj, $push: {winnerList: winnerAcro}, $currentDate: {lastUpdated: true}});
-/*
+
 	// Is there anyone over gameEndPoints?
 	if (ultimateWinners.length > 0) {
 		goToEndGame(game._id, ultimateWinners);
 	} else {
 		//No winners yet, start a new round
-		if (lobby.players.length < Meteor.settings.acrofever.minimumPlayers) {
-			GameManager.makeGameInactive(game._id);
-		} else {
-			Meteor.setTimeout(function() {
+		Meteor.setTimeout(function() {
+			//refresh the lobby
+			lobby = Lobbies.findOne(game.lobbyId);
+			if (lobby.players.length < Meteor.settings.acrofever.minimumPlayers) {
+				GameManager.makeGameInactive(game._id);
+			} else {
 				GameManager.startNewRound(game.lobbyId);
-			}, lobby.config.endOfRoundTimeout);
-		}
-	}*/
+			}
+		}, lobby.config.endOfRoundTimeout);
+	}
 }
 
 function goToEndGame(gameId, winners) {
@@ -284,6 +277,97 @@ function goToEndGame(gameId, winners) {
 		2. If still tied, go through and find the average time they took to submit acros, fastest one wins
 		3. If still tied, go home, it's all over
 	*/
+	var game = Games.findOne(gameId),
+		winner;
 
+	winners = winners.map(function(thisWinner) {
+		return thisWinner.id;
+	});
 
+	if (winners.length > 1) {
+		// tiebreaks!
+		// 1. Go through all the rounds and add up total votes for each user, the one with the most wins the tie
+		var newWinners = [],
+			highScore = 0;
+
+		_.each(winners, function(id) {
+			var totalVotes = 0;
+			_.each(game.rounds, function(round) {
+				totalVotes += round.players[id].votes;
+			});
+			if (totalVotes >= highScore) {
+				newWinners.push(id);
+				highScore = totalVotes;
+			} else {
+				var thisPlayerIndex = newWinners.indexOf(id);
+				if (thisPlayerIndex > -	1)
+					newWinners.splice(thisPlayerIndex, 1);
+			}
+		});
+
+		if (newWinners.length === 1) {
+			//winner found by first tiebreak
+			winner = newWinners[0];
+		} else {
+			//2. If still tied, go through and find the average time they took to submit acros, fastest one wins
+			var newNewWinners = [], // I know, I know
+				lowestTime = Infinity; // space time continuum
+
+			_.each(newWinners, function(id) {
+				var timeLefts = [];
+				_.each(game.rounds, function(round) {
+					timeLefts.push(round.players[id].submission.timeLeft);
+				});
+
+				var avarageTime = 0;
+				_.each(timeLefts, function(timeLeft) {
+					averageTime += timeLeft;
+				});
+				avarageTime = avarageTime / timeLefts.length;
+
+				if (averageTime <= lowestTime) {
+					newNewWinners.push(id);
+					lowestTime = averageTime;
+				} else {
+					var thisNewPlayerIndex = newNewWinners.indexOf(id);
+					if (thisNewPlayerIndex > -	1)
+						newNewWinners.splice(thisNewPlayerIndex, 1);
+				}
+			});
+
+			if (newNewWinners.length === 1) {
+				//winner found by second tiebreak
+				winners = newNewWinners[0];
+			} else {
+				// either go buy a lottery ticket right now, or something fucked up
+				winner = _.sample(newNewWinners);
+			}
+		}
+	} else {
+		// no tiebreak necessary
+		winner = winners[0];
+	}
+
+	// we have a single winner
+	var lobby = Lobbies.findOne(game.lobbyId, {fields: {
+		config: true,
+		players: true
+	}});
+
+	var endTime = moment().add(lobby.config.hallOfFameTimeout, 'milliseconds').toDate();
+
+	Games.update(gameId, {$set: {
+		currentPhase: 'endgame',
+		endTime: endTime,
+		gameWinner: winner
+	}, $currentDate: {lastUpdated: true}});
+
+	Meteor.setTimeout(function() {
+		lobby = Lobbies.findOne(game.lobbyId);
+		if (lobby.players.length < Meteor.settings.acrofever.minimumPlayers) {
+			GameManager.makeGameInactive(gameId);
+		} else {
+			GameManager.startNewGame(game.lobbyId);
+		}
+	}, lobby.config.hallOfFameTimeout);
 }

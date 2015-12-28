@@ -205,7 +205,6 @@ Template.acroRoundResultsRow.helpers({
 		return totalPoints(results);
 	},
 	accolades: function(round) {
-		console.log(round);
 		var results = this;
 		var accolades = [];
 
@@ -218,9 +217,7 @@ Template.acroRoundResultsRow.helpers({
 			isFastest = true;
 
 		for (playerId in round.players) {
-			console.log(playerId);
-			console.log(round.players[playerId]);
-			if (playerId !== results.id && round.players[playerId].submission.timeLeft < thisTimeLeft) {
+			if (playerId !== results.id && round.players[playerId].submission.timeLeft > thisTimeLeft) {
 				isFastest = false;
 				break;
 			}
@@ -235,6 +232,40 @@ Template.acroRoundResultsRow.helpers({
 	}
 });
 
+Template.acroRoundResultsRow.onRendered(function() {
+	var label = this.$('.label');
+	var results = this.data;
+	//var lobbyConfig = Lobbies.findOne(FlowRouter.getParam('lobbyId')).config;
+	var html = '<div class="header">' + totalPoints(results) + ' points</div><div class="content">';
+
+	if (results.votePoints > 0)
+		html += '<span class="green">+' + results.votePoints + ' for votes received</span><br>';
+
+	if (results.votedForWinnerPoints > 0)
+		html += '<span class="green">+' + results.votedForWinnerPoints + ' for voting for the winning Acro</span><br>';
+
+	if (results.notVotedNegativePoints > 0)
+		html += '<span class="red">-' + results.notVotedNegativePoints + ' for not voting</span><br>';
+
+	if (results.winnerPoints > 0)
+		html += '<span class="green">+' + results.winnerPoints + ' for winning the round</span><br>';
+
+	html += '</div>';
+
+	label.popup({
+		html: html
+	});
+});
+
 function totalPoints(results) {
 	return results.votePoints + results.votedForWinnerPoints - results.notVotedNegativePoints + results.winnerPoints;
 }
+
+Template["acrofever-endgame"].helpers({
+	winnerHeader: function(game) {
+		return {
+			endTime: game.endTime,
+			header: displayname(game.gameWinner, true) + ' won!'
+		}
+	}
+})

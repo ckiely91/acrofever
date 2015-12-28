@@ -19,6 +19,10 @@ Template.lobby.helpers({
 	},
 	inLobby: function() {
 		return (this.players && this.players.indexOf(Meteor.userId()) > -1);
+	},
+	currentRound: function() {
+		var game = Games.findOne(this.currentGame);
+		return game.currentRound;
 	}
 });
 
@@ -41,7 +45,10 @@ Template.lobby.onCreated(function() {
 		lobbySubs.subscribe('lobbies');
 		var currentLobby = Lobbies.findOne(FlowRouter.getParam('lobbyId'));
 		if (currentLobby) {
-			Meteor.subscribe('otherPlayers', currentLobby.players);
+			var playerIds = currentLobby.players;
+			var game = Games.findOne(currentLobby.currentGame);
+			playerIds = playerIds.concat(_.keys(game.scores));
+			Meteor.subscribe('otherPlayers', playerIds);
 		}
 	});
 });
@@ -77,6 +84,13 @@ Template.scoresPlayerRow.helpers({
 		var leaders = [];
 
 		if (game) {
+			if (game.gameWinner) {
+				if (game.gameWinner === id)
+					return "Game winner";
+				else
+					return;
+			}
+
 			_.each(game.scores, function(score, playerId) {
 				if (score > highPoints) {
 					highPoints = score;
@@ -97,5 +111,9 @@ Template.scoresPlayerRow.helpers({
 				}
 			}
 		}
+	},
+	isInactive: function(id) {
+		var lobby = Lobbies.findOne(FlowRouter.getParam('lobbyId'));
+		return (lobby.players.indexOf(id) === -1);
 	}
 });

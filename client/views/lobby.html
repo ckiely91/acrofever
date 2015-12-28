@@ -1,7 +1,7 @@
 <template name="lobby">
 	{{#if ready}}
 		{{#with lobby}}
-		<h2 class="ui header"><span>{{type}} :: </span>{{displayName}}</h2>
+		<h2 class="ui header"><span class="gameTypeHeader">{{type}} :: </span>{{displayName}}</h2>
 		<div class="ui stackable grid">
 			<div class="five wide column">
 				<div class="ui raised segments">
@@ -11,6 +11,9 @@
 						{{else}}
 							<button id="joinLobby" class="ui primary fluid button">Join lobby</button>
 						{{/if}}
+					</div>
+					<div class="ui segment">
+						<h3 class="ui header">Current round: <span class="normalWeight">{{currentRound}}</span></h3>
 					</div>
 					<div class="ui segment">
 						<h3 class="ui header">Scores</h3>
@@ -41,8 +44,7 @@
 </template>
 
 <template name="scoresPlayerRow">
-{{data}}
-	<tr>
+	<tr class="{{#if isInactive id}}disabled{{/if}}">
 		<td>
 			<h4 class="ui image header">
 		        <img src="//placehold.it/100x100" class="ui mini rounded image">

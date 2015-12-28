@@ -18,8 +18,21 @@ tr.lobbyRow {
 	cursor: pointer;
 }
 
+tr.disabled .content {
+	color: @lightGrey;
+}
+
 .phaseHeader {
 	@media screen and (min-width: @tabletBreakpoint) {
 		margin-top: 0.1em !important;
+	}
+}
+
+span {
+	&.green {
+		color: @green !important;
+	}
+	&.red {
+		color: @red !important;
 	}
 }

@@ -16,7 +16,7 @@ GameManager.makeGameActive = function(gameId) {
 	//check if the time has passed the game's activeTimeout. If so, create a new game.
 	var activeTimeout = game.activeTimeout;
 
-	if (!activeTimeout || moment().isAfter(activeTimeout)) {
+	if (game.currentPhase === "endgame" || !activeTimeout || moment().isAfter(activeTimeout)) {
 		//create a new game!!
 		GameManager.startNewGame(game.lobbyId);
 	} else {
