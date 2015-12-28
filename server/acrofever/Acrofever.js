@@ -365,12 +365,12 @@ function goToEndGame(gameId, winners) {
 		gameWinner: winner
 	}, $currentDate: {lastUpdated: true}});
 
-	/*Meteor.setTimeout(function() {
+	Meteor.setTimeout(function() {
 		lobby = Lobbies.findOne(game.lobbyId);
 		if (lobby.players.length < Meteor.settings.acrofever.minimumPlayers) {
 			GameManager.makeGameInactive(gameId);
 		} else {
 			GameManager.startNewGame(game.lobbyId);
 		}
-	}, lobby.config.hallOfFameTimeout); */
+	}, lobby.config.hallOfFameTimeout);
 }

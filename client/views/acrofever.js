@@ -273,7 +273,7 @@ function totalPoints(results) {
 
 Template["acrofever-endgame"].helpers({
 	winnerHeader: function() {
-		var game = this;
+		var game = this,
 			diff = moment(game.endTime).diff(mo.now.get()),
 			timeLeft;
 		
