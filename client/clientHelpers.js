@@ -47,6 +47,13 @@ Template.registerHelper('currentCategory', function() {
 	return round.category;
 });
 
+Template.registerHelper('currentRound', function() {
+	var lobby = Lobbies.findOne(FlowRouter.getParam('lobbyId'));
+	var game = Games.findOne(lobby.currentGame);
+	var round = getCurrentRound(game);
+	return round;
+});
+
 displayname = function(id, capitalise) {
 	var user = Meteor.users.findOne(id);
 	if (!user) {

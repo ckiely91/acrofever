@@ -12,7 +12,9 @@ Template.lobby.helpers({
 					score: score
 				});
 			});
-			return array;
+			return array.sort(function(a, b) {
+				return b.score - a.score;
+			});
 		}
 	},
 	inLobby: function() {

@@ -115,3 +115,56 @@
 </template>
 
 <!-- VOTING PHASE END -->
+
+<!-- ENDROUND PHASE START -->
+<template name="acrofever-endround">
+{{#with game lobby}}
+	{{> countdownHeader endTime=endTime header=currentAcro subheader=currentCategory}}
+
+	<div class="ui divider" style="margin-bottom:2em"></div>
+
+	{{> acroEndRound}}
+
+	<div class="ui hidden divider"></div>
+
+{{/with}}
+</template>
+
+<template name="acroEndRound">
+	<h3 class="ui center aligned header">Round results</h3>
+	<div class="ui basic segment">
+		<table class="ui very basic celled table">
+			<thead>
+				<tr>
+					<th>Player</th>
+					<th>Acro</th>
+					<th>Votes</th>
+					<th>Points</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#each roundResults}}
+					{{> acroRoundResultsRow}}
+				{{/each}}
+			</tbody>
+		</table>
+	</div>
+</template>
+
+<template name="acroRoundResultsRow">
+	<tr>
+		<td>
+			<h4 class="ui image header">
+				<img src="https://placehold.it/200x200" class="ui mini rounded image">
+				<div class="content">
+					{{username id true}}
+					{{#if accolades currentRound}}<div class="sub header">{{{accolades currentRound}}}</div>{{/if}}
+				</div>
+			</h4>
+		</td>
+		<td>{{submission.acro}}</td>
+		<td>{{votes}}</td>
+		<td>{{totalPoints}}</td>
+	</tr>
+</template>
+<!-- ENDROUND PHASE END -->

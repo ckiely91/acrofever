@@ -108,7 +108,7 @@ Acrofever.goToEndRoundPhase = function(gameId) {
 
 	var isWinner = getWinnerAndAwardPoints(game);
 
-	if (isWinner) {
+	/*if (isWinner) {
 		//go to end game
 	} else {
 		//determine if there are still enough active players to start a new round
@@ -129,7 +129,7 @@ Acrofever.goToEndRoundPhase = function(gameId) {
 		Meteor.setTimeout(function() {
 			GameManager.startNewRound(gameId);
 		}, timeout);
-	}
+	}*/
 }
 
 
@@ -262,7 +262,7 @@ function getWinnerAndAwardPoints(game) {
 	};
 
 	Games.update(game._id, {$set: setObj, $push: {winnerList: winnerAcro}, $currentDate: {lastUpdated: true}});
-
+/*
 	// Is there anyone over gameEndPoints?
 	if (ultimateWinners.length > 0) {
 		goToEndGame(game._id, ultimateWinners);
@@ -275,7 +275,7 @@ function getWinnerAndAwardPoints(game) {
 				GameManager.startNewRound(game.lobbyId);
 			}, lobby.config.endOfRoundTimeout);
 		}
-	}
+	}*/
 }
 
 function goToEndGame(gameId, winners) {

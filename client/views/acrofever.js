@@ -181,4 +181,60 @@ Template.acroVoting.events({
 		var id = $(evt.currentTarget).data().id;
 		Meteor.call('acrofeverVoteForAcro', template.data._id, id);
 	}
-})
+});
+
+Template.acroEndRound.helpers({
+	roundResults: function() {
+		var game = this;
+		var round = getCurrentRound(game);
+		var array = [];
+		_.each(round.players, function(player, playerId) {
+			var obj = player;
+			obj.id = playerId;
+			array.push(obj);
+		});
+		return array.sort(function(a, b) {
+			return totalPoints(b) - totalPoints(a);
+		});
+	}
+});
+
+Template.acroRoundResultsRow.helpers({
+	totalPoints: function() {
+		var results = this;
+		return totalPoints(results);
+	},
+	accolades: function(round) {
+		console.log(round);
+		var results = this;
+		var accolades = [];
+
+		// round winner
+		if (results.id === round.winner)
+			accolades.push("Round winner");
+
+		// Fastest submitter
+		var thisTimeLeft = results.submission.timeLeft,
+			isFastest = true;
+
+		for (playerId in round.players) {
+			console.log(playerId);
+			console.log(round.players[playerId]);
+			if (playerId !== results.id && round.players[playerId].submission.timeLeft < thisTimeLeft) {
+				isFastest = false;
+				break;
+			}
+		}
+		if (isFastest)
+			accolades.push("Fastest submitter");
+
+		if (accolades.length > 0)
+			return accolades.join('<br>');
+		else
+			return false;
+	}
+});
+
+function totalPoints(results) {
+	return results.votePoints + results.votedForWinnerPoints - results.notVotedNegativePoints + results.winnerPoints;
+}
