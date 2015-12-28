@@ -202,7 +202,10 @@ Template.acroEndRound.helpers({
 Template.acroRoundResultsRow.helpers({
 	totalPoints: function() {
 		var results = this;
-		return totalPoints(results);
+		var points = totalPoints(results);
+		if (points > 0)
+			points = '+' + points;
+		return points;
 	},
 	accolades: function(round) {
 		var results = this;
@@ -236,7 +239,14 @@ Template.acroRoundResultsRow.onRendered(function() {
 	var label = this.$('.label');
 	var results = this.data;
 	//var lobbyConfig = Lobbies.findOne(FlowRouter.getParam('lobbyId')).config;
-	var html = '<div class="header">' + totalPoints(results) + ' points</div><div class="content">';
+	var html = '<div class="header">';
+
+	var points = totalPoints(results);
+
+	if (points > 0)
+		html += '+';
+
+	html += points + ' points</div><div class="content">';
 
 	if (results.votePoints > 0)
 		html += '<span class="green">+' + results.votePoints + ' for votes received</span><br>';
@@ -262,10 +272,40 @@ function totalPoints(results) {
 }
 
 Template["acrofever-endgame"].helpers({
-	winnerHeader: function(game) {
+	winnerHeader: function() {
+		var game = this;
+			diff = moment(game.endTime).diff(mo.now.get()),
+			timeLeft;
+		
+		if (diff >= 0)
+			timeLeft = moment(diff).format('m:ss');
+		else
+			timeLeft = '0:00';
+
 		return {
 			endTime: game.endTime,
-			header: displayname(game.gameWinner, true) + ' won!'
+			header: displayname(game.gameWinner, true) + ' won!',
+			subheader: 'Next game starts in ' + timeLeft 
 		}
+	},
+	gameResults: function() {
+		var game = this;
+		var array = [];
+		_.each(game.scores, function(score, playerId) {
+			if (playerId !== Meteor.userId()) {
+				array.push({
+					id: playerId,
+					score: score
+				});
+			}
+		});
+		array = array.sort(function(a, b) {
+			return b.score - a.score;
+		});
+		array.unshift({
+			id: Meteor.userId(),
+			score: game.scores[Meteor.userId()]
+		});
+		return array;
 	}
-})
+});

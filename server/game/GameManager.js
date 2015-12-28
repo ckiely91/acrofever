@@ -122,7 +122,11 @@ GameManager.startNewRound = function(lobbyId, setActive) {
 		if (setActive)
 			setObj.active = true;
 
-		console.log(setObj);
+		// make sure all players have a score
+		_.each(players, function(playerId) {
+			if (!game.scores[playerId])
+				setObj['scores.' + playerId] = 0;
+		});
 
 		Games.update(lobby.currentGame, {$set: setObj, $push: {rounds: round}, $inc: {currentRound: 1}, $currentDate: {lastUpdated: true}});
 
@@ -130,7 +134,7 @@ GameManager.startNewRound = function(lobbyId, setActive) {
 
 		Meteor.setTimeout(function() {
 			// Advance to acro phase
-			GameManager.advancePhase(lobby.currentGame, 'acrofever', 'category');
+			GameManager.advancePhase(lobby.currentGame, 'acrofever', 'category', game.currentRound + 1);
 		}, categoryTimeout);
 
 	} catch(err) {
@@ -143,12 +147,13 @@ GameManager.startNewRound = function(lobbyId, setActive) {
 	}
 }
 
-GameManager.advancePhase = function(gameId, type, currentPhase, category) {
+GameManager.advancePhase = function(gameId, type, currentPhase, currentRound, category) {
 	var game = Games.findOne(gameId, {fields: {
-		currentPhase: true
+		currentPhase: true,
+		currentRound: true
 	}});
 
-	if (game.currentPhase !== currentPhase)
+	if (game.currentPhase !== currentPhase || game.currentRound !== currentRound)
 		return;
 
 	Logger.info('Advancing game phase', {

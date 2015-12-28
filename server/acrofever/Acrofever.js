@@ -68,7 +68,7 @@ Acrofever.goToAcroPhase = function(gameId, category) {
 	Games.update(gameId, {$set: setObj, $currentDate: {lastUpdated: true}});
 
 	Meteor.setTimeout(function() {
-		GameManager.advancePhase(gameId, 'acrofever', 'acro');
+		GameManager.advancePhase(gameId, 'acrofever', 'acro', game.currentRound);
 	}, acroTimeout);
 }
 
@@ -90,7 +90,7 @@ Acrofever.goToVotingPhase = function(gameId) {
 	}});
 
 	Meteor.setTimeout(function() {
-		GameManager.advancePhase(gameId, 'acrofever', 'voting');
+		GameManager.advancePhase(gameId, 'acrofever', 'voting', game.currentRound);
 	}, votingTimeout);
 }
 
@@ -181,7 +181,7 @@ function getWinnerAndAwardPoints(game) {
 	_.each(round.players, function(player, playerId) {
 		var votedFor = player.vote;
 		if (votedFor) {
-			round.players[player.vote].votes++
+			round.players[player.vote].votes++;
 		} else if (player.submission) {
 			//player submitted an acro but didn't vote! dock 'em
 			player.notVotedNegativePoints = lobby.config.notVotedNegativePoints;
@@ -190,8 +190,7 @@ function getWinnerAndAwardPoints(game) {
 
 	//Calculate each player's votePoints and also find the winner(s)
 	_.each(round.players, function(player, playerId) {
-		var votePoints = player.votes * lobby.config.votedPoints;
-		player.votePoints += votePoints;
+		player.votePoints += player.votes * lobby.config.votedPoints;
 
 		if (player.votes > highestVotes) {
 			winners = [{id: playerId, timeLeft: player.submission.timeLeft}];
@@ -207,20 +206,21 @@ function getWinnerAndAwardPoints(game) {
 		winner = winners[0];
 	} else {
 		//break the tie with timeLeft
-		winner = _.last(_.sortBy(winners, 'timeLeft')).id;
+		winner = _.last(_.sortBy(winners, 'timeLeft'));
 	}
 
-	round.winner = winner;
+	round.winner = winner.id;
+	console.log("Winner is " + round.winner);
 
 	//give points to people for voting for the winner (and give the winner points too)
 	var ultimateWinners = [],
 		ultimateHighScore = 0,
 		endGamePoints = lobby.config.endGamePoints;
 	_.each(round.players, function(player, playerId) {
-		if (winner === playerId)
+		if (winner.id === playerId)
 			player.winnerPoints = lobby.config.winnerPoints;
 
-		if (winner === player.vote)
+		if (winner.id === player.vote)
 			player.votedForWinnerPoints = lobby.config.votedForWinnerPoints;
 
 		var score = player.votePoints + player.winnerPoints + player.votedForWinnerPoints - player.notVotedNegativePoints;
@@ -243,6 +243,9 @@ function getWinnerAndAwardPoints(game) {
 	setObj.scores = game.scores;
 	setObj.currentPhase = 'endround';
 	setObj.endTime = moment().add(lobby.config.endOfRoundTimeout, 'milliseconds').toDate();
+
+	console.log("Round winner:");
+	console.log(round.players[round.winner]);
 
 	var winnerAcro = {
 		round: game.currentRound,
@@ -362,12 +365,12 @@ function goToEndGame(gameId, winners) {
 		gameWinner: winner
 	}, $currentDate: {lastUpdated: true}});
 
-	Meteor.setTimeout(function() {
+	/*Meteor.setTimeout(function() {
 		lobby = Lobbies.findOne(game.lobbyId);
 		if (lobby.players.length < Meteor.settings.acrofever.minimumPlayers) {
 			GameManager.makeGameInactive(gameId);
 		} else {
 			GameManager.startNewGame(game.lobbyId);
 		}
-	}, lobby.config.hallOfFameTimeout);
+	}, lobby.config.hallOfFameTimeout); */
 }

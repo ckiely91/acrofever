@@ -9,6 +9,10 @@ Meteor.methods({
 		}
 
 		var currentRoundIndex = game.currentRound - 1;
+
+		if (!game.rounds[currentRoundIndex].players[playerId])
+			throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
+
 		var setObj = {};
 		setObj['rounds.' + currentRoundIndex + '.players.' + userId + '.vote'] = playerId;
 
@@ -25,7 +29,7 @@ Meteor.methods({
 				}
 			});
 			if (submittedPlayers === totalPlayers) {
-				GameManager.advancePhase(gameId, 'acrofever', 'voting');
+				GameManager.advancePhase(gameId, 'acrofever', 'voting', game.currentRound);
 			}
 		}
 	}

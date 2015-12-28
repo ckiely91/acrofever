@@ -54,7 +54,11 @@
 
 	<div class="ui divider" style="margin-bottom:2em"></div>
 
-	{{> submitAcro}}
+	{{#if isInRound currentRound}}
+		{{> submitAcro}}
+	{{else}}
+		<h3 class="ui center aligned disabled header">Players are writing their acros...</h3>
+	{{/if}}
 
 	<div class="ui hidden divider"></div>
 {{/with}}
@@ -102,14 +106,23 @@
 <template name="acroVoting">
 	<div class="ui ten column centered grid">
 		<div class="ten wide center aligned column">
-			<h3 class="ui header">Vote for your favourite</h3>
-			<div class="ui fluid vertical text menu">
-				{{#each roundAcros}}
-					<a href="#" class="{{#if votedForThisAcro .. id}}active{{/if}} item" data-id="{{id}}">
-						{{acro}} {{#if votedForThisAcro .. id}}<i class="check icon"></i>{{/if}}
-					</a>
-				{{/each}}
-			</div>
+			{{#if isInRound currentRound}}
+				<h3 class="ui header">Vote for your favourite Acro</h3>
+				<div class="ui fluid relaxed vertical text menu">
+					{{#each roundAcros}}
+						<a href="#" class="{{#if votedForThisAcro .. id}}active{{/if}} item" data-id="{{id}}">
+							{{acro}} {{#if votedForThisAcro .. id}}<i class="check icon"></i>{{/if}}
+						</a>
+					{{/each}}
+				</div>
+			{{else}}
+				<h3 class="ui disabled header">Players are voting for their favourite Acros...</h3>
+				<div class="ui relaxed list">
+					{{#each roundAcros}}
+						<div class="item">{{acro}}</div>
+					{{/each}}
+				</div>
+			{{/if}}
 		</div>
 	</div>
 </template>
@@ -172,17 +185,51 @@
 <!-- ENDGAME PHASE START -->
 <template name="acrofever-endgame">
 	{{#with game lobby}}
-		{{#with winnerHeader this}}
+		{{#with winnerHeader}}
 			{{> countdownHeader}}
 		{{/with}}
 
 		<div class="ui divider" style="margin-bottom:2em"></div>
 
-		
+		<h3 class="ui center aligned header">Game results</h3>
+		<div class="ui basic segment">
+			<table class="ui very basic celled table">
+				<thead>
+					<tr>
+						<th>Player</th>
+						<th>Total votes</th>
+						<th>Total points</th>
+						<th>Most popular Acro</th>
+					</tr>
+				</thead>
+				<tbody>
+					{{#each gameResults}}
+						{{> acroGameResultsRow}}
+					{{/each}}
+				</tbody>
+			</table>
+		</div>
 
 		<div class="ui hidden divider"></div>
 
 	{{/with}}
+</template>
+
+<template name="acroGameResultsRow">
+	<tr>
+		<td>
+			<h4 class="ui image header">
+				<img src="https://placehold.it/200x200" class="ui mini rounded image">
+				<div class="content">
+					{{username id true}}
+					{{#if accolades}}<div class="sub header">{{{accolades}}}</div>{{/if}}
+				</div>
+			</h4>
+		</td>
+		<td>{{totalVotes}}</td>
+		<td>{{totalPoints}}</td>
+		<td>Popular acro</td>
+	</tr>
 </template>
 
 <!-- ENDGAME PHASE END -->

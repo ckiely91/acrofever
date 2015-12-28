@@ -22,7 +22,8 @@ Template.lobby.helpers({
 	},
 	currentRound: function() {
 		var game = Games.findOne(this.currentGame);
-		return game.currentRound;
+		if (game)
+			return game.currentRound;
 	}
 });
 
@@ -47,8 +48,10 @@ Template.lobby.onCreated(function() {
 		if (currentLobby) {
 			var playerIds = currentLobby.players;
 			var game = Games.findOne(currentLobby.currentGame);
-			playerIds = playerIds.concat(_.keys(game.scores));
-			Meteor.subscribe('otherPlayers', playerIds);
+			if (game) {
+				playerIds = playerIds.concat(_.keys(game.scores));
+				Meteor.subscribe('otherPlayers', playerIds);
+			}
 		}
 	});
 });

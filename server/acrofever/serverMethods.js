@@ -9,7 +9,7 @@ Meteor.methods({
 			throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
 
 		//set the category and advance game round
-		GameManager.advancePhase(gameId, 'acrofever', 'category', category);
+		GameManager.advancePhase(gameId, 'acrofever', 'category', game.currentRound, category);
 	},
 	acrofeverSubmitAcro: function(gameId, acro) {
 		var userId = this.userId;
@@ -42,13 +42,10 @@ Meteor.methods({
 			}
 		});
 
-		console.log(submittedPlayers);
-		console.log(totalPlayers);
-
 		if (submittedPlayers === totalPlayers) {
 			//everyone has submitted! advance the game phase
 			console.log("Everyone has submitted");
-			GameManager.advancePhase(gameId, 'acrofever', 'acro');
+			GameManager.advancePhase(gameId, 'acrofever', 'acro', game.currentRound);
 		}
 	}
 });

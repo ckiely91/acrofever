@@ -29,7 +29,10 @@ Template.registerHelper("friendlytime", function(time) {
 
 Template.registerHelper('countdown', function(endTime) {
 	var diff = moment(endTime).diff(mo.now.get());
-	return moment(diff).format('m:ss');
+	if (diff >= 0)
+		return moment(diff).format('m:ss');
+	else
+		return '0:00';
 });
 
 Template.registerHelper('currentAcro', function() {
@@ -52,6 +55,10 @@ Template.registerHelper('currentRound', function() {
 	var game = Games.findOne(lobby.currentGame);
 	var round = getCurrentRound(game);
 	return round;
+});
+
+Template.registerHelper('isInRound', function(round) {
+	return (round.players[Meteor.userId()]);
 });
 
 displayname = function(id, capitalise) {
