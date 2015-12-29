@@ -19,8 +19,50 @@ Template.registerHelper('arrayLength', function(array) {
 	return array.length;
 });
 
-Template.registerHelper("username", function(id, capitalise) {
+Template.registerHelper('username', function(id, capitalise) {
   return displayname(id, capitalise);
+});
+
+Template.registerHelper('profilePicture', function(id, size) {
+	var user = Meteor.users.findOne(id);
+
+	if (!user || !user.profile || !user.profile.profilePicture)
+		return '/images/no-profile-pic.png';
+
+	if (!size)
+		var size = 100;
+
+	var type = user.profile.profilePicture.type,
+		url = user.profile.profilePicture.url,
+		newUrl;
+
+	switch (type) {
+		case 'gravatar':
+			newUrl = URI(url).addSearch({ size: size, default: 'mm'}).toString();
+			break;
+		case 'facebook':
+			newUrl = URI(url).addSearch({height: size, width: size}).toString();
+			break;
+		case 'google':
+			newUrl = URI(url).addSearch({sz: size}).toString();
+			break;
+		case 'twitter':
+			if (size <= 24) {
+                size = "_mini";
+            } else if (size <= 48) {
+                size = "_normal";
+            } else if (size <= 73) {
+                size = "_bigger";
+            } else {
+                //risky - this file could be massive!
+                size = "";
+            };
+            newUrl = url.replace("_normal",size);
+            break;
+        default:
+        	newUrl = '/images/no-profile-pic.png';
+	}
+	return newUrl;
 });
 
 Template.registerHelper("isThisUser", function(id) {

@@ -1,37 +1,47 @@
 <template name="play">
-	<div class="sixteen wide column">
-		<h2 class="ui header">Play Acrofever</h2>
-		<div class="sub header">Join a lobby below</div>
-	</div>
-	<div class="sixteen wide column">
-	{{#if ready}}
-		<table class="ui selectable table" id="lobbyList">
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Last active</th>
-					<th>Players</th>
-				</tr>
-			</thead>
-			<tbody>
-				{{#each lobbies}}
-					{{> lobbyRow}}
-				{{/each}}
-			</tbody>
-		</table>
-	{{else}}
-		<i class="fa fa-spin fa-spinner"></i>
-	{{/if}}
-	</div>
-	<div class="sixteen wide column">
-		{{> globalChat}}
+	<h2 class="ui header"><i class="lightning icon"></i> Play Acrofever</h2>
+	<div class="ui hidden divider"></div>
+	<div class="ui stackable grid">
+		<div class="eight wide column">
+		<h3 class="ui header">Join a lobby</h3>
+		{{#if ready}}
+			<table class="ui selectable table" id="lobbyList">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Last active</th>
+						<th>Players</th>
+					</tr>
+				</thead>
+				<tbody>
+					{{#each lobbies}}
+						{{> lobbyRow}}
+					{{/each}}
+				</tbody>
+			</table>
+		{{else}}
+			<div class="ui centered inline active loader"></div>
+		{{/if}}
+		</div>
+		<div class="eight wide column">
+			<h3 class="ui header">Chat</h3>
+			{{> globalChat}}
+		</div>
 	</div>
 </template>
 
 <template name="lobbyRow">
 	<tr class="lobbyRow">
 		<td>{{displayName}}</td>
-		<td></td>
-		<td>{{arrayLength players}}</td>
+		<td>{{moFromNow lastUpdated}}</td>
+		<td>
+			{{#unless noPlayers players}}
+				{{#each players}}
+					<img class="ui mini circular image" src="{{profilePicture this 35}}" data-content="{{username this}}">
+				{{/each}}
+			{{else}}
+				<em>No players</em>
+			{{/unless}}
+		</td>
 	</tr>
 </template>

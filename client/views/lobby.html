@@ -179,7 +179,7 @@
 	<tr class="{{#if isInactive id}}disabled{{/if}}">
 		<td>
 			<h4 class="ui image header">
-		        <img src="//placehold.it/100x100" class="ui mini circular image">
+		        <img src="{{profilePicture id 35}}" class="ui mini circular image">
 		        <div class="content">
 		            {{username id true}}
 		        <div class="sub header">{{leader id}}</div>
@@ -211,7 +211,7 @@
 						{{#each lobbyPlayers ..}}
 							<div class="card">
 								<div class="image">
-									<img src="http://placehold.it/400x400">
+									<img src="{{profilePicture this 400}}">
 								</div>
 								<div class="content">
 									{{username this}}

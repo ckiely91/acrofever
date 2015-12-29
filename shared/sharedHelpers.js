@@ -4,7 +4,7 @@ displayname = function(id, capitalise) {
 		return;
 	}
 
-	if (user.profile) {
+	if (user.profile && user.profile.name) {
 		var displayname = user.profile.name;
 	} else {
 		var displayname = user.username;

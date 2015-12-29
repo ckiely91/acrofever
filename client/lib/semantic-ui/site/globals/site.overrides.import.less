@@ -6,12 +6,12 @@ div.clear {
 	clear: both;
 }
 
-#brandHeader {
+#brandHeader, #brandHeader.active {
 	font-family: 'Pacifico';
 	font-size: 2em;
 	font-weight: 400;
-    padding: 0 10px 0 0;
-    color: @primaryColor; 
+    padding: 10px 15px 15px 10px;
+    color: @primaryColor !important; 
 }
 
 #mainNav {
@@ -47,6 +47,10 @@ span {
 
 #endRoundTable tr {
 	vertical-align: top;
+}
+
+.ui.inverted.menu #rightNav .item:before {
+	background: none;
 }
 
 /* RESPONSIVE TABLE CSS */

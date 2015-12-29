@@ -1,12 +1,42 @@
 <template name="nav">
-	<div class="ui inverted menu" id="mainNav">
+	<div class="ui inverted stackable menu" id="mainNav">
 		<div class="ui container">
-			<a href="#" id="brandHeader" class="header item">
+			<a href="{{getRoutePath 'home'}}" id="brandHeader" class="header item">
 			  Acrofever
 			</a>
-			<a href="{{getRoutePath 'home'}}" class="item {{#if isOnRoute 'home'}}active{{/if}}">Home</a>
-			<a href="{{getRoutePath 'play'}}" class="item {{#if isOnRoute 'play'}}active{{/if}}">Play</a>
-			<div class="item">{{> atNavButton}}</div>
+			<a href="{{getRoutePath 'play'}}" class="item {{#if isOnRoute 'play'}}active{{/if}}">
+				<i class="lightning icon"></i>
+				Play
+			</a>
+			<a href="{{getRoutePath 'halloffame'}}" class="item {{#if isOnRoute 'halloffame'}}active{{/if}}">
+				<i class="trophy icon"></i>
+				Hall of Fame
+			</a>
+			<a id="howToPlay" class="item">
+				<i class="question icon"></i>
+				How to Play
+			</a>
+			<div id="rightNav" class="right menu">
+				{{#if loggedInUser}}
+					{{#with loggedInUser}}
+						{{> userNavDropdown}}
+					{{/with}}
+				{{else}}
+					{{> atNavButton}}
+				{{/if}}
+			</div>
+		</div>
+	</div>
+</template>
+
+<template name="userNavDropdown">
+	<div class="ui dropdown item">
+		<img class="ui avatar image" src="{{profilePicture _id 30}}" style="margin-right:10px">
+		<span>{{username _id}}</span>
+		<i class="dropdown icon"></i>
+		<div class="menu">
+			<a id="profile" class="item">Profile</a>
+			<a id="signOut" class="item">Sign out</a>
 		</div>
 	</div>
 </template>

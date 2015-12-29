@@ -28,16 +28,12 @@ Template.lobbyRow.events({
 	}
 });
 
-// Template.lobbyRow.onCreated(function() {
-// 	var self = this;
-// 	self.ready = new ReactiveVar();
-// 	self.autorun(function() {
-// 		var players = [];
-// 		Lobbies.find().forEach(function(lobby) {
-// 			players = players.concat(lobby.players);
-// 		});
-// 		_.uniq(players);
-// 		var handle = Meteor.subscribe('otherPlayers', players);
-// 		self.ready.set(handle.ready());
-// 	});
-// });
+Template.lobbyRow.helpers({
+	noPlayers: function(players) {
+		return (players.length === 0);
+	}
+});
+
+Template.lobbyRow.onRendered(function() {
+	this.$('img').popup();
+});

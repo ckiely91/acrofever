@@ -18,14 +18,15 @@ Meteor.publish('lobbies', function() {
 		currentGame: true,
 		config: true,
 		newGameStarting: true,
-		endTime: true
+		endTime: true,
+		lastUpdated: true
 	}});
 });
 
 Meteor.publish('otherPlayers', function(playerIdList) {
 	return Meteor.users.find({_id: {$in: playerIdList}}, {fields: {
 		username: true,
-		avatar: true
+		profile: true
 	}});
 });
 

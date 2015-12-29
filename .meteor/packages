@@ -39,3 +39,10 @@ npm-container
 underscorestring:underscore.string
 lbee:moment-helpers
 underscore
+accounts-facebook
+service-configuration
+accounts-google
+accounts-twitter
+jparker:gravatar
+http
+olragon:uri-js

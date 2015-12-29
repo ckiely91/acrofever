@@ -49,7 +49,8 @@ Template.lobby.onCreated(function() {
 			var playerIds = currentLobby.players;
 			var game = Games.findOne(currentLobby.currentGame);
 			if (game) {
-				playerIds = playerIds.concat(_.keys(game.scores));
+				if (game.scores)
+					playerIds = playerIds.concat(_.keys(game.scores));
 				Meteor.subscribe('otherPlayers', playerIds);
 			}
 		}
@@ -69,7 +70,7 @@ Template.game.helpers({
 	},
 	lobbyPlayers: function(parentContext) {
 		var lobby = parentContext;
-		if (lobby.players.length > 0) {
+		if (lobby.players.length) {
 			return lobby.players;
 		} else {
 			return false;
