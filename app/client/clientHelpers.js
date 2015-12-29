@@ -38,7 +38,7 @@ Template.registerHelper('profilePicture', function(id, size) {
 
 	switch (type) {
 		case 'gravatar':
-			newUrl = URI(url).addSearch({ size: size, default: 'mm'}).toString();
+			newUrl = URI(url).addSearch({ size: size}).toString();
 			break;
 		case 'facebook':
 			newUrl = URI(url).addSearch({height: size, width: size}).toString();

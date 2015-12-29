@@ -24,6 +24,9 @@ Template.lobby.helpers({
 		var game = Games.findOne(this.currentGame);
 		if (game)
 			return game.currentRound;
+	},
+	timeFormat: function(milliseconds) {
+		return moment(milliseconds).format('m:ss');
 	}
 });
 

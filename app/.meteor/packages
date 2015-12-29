@@ -32,10 +32,6 @@ useraccounts:semantic-ui
 semantic:ui
 flemay:less-autoprefixer
 miktam:loggly
-meteorhacks:npm
-
-
-npm-container
 underscorestring:underscore.string
 lbee:moment-helpers
 underscore

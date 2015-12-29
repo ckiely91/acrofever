@@ -1,9 +1,9 @@
 <template name="lobby">
 	{{#if ready}}
 		{{#with lobby}}
-		<h2 class="ui header"><span class="gameTypeHeader">{{type}} :: </span>{{displayName}}</h2>
 		<div class="ui stackable grid">
 			<div class="five wide column">
+				<h2 class="ui header"><span class="gameTypeHeader">{{type}} :: </span>{{displayName}}</h2>
 				<div class="ui raised segments">
 					<div class="ui segment">
 						{{#if inLobby}}
@@ -26,8 +26,37 @@
 						</table>
 					</div>
 					<div class="ui segment">
-						<h3 class="ui header">Chat</h3>
-						{{> lobbyChat}}
+						<h3 class="ui header">Lobby settings</h3>
+						<table class="ui very basic unstackable table">
+							<tr>
+								<td>Acro phase time</td>
+								<td>{{timeFormat config.acronymTimeout}}</td>
+							</tr>
+							<tr>
+								<td>Voting phase time</td>
+								<td>{{timeFormat config.votingTimeout}}</td>
+							</tr>
+							<tr>
+								<td>Points for round winner</td>
+								<td>{{config.winnerPoints}}</td>
+							</tr>
+							<tr>
+								<td>Points for each vote received</td>
+								<td>{{config.votedPoints}}</td>
+							</tr>
+							<tr>
+								<td>Points for voting for winning Acro</td>
+								<td>{{config.votedForWinnerPoints}}</td>
+							</tr>
+							<tr>
+								<td>Points lost for submitting an Acro but not voting</td>
+								<td>-{{config.notVotedNegativePoints}}</td>
+							</tr>
+							<tr>
+								<td>Points needed to win</td>
+								<td>{{config.endGamePoints}}</td>
+							</tr>
+						</table>
 					</div>
 				</div>
 			</div>

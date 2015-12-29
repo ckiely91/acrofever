@@ -1,5 +1,4 @@
 GameManager = {};
-var performanceNow = Meteor.npmRequire('performance-now');
 
 GameManager.makeGameActive = function(gameId) {
 	//this function assumes that checks have already been made to ensure this game SHOULD go active

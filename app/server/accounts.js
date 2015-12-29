@@ -51,7 +51,7 @@ Accounts.onCreateUser(function(options, user) {
 		firstName = user.username;
 		lastName = '';
 		profilePicture.type = 'gravatar';
-		profilePicture.url = Gravatar.imageUrl(email, {secure: true});
+		profilePicture.url = Gravatar.imageUrl(email, {secure: true, default: 'mm'});
 	} else if (user.services.facebook) {
 		email = user.services.facebook.email;
 		firstName = user.services.facebook.first_name;
