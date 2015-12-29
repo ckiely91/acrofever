@@ -119,11 +119,9 @@ GameManager.startNewRound = function(lobbyId, setActive) {
 		var categoryTimeout = lobby.config.categoryTimeout,
 			setObj = {
 				currentPhase: 'category',
-				endTime: moment().add(categoryTimeout, 'milliseconds').toDate()
+				endTime: moment().add(categoryTimeout, 'milliseconds').toDate(),
+				active: true
 			};
-
-		if (setActive)
-			setObj.active = true;
 
 		// make sure all players have a score
 		_.each(players, function(playerId) {
@@ -131,14 +129,24 @@ GameManager.startNewRound = function(lobbyId, setActive) {
 				setObj['scores.' + playerId] = 0;
 		});
 
-		Games.update(lobby.currentGame, {$set: setObj, $push: {rounds: round}, $inc: {currentRound: 1}, $currentDate: {lastUpdated: true}});
+		// was the last round completed? If not, overwrite this round
+		var newRound = game.currentRound + 1;
+		if (game.currentRound < 1 || game.rounds[game.currentRound - 1].winner) {
+			Games.update(lobby.currentGame, {$set: setObj, $push: {rounds: round}, $inc: {currentRound: 1}, $currentDate: {lastUpdated: true}});	
+		} else {
+			setObj['rounds.' + (game.currentRound - 1)] = round;
+			newRound = game.currentRound;
+			console.log('setObj');
+			console.log(setObj);
+			Games.update(lobby.currentGame, {$set: setObj, $currentDate: {lastUpdated: true}});
+		}
 
 		Logger.info('New round started', {lobbyId: lobbyId, gameId: lobby.currentGame});
 		LobbyManager.addSystemMessage(lobbyId, 'New round started.');
 
 		Meteor.setTimeout(function() {
 			// Advance to acro phase
-			GameManager.advancePhase(lobby.currentGame, 'acrofever', 'category', game.currentRound + 1);
+			GameManager.advancePhase(lobby.currentGame, 'acrofever', 'category', newRound);
 		}, categoryTimeout);
 
 	} catch(err) {

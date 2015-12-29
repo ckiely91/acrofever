@@ -244,17 +244,19 @@ Template.acroRoundResultsRow.helpers({
 			accolades.push("Round winner");
 
 		// Fastest submitter
-		var thisTimeLeft = results.submission.timeLeft,
-			isFastest = true;
+		if (results.submission) {
+			var thisTimeLeft = results.submission.timeLeft,
+				isFastest = true;
 
-		for (playerId in round.players) {
-			if (playerId !== results.id && round.players[playerId].submission.timeLeft > thisTimeLeft) {
-				isFastest = false;
-				break;
+			for (playerId in round.players) {
+				if (playerId !== results.id && round.players[playerId].submission && round.players[playerId].submission.timeLeft > thisTimeLeft) {
+					isFastest = false;
+					break;
+				}
 			}
+			if (isFastest)
+				accolades.push("Fastest submitter");
 		}
-		if (isFastest)
-			accolades.push("Fastest submitter");
 
 		if (accolades.length > 0)
 			return accolades.join('<br>');
@@ -331,7 +333,7 @@ Template["acrofever-endgame"].helpers({
 
 			var avgTimeLeft = 0;
 			var submissions = 0;
-			var highestVotes = 0;
+			var highestVotes = 1;
 			var bestAcros = [];
 			_.each(game.rounds, function(round) {
 				if (round.players[playerId]) {

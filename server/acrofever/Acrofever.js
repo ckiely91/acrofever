@@ -77,6 +77,21 @@ Acrofever.goToVotingPhase = function(gameId) {
 
 	if (!game) return;
 
+	var submissions = 0;
+	_.each(game.rounds[game.currentRound - 1].players, function(player) {
+		if (player.submission)
+			submissions++;
+	});
+
+	if (submissions === 0) {
+		// nobody submitted an acro this round
+		// remove all players from lobby and set game inactive
+		Lobbies.update(game.lobbyId, {$set: {players: []}});
+		LobbyManager.addSystemMessage(game.lobbyId, 'No one submitted an Acro!', 'warning', 'All players have been removed from the lobby.');
+		GameManager.makeGameInactive(gameId);
+		return;
+	}
+
 	var lobby = Lobbies.findOne(game.lobbyId),
 		votingTimeout = lobby.config.votingTimeout;
 
@@ -151,17 +166,33 @@ function getWinnerAndAwardPoints(game) {
 	var lobby = Lobbies.findOne(game.lobbyId);
 
 	var round = game.rounds[game.currentRound - 1],
-		highestVotes = 0,
+		highestVotes = 1,
+		hasVoted = 0;
 		winners = [];
 
 	//Add to each player's votes for each one they received
 	_.each(round.players, function(player, playerId) {
-		var votedFor = player.vote;
-		if (votedFor) {
+		if (player.vote) {
+			hasVoted++;
 			round.players[player.vote].votes++;
-		} else if (player.submission) {
-			//player submitted an acro but didn't vote! dock 'em
-			player.notVotedNegativePoints = lobby.config.notVotedNegativePoints;
+		} else {
+			if (player.submission) {
+				//player submitted an acro but didn't vote! dock 'em
+				player.notVotedNegativePoints = lobby.config.notVotedNegativePoints;
+			} else {
+				//player didn't submit an acro and also didn't vote... how about last round?
+				var lastRound = game.rounds[game.currentRound - 2];
+
+				if (!lastRound)
+					return;
+				
+				var lastRoundPlayer = lastRound.players[playerId];
+				if (lastRoundPlayer && !lastRoundPlayer.vote && !lastRoundPlayer.submission) {
+					//Remove this player from the lobby, they're inactive
+					Lobbies.update(game.lobbyId, {$pull: {players: playerId}});
+					LobbyManager.addSystemMessage(game.lobbyId, displayname(playerId, true) + ' was removed for being inactive');
+				}
+			}
 		}
 	});
 
@@ -176,6 +207,14 @@ function getWinnerAndAwardPoints(game) {
 			winners.push({id: playerId, timeLeft: player.submission.timeLeft});
 		}
 	});
+
+	if (hasVoted === 0) {
+		// no one voted? fuck it all
+		Lobbies.update(game.lobbyId, {$set: {players: []}});
+		LobbyManager.addSystemMessage(game.lobbyId, 'No one voted!', 'warning', 'All players have been removed from the lobby.');
+		GameManager.makeGameInactive(game._id);
+		return;
+	}
 
 	//find the winner of this round
 	var winner;
@@ -195,10 +234,10 @@ function getWinnerAndAwardPoints(game) {
 		ultimateHighScore = 0,
 		endGamePoints = lobby.config.endGamePoints;
 	_.each(round.players, function(player, playerId) {
-		if (winner.id === playerId)
+		if (round.winner === playerId)
 			player.winnerPoints = lobby.config.winnerPoints;
 
-		if (winner.id === player.vote)
+		if (round.winner === player.vote)
 			player.votedForWinnerPoints = lobby.config.votedForWinnerPoints;
 
 		var score = player.votePoints + player.winnerPoints + player.votedForWinnerPoints - player.notVotedNegativePoints;
