@@ -1,8 +1,41 @@
 <template name="home">
-  <div class="container">
-    <div class="text-center">
-      <h1>Welcome to Acrofever!</h1>
-      
-    </div>
-  </div>
+	<div class="ui stackable grid">
+		<div class="sixteen wide center aligned column">
+			<h1 class="ui header">Welcome to Acrofever!</h1>
+			<div class="row">
+				<button class="big ui primary labeled icon button playNow" style="clear:both">
+					<i class="lightning icon"></i>
+					Play now
+				</button>
+				<a href="{{getRoutePath 'play'}}" class="big ui labeled icon button">
+					<i class="search icon"></i>
+					Find a lobby
+				</a>
+				<div class="ui hidden divider"></div>
+			</div>
+			<div class="row">
+				<a href="{{getRoutePath 'halloffame'}}" class="ui labeled icon button">
+					<i class="trophy icon"></i>
+					Hall of Fame
+				</a>
+				<button class="ui labeled icon button howToPlay">
+					<i class="question icon"></i>
+					Learn to play
+				</button>
+			</div>
+			<div class="ui hidden divider"></div>
+		</div>
+		<div class="eight wide column">
+			<div class="ui raised segment">
+				<h3 class="ui header">What is Acrofever?</h3>
+				<p>Acrofever is a fun, zany word game in which players create phrases from a randomly generated acronym, then vote for their favourites. The best Acro from each round will score points, and the most popular Acros from a whole game might be immortalised in the Hall of Fame!</p>
+			</div>
+		</div>
+		<div class="eight wide column">
+			<div class="ui raised segment">
+				<h3 class="ui header">Another thing</h3>
+				<p>Lorem ipsum</p>
+			</div>
+		</div>
+	</div>
 </template>

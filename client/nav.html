@@ -4,9 +4,13 @@
 			<a href="{{getRoutePath 'home'}}" id="brandHeader" class="header item">
 			  Acrofever
 			</a>
-			<a href="{{getRoutePath 'play'}}" class="item {{#if isOnRoute 'play'}}active{{/if}}">
+			<a href="#" class="item playNow">
 				<i class="lightning icon"></i>
-				Play
+				Play now
+			</a>
+			<a href="{{getRoutePath 'play'}}" class="item {{#if isOnRoute 'play'}}active{{/if}}">
+				<i class="search icon"></i>
+				Find a lobby
 			</a>
 			<a href="{{getRoutePath 'halloffame'}}" class="item {{#if isOnRoute 'halloffame'}}active{{/if}}">
 				<i class="trophy icon"></i>

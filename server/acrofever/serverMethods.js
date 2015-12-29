@@ -78,6 +78,52 @@ Meteor.methods({
 				votes: userId
 			}
 		});
+	},
+	findPlayNowLobbyId: function() {
+		var userId = Meteor.userId(),
+			lobbies = Lobbies.find({official: true}, {fields: { players: true }});
+
+		if (userId) {
+			// if they're already in a lobby, throw them in one
+			var inLobby;
+			lobbies.forEach(function(lobby) {
+				if (lobby.players.indexOf(userId) > - 1)
+					inLobby = lobby._id;
+			});
+			if (inLobby)
+				return inLobby;
+		}
+
+		// find the lobby with the most players
+		var lobbyId,
+			inLobby,
+			allLobbies = [],
+			lobbiesWithPlayers = [],
+			mostPlayers = 1;
+
+		// if they're already in a lobby, throw them in one
+		lobbies.forEach(function(lobby) {
+			allLobbies.push(lobby._id);
+			if (userId && lobby.players.indexOf(userId) > - 1)
+				inLobby = lobby._id;
+
+			if (lobby.players.length === mostPlayers) {
+				lobbiesWithPlayers.push(lobby._id);
+			} else if (lobby.players.length > mostPlayers) {
+				lobbiesWithPlayers = [lobby._id];
+			}
+		});
+
+		if (inLobby)
+			return inLobby;
+
+		if (lobbiesWithPlayers.length === 1) {
+			return lobbiesWithPlayers[0];
+		} else if (lobbiesWithPlayers.length > 1) {
+			return _.sample(lobbiesWithPlayers);
+		}
+
+		return _.sample(allLobbies);
 	}
 });
 

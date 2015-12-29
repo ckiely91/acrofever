@@ -12,6 +12,22 @@ Template.nav.events({
 	'click #howToPlay': function(evt) {
 		evt.preventDefault();
 		$('#howToPlayModal').modal('show');
+	},
+	'click .playNow': function(evt) {
+		evt.preventDefault();
+		
+		if (FlowRouter.getRouteName() === 'lobby')
+			return;
+
+		var dimmer = $('.ui.page.dimmer');
+		dimmer.dimmer('show');
+		Meteor.call('findPlayNowLobbyId', function(err, res) {
+			dimmer.dimmer('hide');
+			if (err)
+				console.log(err);
+			else
+				FlowRouter.go(FlowRouter.path('lobby', {lobbyId: res}));
+		});
 	}
 });
 
