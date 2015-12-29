@@ -146,21 +146,26 @@
 <template name="acroEndRound">
 	<h3 class="ui center aligned header">Round results</h3>
 	<div class="ui basic segment">
-		<table class="ui very basic celled table">
-			<thead>
-				<tr>
-					<th>Player</th>
-					<th>Acro</th>
-					<th>Votes</th>
-					<th>Points</th>
-				</tr>
-			</thead>
-			<tbody>
-				{{#each roundResults}}
-					{{> acroRoundResultsRow}}
-				{{/each}}
-			</tbody>
-		</table>
+		<div class="scrollTable-outer">
+			<div class="scrollTable-fade"></div>
+			<div class="scrollTable">
+				<table class="ui very basic celled unstackable table" style="min-width:500px">
+					<thead>
+						<tr>
+							<th>Player</th>
+							<th>Acro</th>
+							<th>Votes</th>
+							<th>Points</th>
+						</tr>
+					</thead>
+					<tbody>
+						{{#each roundResults}}
+							{{> acroRoundResultsRow}}
+						{{/each}}
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -193,25 +198,25 @@
 
 		<h3 class="ui center aligned header">Game results</h3>
 		<div class="ui basic segment">
-			<table class="ui very basic celled table">
-				<thead>
-					<tr>
-						<th>Player</th>
-						<th>Total votes</th>
-						<th>Total points</th>
-						<th>Most popular Acro</th>
-					</tr>
-				</thead>
-				<tbody>
-					{{#each gameResults}}
-						{{> acroGameResultsRow}}
-					{{/each}}
-				</tbody>
-			</table>
+			<div class="scrollTable-outer">
+				<div class="scrollTable-fade"></div>
+				<div class="scrollTable">
+					<table class="ui very basic celled unstackable table" id="endRoundTable" style="min-width:500px">
+						<thead>
+							<tr>
+								<th>Player</th>
+								<th>Best Acro</th>
+							</tr>
+						</thead>
+						<tbody>
+							{{#each gameResults}}
+								{{> acroGameResultsRow}}
+							{{/each}}
+						</tbody>
+					</table>
+				</div>
+			</div>
 		</div>
-
-		<div class="ui hidden divider"></div>
-
 	{{/with}}
 </template>
 
@@ -221,15 +226,45 @@
 			<h4 class="ui image header">
 				<img src="https://placehold.it/200x200" class="ui mini rounded image">
 				<div class="content">
+					{{#if winner}}<i class="star icon noRightMargin"></i> {{/if}}
+					{{#if isThisUser id}}<i class="user icon noRightMargin"></i> {{/if}}
 					{{username id true}}
 					{{#if accolades}}<div class="sub header">{{{accolades}}}</div>{{/if}}
 				</div>
 			</h4>
+			<div class="clear"></div>
+			<div class="ui mini grey statistic">
+				<div class="value">{{totalVotes}}</div>
+				<div class="label">Votes</div>
+			</div>
+			<div class="ui mini grey statistic">
+				<div class="value">{{score}}</div>
+				<div class="label">Score</div>
+			</div>
 		</td>
-		<td>{{totalVotes}}</td>
-		<td>{{totalPoints}}</td>
-		<td>Popular acro</td>
+		<td>
+			{{#each bestAcros}}
+				{{> bestAcroCard}}
+			{{/each}}
+		</td>
 	</tr>
+</template>
+
+<template name="bestAcroCard">
+	<div class="ui fluid card acroCard">
+		<div class="content">
+			{{#unless isOwnAcro}}<a class="ui right corner {{#if hasVotedForHallOfFame}}green{{else}}yellow{{/if}} label hasPopup voteForHallOfFame" href="#" data-content="Vote to add this to the Hall of Fame" data-variation="tiny">
+				<i class="trophy icon"></i>
+			</a>{{/unless}}
+			<div class="header">
+				{{joinAcro acronym}}
+			</div>
+		</div>
+		<div class="content">
+			<div class="meta">{{category}}</div>
+			<div class="description hasPopup" data-content="{{votes}} votes" data-variation="mini">{{acro}}</div>
+		</div>
+	</div>
 </template>
 
 <!-- ENDGAME PHASE END -->

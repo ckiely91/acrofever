@@ -106,30 +106,7 @@ Acrofever.goToEndRoundPhase = function(gameId) {
 	var game = ensureCorrectPhase(gameId, 'voting');
 	if (!game) return;
 
-	var isWinner = getWinnerAndAwardPoints(game);
-
-	/*if (isWinner) {
-		//go to end game
-	} else {
-		//determine if there are still enough active players to start a new round
-		var lobby = Lobbies.findOne(game.lobbyId),
-			players = lobby.players,
-			timeout = lobby.config.endOfRoundTimeout;
-
-		Games.update(gameId, {$set: {
-			currentPhase: 'endround',
-			endTime: moment().add(timeout, 'milliseconds').toDate()
-		}});
-
-		if (players.length < Meteor.settings.acrofever.minimumPlayers) {
-			GameManager.makeGameInactive(gameId);
-			return;
-		}
-
-		Meteor.setTimeout(function() {
-			GameManager.startNewRound(gameId);
-		}, timeout);
-	}*/
+	getWinnerAndAwardPoints(game);
 }
 
 

@@ -38,3 +38,4 @@ meteorhacks:npm
 npm-container
 underscorestring:underscore.string
 lbee:moment-helpers
+underscore

@@ -47,6 +47,37 @@ Meteor.methods({
 			console.log("Everyone has submitted");
 			GameManager.advancePhase(gameId, 'acrofever', 'acro', game.currentRound);
 		}
+	},
+	voteForHallOfFame: function(gameId, data) {
+		var userId = Meteor.userId();
+		if (!userId)
+			throw new Meteor.Error('no-permission', 'You must be logged in to do that');
+
+		if (userId === data.id)
+			throw new Meteor.Error('no-permission', 'You can\'t vote for your own acro');
+
+		var game = Games.findOne(gameId, {fields: {
+			scores: true
+		}});
+
+		if (!game || !game.scores[data.id])
+			return;
+
+		var created = new Date();
+
+		HallOfFame.upsert({gameId: gameId, userId: data.id, acro: data.acro, acronym: data.acronym}, {
+			$setOnInsert: {
+				gameId: gameId,
+				userId: data.id,
+				acronym: data.acronym,
+				acro: data.acro,
+				active: false,
+				created: created	
+			},
+			$addToSet: {
+				votes: userId
+			}
+		});
 	}
 });
 

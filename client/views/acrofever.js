@@ -199,6 +199,34 @@ Template.acroEndRound.helpers({
 	}
 });
 
+Template.acroEndRound.onRendered(function() {
+	//All this just to implement that cool little fade on the scrollTable
+	
+	var scrollTableOuter = this.$('.scrollTable-outer');
+		scrollTable = scrollTableOuter.find('.scrollTable');
+
+	scrollTable.scroll(function() {
+		var scrollLeft = scrollTable.scrollLeft();
+		var tableWidth = scrollTable.find('table').width();
+		var divWidth = scrollTable.width();
+		scrollTableOuter.find('.scrollTable-fade').css({
+	        'opacity': (1 - (scrollLeft / (tableWidth - divWidth)))
+	    });
+	});
+
+	this.autorun(function() {
+		// this should run after the child templates have been rerendered
+		Tracker.afterFlush(function() {
+			if (scrollTable.prop('scrollWidth') <= scrollTable.width()) {
+				console.log('element is not overflowing');
+				scrollTableOuter.find('.scrollTable-fade').css({
+			        'opacity': 0
+			    });
+			}
+		});
+	});
+});
+
 Template.acroRoundResultsRow.helpers({
 	totalPoints: function() {
 		var results = this;
@@ -292,20 +320,152 @@ Template["acrofever-endgame"].helpers({
 		var game = this;
 		var array = [];
 		_.each(game.scores, function(score, playerId) {
-			if (playerId !== Meteor.userId()) {
-				array.push({
-					id: playerId,
-					score: score
-				});
+			var obj = {
+				id: playerId,
+				score: score,
+				totalVotes: 0
+			};
+
+			if (playerId === game.gameWinner)
+				obj.winner = true;
+
+			var avgTimeLeft = 0;
+			var submissions = 0;
+			var highestVotes = 0;
+			var bestAcros = [];
+			_.each(game.rounds, function(round) {
+				if (round.players[playerId]) {
+					var player = round.players[playerId];
+					obj.totalVotes += player.votes;
+					if (player.votes > highestVotes) {
+						bestAcros = [{
+							id: playerId,
+							acro: player.submission.acro,
+							category: round.category,
+							acronym: round.acronym,
+							votes: player.votes
+						}];
+						highestVotes = player.votes;
+					} else if (player.votes === highestVotes) {
+						bestAcros.push({
+							id: playerId,
+							acro: player.submission.acro,
+							category: round.category,
+							acronym: round.acronym,
+							votes: player.votes
+						});
+					}
+
+					if (player.submission) {
+						avgTimeLeft += player.submission.timeLeft;
+						submissions++;
+					}
+				}
+			});
+
+			obj.bestAcros = bestAcros;
+
+			if (submissions !== 0)
+				obj.avgTimeLeft = avgTimeLeft / submissions;
+
+			array.push(obj);
+		});
+
+		var fastestSubmitter,
+			fastestTime = 0;
+
+		_.each(array, function(player) {
+			if (player.avgTimeLeft > fastestTime) {
+				fastestSubmitter = player.id;
+				fastestTime = player.avgTimeLeft;
 			}
 		});
+
+		for (var i = array.length - 1; i >= 0; i--) {
+			if (array[i].id === fastestSubmitter) {
+				array[i].fastestSubmitter = true;
+				break;
+			}
+		};
+
 		array = array.sort(function(a, b) {
 			return b.score - a.score;
 		});
-		array.unshift({
-			id: Meteor.userId(),
-			score: game.scores[Meteor.userId()]
-		});
+
 		return array;
 	}
+});
+
+Template["acrofever-endgame"].onRendered(function() {
+	//All this just to implement that cool little fade on the scrollTable
+	
+	var scrollTableOuter = this.$('.scrollTable-outer');
+		scrollTable = scrollTableOuter.find('.scrollTable');
+
+	scrollTable.scroll(function() {
+		var scrollLeft = scrollTable.scrollLeft();
+		var tableWidth = scrollTable.find('table').width();
+		var divWidth = scrollTable.width();
+		scrollTableOuter.find('.scrollTable-fade').css({
+	        'opacity': (1 - (scrollLeft / (tableWidth - divWidth)))
+	    });
+	});
+
+	this.autorun(function() {
+		// this should run after the child templates have been rerendered
+		Tracker.afterFlush(function() {
+			if (scrollTable.prop('scrollWidth') <= scrollTable.width()) {
+				scrollTableOuter.find('.scrollTable-fade').css({
+			        'opacity': 0
+			    });
+			}
+		});
+	});
+});
+
+Template.acroGameResultsRow.helpers({
+	accolades: function() {
+		var accolades = [];
+
+		if (this.winner)
+			accolades.push("Game winner");
+
+		if (this.fastestSubmitter)
+			accolades.push("Fastest average time");
+		
+		return accolades.join('<br>');
+	}
+});
+
+Template.bestAcroCard.helpers({
+	hasVotedForHallOfFame: function() {
+		return Template.instance().hasVotedForHallOfFame.get();
+	},
+	isOwnAcro: function() {
+		return (this.id === Meteor.userId());
+	}
+});
+
+Template.bestAcroCard.events({
+	'click .voteForHallOfFame': function(evt, template) {
+		evt.preventDefault();
+
+		if (template.hasVotedForHallOfFame.get())
+			return;
+
+		template.hasVotedForHallOfFame.set(true);
+
+		var gameId = Lobbies.findOne(FlowRouter.getParam('lobbyId')).currentGame;
+		console.log(template.data);
+		Meteor.call('voteForHallOfFame', gameId, template.data);
+	}
+});
+
+Template.bestAcroCard.onCreated(function() {
+	var self = this;
+	self.hasVotedForHallOfFame = new ReactiveVar();
+});
+
+Template.bestAcroCard.onRendered(function() {
+	this.$('.hasPopup').popup();
 });

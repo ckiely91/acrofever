@@ -23,6 +23,10 @@ Template.registerHelper("username", function(id, capitalise) {
   return displayname(id, capitalise);
 });
 
+Template.registerHelper("isThisUser", function(id) {
+	return (id === Meteor.userId());
+});
+
 Template.registerHelper("friendlytime", function(time) {
   return moment(time).fromNow();
 });
@@ -40,6 +44,10 @@ Template.registerHelper('currentAcro', function() {
 	var game = Games.findOne(lobby.currentGame);
 	var round = getCurrentRound(game);
 	var acro = round.acronym;
+	return acro.join('. ');
+});
+
+Template.registerHelper('joinAcro', function(acro) {
 	return acro.join('. ');
 });
 
