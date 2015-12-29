@@ -187,7 +187,8 @@ function getWinnerAndAwardPoints(game) {
 	}
 
 	round.winner = winner.id;
-	console.log("Winner is " + round.winner);
+
+	LobbyManager.addSystemMessage(game.lobbyId, displayname(round.winner, true) + ' won the round!', 'empty star');
 
 	//give points to people for voting for the winner (and give the winner points too)
 	var ultimateWinners = [],
@@ -258,7 +259,8 @@ function goToEndGame(gameId, winners) {
 		3. If still tied, go home, it's all over
 	*/
 	var game = Games.findOne(gameId),
-		winner;
+		winner,
+		tiebreakText;
 
 	winners = winners.map(function(thisWinner) {
 		return thisWinner.id;
@@ -288,6 +290,7 @@ function goToEndGame(gameId, winners) {
 		if (newWinners.length === 1) {
 			//winner found by first tiebreak
 			winner = newWinners[0];
+			tiebreakText = 'Tie was broken based on the number of votes received.';
 		} else {
 			//2. If still tied, go through and find the average time they took to submit acros, fastest one wins
 			var newNewWinners = [], // I know, I know
@@ -317,7 +320,8 @@ function goToEndGame(gameId, winners) {
 
 			if (newNewWinners.length === 1) {
 				//winner found by second tiebreak
-				winners = newNewWinners[0];
+				winner = newNewWinners[0];
+				tiebreakText = 'We tried to break the tie by the total votes received, but it was still tied! So the player with the fastest average time won.';
 			} else {
 				// either go buy a lottery ticket right now, or something fucked up
 				winner = _.sample(newNewWinners);
@@ -341,6 +345,8 @@ function goToEndGame(gameId, winners) {
 		endTime: endTime,
 		gameWinner: winner
 	}, $currentDate: {lastUpdated: true}});
+
+	LobbyManager.addSystemMessage(game.lobbyId, displayname(winner, true) + ' won the game!', 'star', tiebreakText);
 
 	Meteor.setTimeout(function() {
 		lobby = Lobbies.findOne(game.lobbyId);

@@ -39,6 +39,7 @@ GameManager.makeGameInactive = function(gameId) {
 	var activeTimeout = moment().add(Meteor.settings.gameActiveTimeout, 'milliseconds').toDate();
 
 	Games.update(gameId, {$set: {activeTimeout: activeTimeout, active: false}});
+	LobbyManager.addSystemMessage(game.lobbyId, 'This game is now inactive.', 'warning', 'It will resume when there are enough players.');
 }
 
 GameManager.startNewGame = function(lobbyId, type) {
@@ -70,6 +71,8 @@ GameManager.startNewGame = function(lobbyId, type) {
 		Logger.info('New game started', {lobbyId: lobbyId, gameId: gameId});
 
 		Lobbies.update(lobbyId, {$push: {games: gameId}, $set: {currentGame: gameId}, $currentDate: {lastUpdated: true}});
+		LobbyManager.addSystemMessage(lobbyId, 'New game started.');
+
 		GameManager.startNewRound(lobbyId);
 
 	} catch(err) {
@@ -131,6 +134,7 @@ GameManager.startNewRound = function(lobbyId, setActive) {
 		Games.update(lobby.currentGame, {$set: setObj, $push: {rounds: round}, $inc: {currentRound: 1}, $currentDate: {lastUpdated: true}});
 
 		Logger.info('New round started', {lobbyId: lobbyId, gameId: lobby.currentGame});
+		LobbyManager.addSystemMessage(lobbyId, 'New round started.');
 
 		Meteor.setTimeout(function() {
 			// Advance to acro phase

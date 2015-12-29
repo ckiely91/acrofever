@@ -11,6 +11,7 @@ Meteor.methods({
 		if (join) {
 			//user is joining the lobby
 			Lobbies.update(lobbyId, {$addToSet: {players: userId}});
+			LobbyManager.addSystemMessage(lobbyId, displayname(userId, true) + ' joined the lobby.');
 
 			//refresh lobby
 			lobby = Lobbies.findOne(lobbyId);
@@ -25,6 +26,7 @@ Meteor.methods({
 		} else {
 			//user is leaving the lobby
 			Lobbies.update(lobbyId, {$pull: {players: userId}});
+			LobbyManager.addSystemMessage(lobbyId, displayname(userId, true) + ' left the lobby.');
 
 			//lobby should only be made inactive at the end of the round
 		}
