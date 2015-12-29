@@ -16,7 +16,9 @@ Meteor.publish('lobbies', function() {
 		official: true,
 		type: true,
 		currentGame: true,
-		config: true
+		config: true,
+		newGameStarting: true,
+		endTime: true
 	}});
 });
 

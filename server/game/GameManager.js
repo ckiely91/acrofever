@@ -14,11 +14,21 @@ GameManager.makeGameActive = function(gameId) {
 	}
 
 	//check if the time has passed the game's activeTimeout. If so, create a new game.
-	var activeTimeout = game.activeTimeout;
 
-	if (game.currentPhase === "endgame" || !activeTimeout || moment().isAfter(activeTimeout)) {
+	if (game.currentPhase === "endgame" || !game.activeTimeout || moment().isAfter(game.activeTimeout)) {
 		//create a new game!!
-		GameManager.startNewGame(game.lobbyId);
+		var delay = Meteor.settings.acrofever.newGameDelay;
+		var endTime = moment().add(delay, 'milliseconds').toDate();
+		
+		Lobbies.update(game.lobbyId, {$set: {newGameStarting: true, endTime: endTime}});
+
+		Meteor.setTimeout(function() {
+			var lobby = Lobbies.findOne(game.lobbyId, {fields: {players: true}});
+			if (lobby.players.length >= Meteor.settings.acrofever.minimumPlayers)
+				GameManager.startNewGame(game.lobbyId);
+			else
+				Lobbies.update(game.lobbyId, {$set: {newGameStarting: false}});
+		}, delay);
 	} else {
 		//reactivate this game in a new round
 		GameManager.startNewRound(game.lobbyId, true);
@@ -69,8 +79,9 @@ GameManager.startNewGame = function(lobbyId, type) {
 		var gameId = Games.insert(newGame);
 
 		Logger.info('New game started', {lobbyId: lobbyId, gameId: gameId});
+		console.log('New game started');
 
-		Lobbies.update(lobbyId, {$push: {games: gameId}, $set: {currentGame: gameId}, $currentDate: {lastUpdated: true}});
+		Lobbies.update(lobbyId, {$push: {games: gameId}, $set: {currentGame: gameId, newGameStarting: false}, $currentDate: {lastUpdated: true}});
 		LobbyManager.addSystemMessage(lobbyId, 'New game started.');
 
 		GameManager.startNewRound(lobbyId);

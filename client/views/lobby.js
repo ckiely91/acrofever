@@ -66,6 +66,26 @@ Template.game.helpers({
 	},
 	gamePhase: function(game) {
 		return game.type + '-' + game.currentPhase;
+	},
+	lobbyPlayers: function(parentContext) {
+		var lobby = parentContext;
+		if (lobby.players.length > 0) {
+			return lobby.players;
+		} else {
+			return false;
+		}
+	},
+	newGameStarting: function(parentContext) {
+		var lobby = parentContext;
+		return lobby.newGameStarting;
+	},
+	newGameCountdown: function(parentContext) {
+		var endTime = parentContext.endTime;
+		var diff = moment(endTime).diff(mo.now.get());
+		if (diff >= 0)
+			return moment(diff).format('m:ss');
+		else
+			return '0:00';
 	}
 });
 
