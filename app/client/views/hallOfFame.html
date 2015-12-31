@@ -1,3 +1,54 @@
 <template name="hallOfFame">
-	<h2 class="ui header"><i class="trophy icon"></i> Hall of Fame</h2>
+	<h2 class="ui header"><i class="trophy icon"></i> 
+		<div class="content">
+			Hall of Fame
+			<div class="sub header">The crème de la crème.</div>
+		</div>
+	</h2>
+	<p>At the end of a game of Acrofever, players vote on their overall favourite acro from the game to be added to the Hall of Fame.<br>
+	You too could be immortalised on the Hall of Fame one day, so <a href="{{getRoutePath 'play'}}">get playing</a>!</p>
+	<div class="ui cards">
+		{{#each hallOfFameAcros}}
+			{{> hallOfFameAcroCard}}
+		{{/each}}
+	</div>
+	<div class="ui hidden divider"></div>
+	{{#if hasNotReachedLimit hallOfFameAcros}}
+		<button class="ui labeled icon {{#unless ready}}loading{{/unless}} button" id="getMore">
+			<i class="plus icon"></i>
+			Get more
+		</button>
+	{{/if}}
 </template>
+
+<template name="hallOfFameAcroCard">
+	<div class="ui card">
+		<div class="content">
+			<div class="header">{{joinAcro acronym}}</div>
+			<div class="meta">{{category}}</div>
+			<div class="description">{{acro}}</div>
+		</div>
+		<div class="content">
+			<img class="right floated circular mini ui image" src="{{profilePicture userId 35}}">
+			<div class="header">{{username userId}}</div>
+			<div class="meta">{{moCalendar created}}</div>
+		</div>
+	</div>
+</template>
+
+
+<!--
+<div class="ui fluid card acroCard">
+	<div class="content">
+		{{#unless isOwnAcro}}<a class="ui right corner {{#if hasVotedForHallOfFame}}green{{else}}yellow{{/if}} label hasPopup voteForHallOfFame" href="#" data-content="Vote to add this to the Hall of Fame" data-variation="tiny">
+			<i class="trophy icon"></i>
+		</a>{{/unless}}
+		<div class="header">
+			{{joinAcro acronym}}
+		</div>
+	</div>
+	<div class="content">
+		<div class="meta">{{category}}</div>
+		<div class="description hasPopup" data-content="{{votes}} votes" data-variation="mini">{{acro}}</div>
+	</div>
+</div>-->

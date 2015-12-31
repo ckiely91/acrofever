@@ -14,5 +14,6 @@ Meteor.methods({
         };
 
         LobbyChat.insert(chat);
+        Lobbies.findOne(lobbyId, {$currentDate: {lastUpdated: true}});
 	}
 });

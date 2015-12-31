@@ -19,14 +19,14 @@ GameManager.makeGameActive = function(gameId) {
 		var delay = Meteor.settings.acrofever.newGameDelay;
 		var endTime = moment().add(delay, 'milliseconds').toDate();
 		
-		Lobbies.update(game.lobbyId, {$set: {newGameStarting: true, endTime: endTime}});
+		Lobbies.update(game.lobbyId, {$set: {newGameStarting: true, endTime: endTime}, $currentDate: {lastUpdated: true}});
 
 		Meteor.setTimeout(function() {
 			var lobby = Lobbies.findOne(game.lobbyId, {fields: {players: true}});
 			if (lobby.players.length >= Meteor.settings.acrofever.minimumPlayers)
 				GameManager.startNewGame(game.lobbyId);
 			else
-				Lobbies.update(game.lobbyId, {$set: {newGameStarting: false}});
+				Lobbies.update(game.lobbyId, {$set: {newGameStarting: false}, $currentDate: {lastUpdated: true}});
 		}, delay);
 	} else {
 		//reactivate this game in a new round
@@ -171,6 +171,7 @@ GameManager.startNewRound = function(lobbyId, setActive) {
 
 GameManager.advancePhase = function(gameId, type, currentPhase, currentRound, category) {
 	var game = Games.findOne(gameId, {fields: {
+		lobbyId: true,
 		currentPhase: true,
 		currentRound: true
 	}});
@@ -205,4 +206,6 @@ GameManager.advancePhase = function(gameId, type, currentPhase, currentRound, ca
 			//Future game types
 			console.error('Only acrofever game type is implemented yet');
 	}
+
+	Lobbies.update(game.lobbyId, {$currentDate: {lastUpdated: true}});
 }

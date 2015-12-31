@@ -1,0 +1,52 @@
+<template name="adminMain">
+	{{#if isAdminUser}}
+		{{> Template.dynamic template=subTemplate}}
+	{{else}}
+		You don't have permission to access this page
+	{{/if}}
+</template>
+
+<template name="adminHome">
+	<a href="{{getRoutePath 'adminHallOfFame'}}" class="ui button">Approve Hall of Fame</a>
+</template>
+
+<template name="adminHallOfFame">
+	<a href="{{getRoutePath 'adminHome'}}" class="ui labeled icon button"><i class="arrow left icon"></i> Back</a>
+	<h2 class="ui header">Approve Hall of Fame entries</h2>
+	<table class="ui table">
+		<thead>
+			<tr>
+				<th>Created</th>
+				<th>User</th>
+				<th>Acronym</th>
+				<th>Category</th>
+				<th>Acro</th>
+				<th>Votes</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			{{#each hallOfFame}}
+				{{> adminHallOfFameRow}}
+			{{/each}}
+		</tbody>
+	</table>
+</template>
+
+<template name="adminHallOfFameRow">
+	<tr>
+		<td>{{moFormat created 'MMMM Do YYYY, h:mm:ss a'}}</td>
+		<td>{{username userId}}<br>{{userId}}</td>
+		<td>{{joinAcro acronym}}</td>
+		<td>{{category}}</td>
+		<td>{{acro}}</td>
+		<td>{{arrayLength votes}}</td>
+		<td>
+			{{#if active}}
+				<i class="check icon"></i> <a href="#" class="makeInactive">Deactivate</a>
+			{{else}}
+				<a href="#" class="makeActive">Activate</a><br><br><a href="#" class="delete">Delete</a>
+			{{/if}}
+		</td>
+	</tr>
+</template>

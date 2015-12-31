@@ -26,7 +26,7 @@ lobbyRoutes.route('/:lobbyId', {
   triggersEnter: [AccountsTemplates.ensureSignedIn],
 	action: function() {
 		BlazeLayout.render('masterLayout', { 
-      main: 'lobby' 
+      main: 'lobby'
     });
 	}
 });
@@ -36,6 +36,32 @@ FlowRouter.route('/halloffame', {
   action: function() {
     BlazeLayout.render('masterLayout', {
       main: 'hallOfFame'
+    });
+  }
+});
+
+var adminRoutes = FlowRouter.group({
+  prefix: '/admin',
+  name: 'admin',
+  triggersEnter: [AccountsTemplates.ensureSignedIn]
+});
+
+adminRoutes.route('/', {
+  name: 'adminHome',
+  action: function() {
+    BlazeLayout.render('masterLayout', {
+      main: 'adminMain',
+      subTemplate: 'adminHome'
+    });
+  }
+});
+
+adminRoutes.route('/halloffame', {
+  name: 'adminHallOfFame',
+  action: function() {
+    BlazeLayout.render('masterLayout', {
+      main: 'adminMain',
+      subTemplate: 'adminHallOfFame'
     });
   }
 });

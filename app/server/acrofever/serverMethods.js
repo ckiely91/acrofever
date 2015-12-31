@@ -70,6 +70,7 @@ Meteor.methods({
 				gameId: gameId,
 				userId: data.id,
 				acronym: data.acronym,
+				category: data.category,
 				acro: data.acro,
 				active: false,
 				created: created	

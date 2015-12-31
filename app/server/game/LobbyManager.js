@@ -15,4 +15,5 @@ LobbyManager.addSystemMessage = function(lobbyId, title, icon, message) {
 		setObj.message = message;
 
 	LobbyChat.insert(setObj);
+	Lobbies.update(lobbyId, {$currentDate: {lastUpdated: true}});
 }
