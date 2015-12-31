@@ -93,6 +93,7 @@ simple:reactive-method@1.0.2
 softwarerero:accounts-t9n@1.2.0
 spacebars@1.0.7
 spacebars-compiler@1.0.7
+spiderable@1.0.9
 srp@1.0.4
 standard-minifiers@1.0.2
 templating@1.1.5
