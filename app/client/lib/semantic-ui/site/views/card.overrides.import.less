@@ -1,11 +1,19 @@
 /*******************************
     User Variable Overrides
 *******************************/
-.ui.card.acroCard {
-	width: 99%;
-	max-width: 300px;
-	overflow: hidden;
-	a i {
-		cursor: pointer !important;
+.ui.card, .ui.cards .card {
+	.content {
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	
+	&.acroCard {
+		width: 99%;
+		max-width: 300px;
+		overflow: hidden;
+		a i {
+			cursor: pointer !important;
+		}
 	}
 }

@@ -2,8 +2,8 @@ Template.lobby.helpers({
 	ready: function() {
 		return lobbySubs.ready();
 	},
-	scores: function(lobby) {
-		var game = Games.findOne(lobby.currentGame);
+	scores: function() {
+		var game = Games.findOne(this.currentGame);
 		if (game) {
 			var array = [];
 			_.each(game.scores, function(score, userId) {
@@ -12,18 +12,23 @@ Template.lobby.helpers({
 					score: score
 				});
 			});
-			return array.sort(function(a, b) {
+			array = array.sort(function(a, b) {
 				return b.score - a.score;
 			});
+			if (array.length > 0)
+				return array;
 		}
+		return false;
 	},
 	inLobby: function() {
 		return (this.players && this.players.indexOf(Meteor.userId()) > -1);
 	},
 	currentRound: function() {
 		var game = Games.findOne(this.currentGame);
-		if (game)
+		if (game && game.currentRound > 0)
 			return game.currentRound;
+		else
+			return false;
 	},
 	timeFormat: function(milliseconds) {
 		return moment(milliseconds).format('m:ss');

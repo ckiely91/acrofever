@@ -29,9 +29,15 @@
 			<div class="description">{{acro}}</div>
 		</div>
 		<div class="content">
-			<img class="right floated circular mini ui image" src="{{profilePicture userId 35}}">
-			<div class="header">{{username userId}}</div>
-			<div class="meta">{{moCalendar created}}</div>
+			<div class="ui list">
+				<div class="item">
+					<img class="ui avatar image" src="{{profilePicture userId 35}}">
+					<div class="content">
+						<div class="header">{{username userId}}</div>
+						<div class="description">{{moCalendar created}}</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
