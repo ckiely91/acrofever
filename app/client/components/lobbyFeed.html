@@ -2,7 +2,11 @@
     {{#each events}}
         <div class="event">
             <div class="label">
-                <img src="http://i.imgur.com/Us2EXSx.jpg">
+                {{#if user}}
+                    <img src="{{profilePicture user 25}}">
+                {{else}}
+                    <i class="{{icon}} icon"></i>
+                {{/if}}
             </div>
             <div class="content">
                 <div class="summary">
@@ -17,4 +21,10 @@
             </div>
         </div>
     {{/each}}
+    {{#if hasNotReachedLimit}}
+        <button class="ui labeled icon {{#unless ready}}loading{{/unless}} button" id="getMore">
+            <i class="plus icon"></i>
+            Get more
+        </button>
+    {{/if}}
 </template>
