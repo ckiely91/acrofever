@@ -2,11 +2,22 @@ Meteor.publish('globalChat', function() {
 	return GlobalChat.find({}, {sort: {created: -1}, limit: 100});
 });
 
-Meteor.publish('lobbyFeed', function(lobbyId) {
+Meteor.publish('lobbyFeed', function(lobbyId, limit) {
+	var MAX_FEED_RESULTS = 200;
+
 	if (!this.userId)
 		return [];
 
-	return LobbyFeed.find({lobbyId: lobbyId}, {sort: {created: -1}, limit: 50});
+
+	if (limit > MAX_FEED_RESULTS)
+		limit = MAX_FEED_RESULTS;
+
+	return LobbyFeed.find({lobbyId: lobbyId}, 
+		{sort: {
+			timestamp: -1
+		}, 
+		limit: limit
+	});
 });
 
 Meteor.publish('lobbies', function() {
