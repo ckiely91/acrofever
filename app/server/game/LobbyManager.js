@@ -12,4 +12,5 @@ LobbyManager.addLobbyFeedSystemMessage = function(lobbyId, summary, icon, messag
 		feedEvent.detail = message;
 
 	LobbyFeed.insert(feedEvent);
+	Lobbies.update(lobbyId, {$currentDate: {lastUpdated: true}});
 }

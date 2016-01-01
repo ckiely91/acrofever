@@ -37,4 +37,15 @@ Meteor.publish('currentGame', function(currentGame) {
 	return Games.find({_id: currentGame});
 });
 
+Meteor.publish('hallOfFame', function(limit) {
+	return HallOfFame.find({
+		active: true
+	}, {
+		sort: {
+			created: -1
+		},
+		limit: limit
+	});
+});
+
 //Acro specific stuff

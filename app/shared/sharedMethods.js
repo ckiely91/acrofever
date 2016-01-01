@@ -21,5 +21,6 @@ Meteor.methods({
 		var displayName = displayname(userId, true);
 
 		Meteor.call('addLobbyFeedEvent', lobbyId, displayName, message, 'CHAT_EVENT');
+        Lobbies.findOne(lobbyId, {$currentDate: {lastUpdated: true}});
 	}
 });

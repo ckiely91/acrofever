@@ -30,5 +30,8 @@ Meteor.methods({
 
 			//lobby should only be made inactive at the end of the round
 		}
+	},
+	hallOfFameAcroCount: function() {
+		return HallOfFame.find({active: true}).count();
 	}
 });

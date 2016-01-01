@@ -12,19 +12,23 @@
 							<button id="joinLobby" class="ui primary fluid button">Join lobby</button>
 						{{/if}}
 					</div>
+					{{#if currentRound}}
 					<div class="ui segment">
 						<h3 class="ui header">Current round: <span class="normalWeight">{{currentRound}}</span></h3>
 					</div>
+					{{/if}}
+					{{#if scores}}
 					<div class="ui segment">
 						<h3 class="ui header">Scores</h3>
 						<table class="ui unstackable table">
 							<tbody>
-								{{#each scores this}}
+								{{#each scores}}
 									{{> scoresPlayerRow}}
 								{{/each}}
 							</tbody>
 						</table>
 					</div>
+					{{/if}}
 					<div class="ui segment">
 						<h3 class="ui header">Lobby settings</h3>
 						<table class="ui very basic unstackable table">
@@ -246,7 +250,7 @@
 				</h3>
 				<div class="ui divider"></div>
 				{{#if lobbyPlayers ..}}
-					<div class="ui six doubling cards">
+					<div class="ui four doubling cards">
 						{{#each lobbyPlayers ..}}
 							<div class="card">
 								<div class="image">
