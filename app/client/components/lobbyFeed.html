@@ -3,7 +3,7 @@
         <div class="event">
             <div class="label">
                 {{#if user}}
-                    <img src="{{profilePicture user 25}}">
+                    <img src="{{profilePicture user 35}}">
                 {{else}}
                     <i class="{{icon}} icon"></i>
                 {{/if}}
@@ -21,10 +21,19 @@
             </div>
         </div>
     {{/each}}
-    {{#if hasNotReachedLimit}}
-        <button class="ui labeled icon {{#unless ready}}loading{{/unless}} button" id="getMore">
-            <i class="plus icon"></i>
-            Get more
-        </button>
+    {{#unless ready}}
+        <div class="ui inline active centered loader"></div>
+    {{/unless}}
+    {{#if showGetMoreDiv events}}
+        <div class="getMoreDiv"></div>
     {{/if}}
+</template>
+
+<template name="lobbyChatInput">
+    <form id="chat-input-form" class="ui form">
+        <div class="ui fluid action input">
+            <input type="text" id="chat-input-box" class="ui input" placeholder="Type here to chat..." autocomplete="off" required>
+            <button class="ui button" type="submit">Send</button>
+        </div>
+    </form>
 </template>

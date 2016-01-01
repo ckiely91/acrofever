@@ -3,7 +3,7 @@ Template.hallOfFame.helpers({
 		return Template.instance().ready.get();
 	},
 	hallOfFameAcros: function() {
-		return HallOfFame.find();
+		return HallOfFame.find({}, {sort: {created: -1}});
 	},
 	hasNotReachedLimit: function(hallOfFameAcros) {
 		var limit = Template.instance().limit.get();

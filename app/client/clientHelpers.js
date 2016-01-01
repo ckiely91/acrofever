@@ -111,6 +111,10 @@ Template.registerHelper('isInRound', function(round) {
 	return (round.players[Meteor.userId()]);
 });
 
+Template.registerHelper('greaterThanOne', function(number) {
+	return (number > 1);
+});
+
 getCurrentRound = function(game) {
 	return game.rounds[game.currentRound - 1];
 }

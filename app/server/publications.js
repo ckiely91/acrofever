@@ -3,21 +3,15 @@ Meteor.publish('globalChat', function() {
 });
 
 Meteor.publish('lobbyFeed', function(lobbyId, limit) {
-	var MAX_FEED_RESULTS = 200;
+	var maxFeedResults = 200;
 
 	if (!this.userId)
 		return [];
 
+	if (limit > maxFeedResults)
+		limit = maxFeedResults;
 
-	if (limit > MAX_FEED_RESULTS)
-		limit = MAX_FEED_RESULTS;
-
-	return LobbyFeed.find({lobbyId: lobbyId}, 
-		{sort: {
-			timestamp: -1
-		}, 
-		limit: limit
-	});
+	return LobbyFeed.find({ lobbyId: lobbyId }, { sort: { timestamp: -1	}, limit: limit	});
 });
 
 Meteor.publish('lobbies', function() {
@@ -49,14 +43,7 @@ Meteor.publish('currentGame', function(currentGame) {
 });
 
 Meteor.publish('hallOfFame', function(limit) {
-	return HallOfFame.find({
-		active: true
-	}, {
-		sort: {
-			created: -1
-		},
-		limit: limit
-	});
+	return HallOfFame.find({ active: true }, { sort: { created: -1 }, limit: limit });
 });
 
 //Acro specific stuff
