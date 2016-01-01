@@ -1,3 +1,14 @@
+Template.home.helpers({
+	playersOnline: function() {
+		var players = [];
+		Lobbies.find().forEach(function(lobby) {
+			players = players.concat(lobby.players);
+		});
+		players = _.uniq(players);
+		return (players.length > 0) ? players.length : false;
+	}
+});
+
 Template.home.events({
 	'click .playNow': function(evt) {
 		evt.preventDefault();
@@ -15,4 +26,8 @@ Template.home.events({
 		evt.preventDefault();
 		$('#howToPlayModal').modal('show');
 	}
+});
+
+Template.home.onCreated(function() {
+	lobbySubs.subscribe('lobbies');
 });

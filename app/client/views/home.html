@@ -3,7 +3,7 @@
 		<div class="sixteen wide center aligned column">
 			<h1 class="ui header">Welcome to Acrofever!</h1>
 			<div class="row">
-				<button class="big ui primary labeled icon button playNow" style="clear:both">
+				<button class="big ui primary labeled icon button mobileBottomMargin playNow" style="clear:both">
 					<i class="lightning icon"></i>
 					Play now
 				</button>
@@ -14,7 +14,7 @@
 				<div class="ui hidden divider"></div>
 			</div>
 			<div class="row">
-				<a href="{{getRoutePath 'halloffame'}}" class="ui labeled icon button">
+				<a href="{{getRoutePath 'halloffame'}}" class="ui labeled icon button mobileBottomMargin">
 					<i class="trophy icon"></i>
 					Hall of Fame
 				</a>
@@ -24,6 +24,16 @@
 				</button>
 			</div>
 			<div class="ui hidden divider"></div>
+			{{#if playersOnline}}
+			<div class="ui horizontal statistic">
+				<div class="value">
+					{{playersOnline}}
+				</div>
+				<div class="label">
+					online
+				</div>
+			</div>
+			{{/if}}
 		</div>
 		<div class="eight wide column">
 			<div class="ui raised segment">
