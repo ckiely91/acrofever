@@ -1,7 +1,7 @@
 Games = new Mongo.Collection('games');
 Lobbies = new Mongo.Collection('lobbies');
 GlobalChat = new Mongo.Collection('globalChat');
-LobbyChat = new Mongo.Collection('lobbyChat');
+LobbyFeed = new Mongo.Collection('lobbyFeed');
 HallOfFame = new Mongo.Collection('hallOfFame');
 
 AcroSettings = new Mongo.Collection('acro_settings');

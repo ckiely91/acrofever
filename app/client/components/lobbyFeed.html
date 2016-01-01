@@ -1,0 +1,20 @@
+<template name="lobbyFeed">
+    {{#each events}}
+        <div class="event">
+            <div class="label">
+                <img src="http://i.imgur.com/Us2EXSx.jpg">
+            </div>
+            <div class="content">
+                <div class="summary">
+                    {{summary}}
+                    <div class="date">
+                        {{friendlytime timestamp}}
+                    </div>
+                </div>
+                <div class="detailed-content">
+                    {{detail}}
+                </div>
+            </div>
+        </div>
+    {{/each}}
+</template>

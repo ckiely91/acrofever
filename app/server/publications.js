@@ -2,11 +2,11 @@ Meteor.publish('globalChat', function() {
 	return GlobalChat.find({}, {sort: {created: -1}, limit: 100});
 });
 
-Meteor.publish('lobbyChat', function(lobbyId) {
+Meteor.publish('lobbyFeed', function(lobbyId) {
 	if (!this.userId)
 		return [];
 
-	return LobbyChat.find({lobbyId: lobbyId}, {sort: {created: -1}, limit: 50});
+	return LobbyFeed.find({lobbyId: lobbyId}, {sort: {created: -1}, limit: 50});
 });
 
 Meteor.publish('lobbies', function() {

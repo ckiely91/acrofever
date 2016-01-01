@@ -1,18 +1,15 @@
 LobbyManager = {};
 
-LobbyManager.addSystemMessage = function(lobbyId, title, icon, message) {
-	var setObj = {
+LobbyManager.addLobbyFeedSystemMessage = function(lobbyId, summary, icon, message) {
+	var feedEvent = {
 		lobbyId: lobbyId,
-		type: 'system',
 		timestamp: new Date(),
-		title: title
+		summary: summary,
+		type: 'SYSTEM_CHAT_EVENT'
 	}
 
-	if (icon)
-		setObj.icon = icon;
-
 	if (message)
-		setObj.message = message;
+		feedEvent.detail = message;
 
-	LobbyChat.insert(setObj);
+	LobbyFeed.insert(feedEvent);
 }
