@@ -9,7 +9,6 @@
 	<div class="ui hidden divider"></div>
 	<div class="ui stackable grid">
 		<div class="eight wide column">
-		<h3 class="ui header">Lobbies</h3>
 		{{#if ready}}
 			<table class="ui selectable table" id="lobbyList">
 				<thead>
@@ -30,8 +29,7 @@
 		{{/if}}
 		</div>
 		<div class="eight wide column">
-			<h3 class="ui header">Chat</h3>
-			{{> globalChat}}
+			{{> globalFeed}}
 		</div>
 	</div>
 </template>

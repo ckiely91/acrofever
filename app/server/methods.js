@@ -11,7 +11,9 @@ Meteor.methods({
 		if (join) {
 			//user is joining the lobby
 			Lobbies.update(lobbyId, {$addToSet: {players: userId}});
-			LobbyManager.addSystemMessage(lobbyId, displayname(userId, true) + ' joined the lobby.');
+			var username = displayname(userId, true);
+			LobbyManager.addSystemMessage(lobbyId, username + ' joined the lobby.');
+			LobbyManager.addSystemMessage(null, username + ' joined the lobby ' + lobby.displayName);
 
 			//refresh lobby
 			lobby = Lobbies.findOne(lobbyId);
@@ -26,8 +28,9 @@ Meteor.methods({
 		} else {
 			//user is leaving the lobby
 			Lobbies.update(lobbyId, {$pull: {players: userId}});
-			LobbyManager.addSystemMessage(lobbyId, displayname(userId, true) + ' left the lobby.');
-
+			var username = displayname(userId, true);
+			LobbyManager.addSystemMessage(lobbyId, username + ' left the lobby.');
+			LobbyManager.addSystemMessage(null, username + ' left the lobby ' + lobby.displayName);
 			//lobby should only be made inactive at the end of the round
 		}
 	},

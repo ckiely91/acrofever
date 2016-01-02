@@ -69,10 +69,6 @@ Template.registerHelper("isThisUser", function(id) {
 	return (id === Meteor.userId());
 });
 
-Template.registerHelper("friendlytime", function(time) {
-  return moment(time).fromNow();
-});
-
 Template.registerHelper('countdown', function(endTime) {
 	var diff = moment(endTime).diff(mo.now.get());
 	if (diff >= 0)
@@ -113,6 +109,37 @@ Template.registerHelper('isInRound', function(round) {
 
 Template.registerHelper('greaterThanOne', function(number) {
 	return (number > 1);
+});
+
+Template.registerHelper('replaceLinksAndEscape', function(input) {
+	var autolinkedInput = Autolinker.link(input, {
+		truncate: {
+			length: 32,
+			location: 'smart'
+		},
+		replaceFn: function(autolinker, match) {
+			switch(match.getType()) {
+				case 'url':
+					var tag = autolinker.getTagBuilder().build(match);
+					tag.setAttr( 'rel', 'nofollow' );
+					tag.addClass( 'external-link' );
+					return tag;
+				default:
+					return true;
+			}
+		}
+	});
+
+	//escape except allowed tags
+	autolinkedInput = '<div>' + autolinkedInput + '</div>';
+
+	$autolinkedInput = $(autolinkedInput);
+	var $elements = $autolinkedInput.find("*").not("a,img,br");
+	for (var i = $elements.length - 1; i >= 0; i--) {
+	    var e = $elements[i];
+	    $(e).replaceWith(e.innerHTML);
+	}
+	return $autolinkedInput.html();
 });
 
 getCurrentRound = function(game) {

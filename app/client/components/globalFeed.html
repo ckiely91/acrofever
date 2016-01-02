@@ -1,0 +1,50 @@
+<template name="globalFeed">
+	{{> globalChatInput}}
+    <div class="feedChatDiv">
+        <div class="fade upper"></div>
+        <div class="fade lower"></div>
+        <div class="feedInner">
+            <div class="ui small feed">
+            {{#each events}}
+                <div class="event">
+                    <div class="label">
+                        {{#if user}}
+                            <img src="{{profilePicture user 35}}">
+                        {{else}}
+                            <i class="{{#if icon}}{{icon}}{{else}}info{{/if}} icon"></i>
+                        {{/if}}
+                    </div>
+                    <div class="content {{#if user}}userChatContent{{/if}}">
+                        <div class="summary">
+                            {{#if user}}{{username user}}{{else}}{{summary}}{{/if}}
+                            <div class="date">
+                                {{moFromNow timestamp}}
+                            </div>
+                        </div>
+                        {{#if detail}}
+                            <div class="detailed-content">
+                                {{{replaceLinksAndEscape detail}}}
+                            </div>
+                        {{/if}}
+                    </div>
+                </div>
+            {{/each}}
+            </div>
+            {{#unless ready}}
+                <div class="ui inline active centered loader"></div>
+            {{/unless}}
+            {{#if showGetMoreDiv events}}
+                <div class="getMoreDiv"></div>
+            {{/if}}
+        </div>
+    </div>
+</template>
+
+<template name="globalChatInput">
+    <form id="chat-input-form" class="ui form">
+        <div class="ui fluid action input">
+            <input type="text" id="chat-input-box" class="ui input" placeholder="Type here to chat..." autocomplete="off" required>
+            <button class="ui button" type="submit">Send</button>
+        </div>
+    </form>
+</template>

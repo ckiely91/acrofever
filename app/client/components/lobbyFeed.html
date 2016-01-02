@@ -5,19 +5,21 @@
                 {{#if user}}
                     <img src="{{profilePicture user 35}}">
                 {{else}}
-                    <i class="{{icon}} icon"></i>
+                    <i class="{{#if icon}}{{icon}}{{else}}info{{/if}} icon"></i>
                 {{/if}}
             </div>
             <div class="content">
                 <div class="summary">
-                    {{summary}}
+                    {{#if user}}{{username user}}{{else}}{{summary}}{{/if}}
                     <div class="date">
-                        {{friendlytime timestamp}}
+                        {{moFromNow timestamp}}
                     </div>
                 </div>
-                <div class="detailed-content">
-                    {{detail}}
-                </div>
+                {{#if detail}}
+                    <div class="detailed-content">
+                        {{{replaceLinksAndEscape detail}}}
+                    </div>
+                {{/if}}
             </div>
         </div>
     {{/each}}

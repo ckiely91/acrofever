@@ -48,6 +48,7 @@ jparker:gravatar@0.4.1
 jquery@1.11.4
 kadira:blaze-layout@2.3.0
 kadira:flow-router@2.10.0
+konecty:autolinker@1.0.3
 launch-screen@1.0.4
 lbee:moment-helpers@1.2.1
 livedata@1.0.15

@@ -1,5 +1,8 @@
-Meteor.publish('globalChat', function() {
-	return GlobalChat.find({}, {sort: {created: -1}, limit: 100});
+Meteor.publish('globalFeed', function(limit) {
+	var maxFeedResults = 200;
+	if (limit > maxFeedResults)
+		limit = maxFeedResults;
+	return GlobalFeed.find({}, {sort: {timestamp: -1}, limit: limit});
 });
 
 Meteor.publish('lobbyFeed', function(lobbyId, limit) {

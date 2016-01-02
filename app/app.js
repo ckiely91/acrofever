@@ -1,6 +1,6 @@
 Games = new Mongo.Collection('games');
 Lobbies = new Mongo.Collection('lobbies');
-GlobalChat = new Mongo.Collection('globalChat');
+GlobalFeed = new Mongo.Collection('globalFeed');
 LobbyFeed = new Mongo.Collection('lobbyFeed');
 HallOfFame = new Mongo.Collection('hallOfFame');
 
