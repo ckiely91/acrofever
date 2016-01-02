@@ -36,7 +36,6 @@ Template.globalFeed.onRendered(function() {
 		var fadeUpper = feedOuter.find('.fade.upper');
 		var fadeLower = feedOuter.find('.fade.lower');
 		var scroll = feed.scrollTop();
-		console.log(feed.scrollTop());
 		if (scroll > 50) {
 			fadeUpper.css('opacity', 1);
 		} else {
@@ -52,11 +51,8 @@ Template.globalFeed.onRendered(function() {
 			fadeLower.css('opacity', bottomScroll / 50);
 		}
 
-		console.log(feed.find('.feed').height() - scroll - 300);
-
 		var getMoreDiv = $('.getMoreDiv');
 		if (getMoreDiv.length && getMoreDiv.isOnScreen()) {
-			console.log('visible!');
 			var limit = Session.get('globalFeedLimit');
 			limit += 20;
 			if (limit <= 200) {

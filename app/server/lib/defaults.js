@@ -3,7 +3,7 @@ AcroSettingsDefaults = {
 		categoryTimeout: 30000,
 		acronymTimeout: 120000,
 		votingTimeout: 45000,
-		endOfRoundTimeout: 20000,
+		endOfRoundTimeout: 30000,
 		hallOfFameTimeout: 120000,
 		winnerPoints: 2,
 		votedPoints: 1,
@@ -11,13 +11,13 @@ AcroSettingsDefaults = {
 		notVotedNegativePoints: 1,
 		minAcroLength: 3,
 		maxAcroLength: 7,
-		endGamePoints: 15
+		endGamePoints: 25
 	},
 	expert: {
 		categoryTimeout: 30000,
-		acronymTimeout: 120000,
-		votingTimeout: 45000,
-		endOfRoundTimeout: 20000,
+		acronymTimeout: 60000,
+		votingTimeout: 30000,
+		endOfRoundTimeout: 30000,
 		hallOfFameTimeout: 120000,
 		winnerPoints: 2,
 		votedPoints: 1,
@@ -25,14 +25,14 @@ AcroSettingsDefaults = {
 		notVotedNegativePoints: 1,
 		minAcroLength: 3,
 		maxAcroLength: 7,
-		endGamePoints: 15
+		endGamePoints: 25
 	}
 };
 
 DefaultLobbies = [
 	{
 		name: "acro_expert",
-		displayName: "Experts",
+		displayName: "Experts (fast rounds)",
 		type: "acrofever",
 		players: [],
 		config: AcroSettingsDefaults.expert,
@@ -42,6 +42,16 @@ DefaultLobbies = [
 	{
 		name: "acro_beginner",
 		displayName: "Beginners",
+		type: "acrofever",
+		players: [],
+		config: AcroSettingsDefaults.beginner,
+		games: [],
+		currentGame: null,
+		official: true
+	},
+	{
+		name: "acro_general",
+		displayName: "General",
 		type: "acrofever",
 		players: [],
 		config: AcroSettingsDefaults.beginner,

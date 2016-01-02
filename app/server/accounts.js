@@ -34,6 +34,9 @@ Meteor.startup(function() {
     );
 });
 
+Accounts.emailTemplates.from = 'no-reply@acrofever.com';
+Accounts.emailTemplates.siteName = 'Acrofever'; 
+
 Accounts.onCreateUser(function(options, user) {
 	if (options.profile)
 		user.profile = options.profile;

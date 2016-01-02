@@ -33,7 +33,8 @@ Template.nav.events({
 		$('.slideMenu').transition('slide down');
 	},
 	'click #mobileNav a': function() {
-		$('.slideMenu').transition('slide down');
+		if ($('.slideMenu').css('display') === 'block')
+			$('.slideMenu').transition('slide down');
 	}
 });
 

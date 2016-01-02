@@ -15,8 +15,18 @@ Template.lobbyFeed.onCreated(function() {
 	self.ready = new ReactiveVar();
 	Session.set('lobbyChatLimit', 20);
 	self.autorun(function() {
-		var handle = Meteor.subscribe('lobbyFeed', FlowRouter.getParam('lobbyId'), Session.get('lobbyChatLimit'));
+		var lobbyId = FlowRouter.getParam('lobbyId');
+		var handle = Meteor.subscribe('lobbyFeed', lobbyId, Session.get('lobbyChatLimit'));
 		self.ready.set(handle.ready());
+		if (handle.ready()) {
+			var playerIds = [];
+			LobbyFeed.find({lobbyId: lobbyId}).forEach(function(event) {
+				if (event.user)
+					playerIds.push(event.user);
+			});
+			console.log(playerIds);
+			Meteor.subscribe('otherPlayers', playerIds);
+		}
 	});
 });
 

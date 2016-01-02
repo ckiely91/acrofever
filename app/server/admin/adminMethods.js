@@ -44,6 +44,57 @@ Meteor.methods({
 				Nags.remove(id);
 				break;
 		}
+	},
+	migrateUserBase: function() {
+		if (!isAdminUser(this.userId))
+			throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
+
+		// this should only need to be run ONCE
+		Meteor.users.find().forEach(function(user) {
+			if (!user.profile || !user.profile.profilePicture) {
+				var email,
+					profilePicture = {};
+
+				if (user.services.password && user.emails) {
+					// see if they have a gravatar
+					email = user.emails[0].address;
+					profilePicture.type = 'gravatar';
+					profilePicture.url = Gravatar.imageUrl(email, {secure: true, default: 'mm'});
+				} else if (user.services.facebook) {
+					email = user.services.facebook.email;
+					profilePicture.type = 'facebook';
+					profilePicture.url = 'https://graph.facebook.com/v2.3/' + user.services.facebook.id + '/picture';
+				} else if (user.services.google) {
+					email = user.services.google.email;
+					profilePicture.type = 'google';
+					profilePicture.url = user.services.google.picture;
+				} else if (user.services.twitter) {
+					profilePicture.type = 'twitter';
+					profilePicture.url = user.services.twitter.profile_image_url_https;
+				}
+
+				Meteor.users.update(user._id, {$set: {'profile.profilePicture': profilePicture}});
+				console.log('Fetched profile picture for ' + email + ' (' + user._id + ')');
+			}
+		});
+	},
+	migrateHallOfFame: function(array) {
+		if (!isAdminUser(this.userId))
+			throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
+
+		_.each(array, function(item) {
+			var obj = {
+				userId: item.id,
+				acro: item.acro,
+				acronym: item.acronym,
+				category: item.category,
+				active: false,
+				votes: [],
+				created: new Date(item.date)
+			};
+			HallOfFame.insert(obj);
+			console.log('inserted ' + item.acro);
+		});
 	}
 });
 
