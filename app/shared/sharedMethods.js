@@ -27,5 +27,10 @@ Meteor.methods({
 			timestamp: new Date(),
 			detail: message
 		});
+	},
+	markNagAsClosed: function(id) {
+		if (this.userId) {
+			Meteor.users.update(this.userId, {$addToSet: {'profile.closedNags': id}});
+		}
 	}
 });

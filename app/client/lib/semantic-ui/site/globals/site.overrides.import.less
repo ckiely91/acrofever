@@ -14,8 +14,34 @@ div.clear {
     color: @primaryColor !important; 
 }
 
-#mainNav {
+#desktopNav {
 	border-radius:0;
+	@media screen and (max-width: @tabletBreakpoint) {
+		display:none;
+	}
+}
+
+#mobileNav {
+	@media screen and (min-width: @tabletBreakpoint) {
+		display:none;
+	}
+
+	#brandHeader {
+		border: none;
+		&:before {
+			background: none;
+		}
+	}
+
+	.ui.menu {
+		margin-bottom: 0;
+		border-radius: 0;
+	}
+}
+
+.slideMenu {
+	display: none;
+	border-top: 1px solid @grey;
 }
 
 tr.lobbyRow {

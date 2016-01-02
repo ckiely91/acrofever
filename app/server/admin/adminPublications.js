@@ -4,6 +4,12 @@ Meteor.publish('adminHallOfFame', function() {
 	return HallOfFame.find();
 });
 
+Meteor.publish('adminNags', function() {
+	if (!isAdminUser(this.userId))
+		return [];
+	return Nags.find();
+});
+
 function isAdminUser(userId) {
 	return (Meteor.settings.adminUsers.indexOf(userId) > -1);
 }

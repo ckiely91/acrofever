@@ -62,3 +62,43 @@ Template.adminHallOfFame.onCreated(function() {
 		}
 	});
 });
+
+Template.adminNags.helpers({
+	nags: function() {
+		return Nags.find({},{sort: {timestamp: -1}});
+	}
+})
+
+Template.adminNags.events({
+	'submit form': function(evt) {
+		evt.preventDefault();
+		var form = $(evt.currentTarget);
+		var fields = form.form('get values');
+		var button = form.find('button');
+		button.addClass('loading');
+
+		if (fields.message.length > 0)
+			fields.message = fields.message.replace(/\n/g,'<br>');
+
+		Meteor.call('adminAddNag', fields, function(err) {
+			button.removeClass('loading');
+			if (err) {
+				console.log(err);
+			} else {
+				form.trigger('reset');
+			}
+		});
+	}
+});
+
+Template.adminNags.onCreated(function() {
+	Meteor.subscribe('adminNags');
+});
+
+Template.adminNagRow.events({
+	'click .editNag': function(evt, template) {
+		evt.preventDefault();
+		var action = $(evt.currentTarget).data('action');
+		Meteor.call('adminEditNag', template.data._id, action);
+	}
+})

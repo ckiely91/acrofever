@@ -28,6 +28,12 @@ Template.nav.events({
 			else
 				FlowRouter.go(FlowRouter.path('lobby', {lobbyId: res}));
 		});
+	},
+	'click .sidebar.icon': function(evt) {
+		$('.slideMenu').transition('slide down');
+	},
+	'click #mobileNav a': function() {
+		$('.slideMenu').transition('slide down');
 	}
 });
 

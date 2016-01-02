@@ -66,6 +66,16 @@ adminRoutes.route('/halloffame', {
   }
 });
 
+adminRoutes.route('/nags', {
+  name: 'adminNags',
+  action: function() {
+    BlazeLayout.render('masterLayout', {
+      main: 'adminMain',
+      subTemplate: 'adminNags'
+    });
+  }
+});
+
 FlowRouter.notFound = {
   action: function() {
     BlazeLayout.render('masterLayout', {

@@ -1,5 +1,5 @@
 <template name="nav">
-	<div class="ui inverted stackable menu" id="mainNav">
+	<div class="ui inverted menu" id="desktopNav">
 		<div class="ui container">
 			<a href="{{getRoutePath 'home'}}" id="brandHeader" class="header item">
 			  Acrofever
@@ -26,7 +26,52 @@
 						{{> userNavDropdown}}
 					{{/with}}
 				{{else}}
-					{{> atNavButton}}
+					<a href="/sign-in" class="item">
+						<i class="sign in icon"></i>
+						Sign in / Register
+					</a>
+				{{/if}}
+			</div>
+		</div>
+	</div>
+	<div id="mobileNav">
+		<div class="ui inverted menu">
+			<a href="{{getRoutePath 'home'}}" id="brandHeader" class="header item">
+			  Acrofever
+			</a>
+			<div id="rightNav" class="right menu">
+				<h2 class="header item">
+					<i class="sidebar icon" style="margin-right:0"></i>
+				</h2>
+			</div>
+		</div>
+		<div class="slideMenu">
+			<div class="ui inverted stackable menu">
+				<a href="#" class="item playNow">
+					<i class="lightning icon"></i>
+					Play now
+				</a>
+				<a href="{{getRoutePath 'play'}}" class="item {{#if isOnRoute 'play'}}active{{/if}}">
+					<i class="search icon"></i>
+					Find a lobby
+				</a>
+				<a href="{{getRoutePath 'halloffame'}}" class="item {{#if isOnRoute 'halloffame'}}active{{/if}}">
+					<i class="trophy icon"></i>
+					Hall of Fame
+				</a>
+				<a id="howToPlay" class="item">
+					<i class="question icon"></i>
+					How to Play
+				</a>
+				{{#if loggedInUser}}
+					{{#with loggedInUser}}
+						{{> userNavDropdown}}
+					{{/with}}
+				{{else}}
+					<a href="/sign-in" class="item">
+						<i class="sign in icon"></i>
+						Sign in / Register
+					</a>
 				{{/if}}
 			</div>
 		</div>

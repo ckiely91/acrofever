@@ -8,6 +8,7 @@
 
 <template name="adminHome">
 	<a href="{{getRoutePath 'adminHallOfFame'}}" class="ui button">Approve Hall of Fame</a>
+	<a href="{{getRoutePath 'adminNags'}}" class="ui button">Manage nags</a>
 </template>
 
 <template name="adminHallOfFame">
@@ -46,6 +47,72 @@
 				<i class="check icon"></i> <a href="#" class="makeInactive">Deactivate</a>
 			{{else}}
 				<a href="#" class="makeActive">Activate</a><br><br><a href="#" class="delete">Delete</a>
+			{{/if}}
+		</td>
+	</tr>
+</template>
+
+<template name="adminNags">
+	<a href="{{getRoutePath 'adminHome'}}" class="ui labeled icon button"><i class="arrow left icon"></i> Back</a>
+	<h2 class="ui header">Manage nags</h2>
+
+	<h3 class="ui header">Add nag</h3>
+	<form class="ui form" id="addNag">
+		<div class="field">
+			<input type="text" placeholder="Title" name="title">
+		</div>
+		<div class="field">
+			<textarea placeholder="Message" name="message"></textarea>
+		</div>
+		<div class="field">
+			<input type="text" placeholder="Icon" name="icon">
+		</div>
+		<div class="field">
+			<input type="text" placeholder="Colour" name="colour">
+		</div>
+		<div class="field">
+			<div class="ui checkbox">
+				<input type="checkbox" checked name="active">
+				<label>Active</label>
+			</div>
+		</div>
+		<button type="submit" class="ui button">Submit</button>
+	</form>
+
+	<div class="ui divider"></div>
+
+	<table class="ui table">
+		<thead>
+			<tr>
+				<th>Created</th>
+				<th>Title</th>
+				<th>Message</th>
+				<th>Icon</th>
+				<th>Colour</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			{{#each nags}}
+				{{> adminNagRow}}
+			{{/each}}
+		</tbody>
+	</table>
+</template>
+
+<template name="adminNagRow">
+	<tr>
+		<td>{{moCalendar timestamp}}<br>{{_id}}</td>
+		<td>{{title}}</td>
+		<td>{{{message}}}</td>
+		<td>{{icon}}</td>
+		<td>{{colour}}</td>
+		<td>
+			{{#if active}}
+				<i class="check icon"></i> <a href="#" class="editNag" data-action="deactivate">Deactivate</a>
+			{{else}}
+				<a href="#" class="editNag" data-action="activate">Activate</a><br><br>
+				<a href="#" class="editNag" data-action="delete">Delete</a>
 			{{/if}}
 		</td>
 	</tr>

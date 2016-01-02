@@ -1,6 +1,7 @@
 <template name="masterLayout">
     {{> nav}}
     <div class="ui main container">
+        {{> nags}}
     	{{> Template.dynamic template=main}}
     	{{> footer}}
     </div>
@@ -14,4 +15,31 @@
 	    <div class="ui inverted loader"></div>
 	  </div>
 	</div>
+</template>
+
+<template name="nags">
+{{#if nags}}
+    <div class="ui centered grid">
+        {{#each nags}}
+            <div class="sixteen-wide-tablet ten-wide-computer column">
+                {{> nag}}
+            </div>
+        {{/each}}
+    </div>
+{{/if}}
+</template>
+
+<template name="nag">
+    <div class="ui {{#if icon}}icon{{/if}} {{#if colour}}{{colour}}{{/if}} message">
+        <i class="close icon"></i>
+        {{#if icon}}<i class="{{icon}} icon"></i>{{/if}}
+        <div class="content">
+            {{#if title}}
+                <div class="header">
+                    {{title}}
+                </div>
+            {{/if}}
+            <p>{{{message}}}</p>
+        </div>
+    </div>
 </template>

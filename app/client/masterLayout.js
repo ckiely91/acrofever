@@ -25,3 +25,43 @@ Template.masterLayout.onRendered(function() {
 	    
 	};
 });
+
+Template.nags.helpers({
+	nags: function() {
+		var user = Meteor.user();
+		if (!user)
+			return false;
+
+		var closedNags = (user.profile && user.profile.closedNags) ? user.profile.closedNags : [];
+		var nags = Nags.find({active: true, _id: {$not: {$in: closedNags}}}, {sort: {timestamp: -1}});
+		if (nags.count() > 0)
+			return nags;
+		else
+			return false;
+	}
+});
+
+Template.nags.onCreated(function() {
+	var self = this;
+	self.autorun(function() {
+		var user = Meteor.user();
+		if (user) {
+			if (user.profile && user.profile.closedNags) {
+				Meteor.subscribe('nags', user.profile.closedNags);
+			} else {
+				Meteor.subscribe('nags');
+			}
+		}
+	})
+});
+
+Template.nag.events({
+	'click .close': function(evt, template) {
+		evt.preventDefault();
+		$(evt.currentTarget).closest('.message').transition('fade', '300ms');
+		Meteor.setTimeout(function() {
+			//allow it to fade out first
+			Meteor.call('markNagAsClosed', template.data._id);
+		}, 300);
+	}
+});

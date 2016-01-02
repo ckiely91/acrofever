@@ -49,4 +49,14 @@ Meteor.publish('hallOfFame', function(limit) {
 	return HallOfFame.find({ active: true }, { sort: { created: -1 }, limit: limit });
 });
 
+Meteor.publish('nags', function(closedNags) {
+	if (!this.userId)
+		return [];
+
+	if (closedNags)
+		return Nags.find({active: true, _id: {$not: {$in: closedNags}}});
+	else
+		return Nags.find({active: true});
+});
+
 //Acro specific stuff
