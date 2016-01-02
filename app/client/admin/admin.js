@@ -101,4 +101,14 @@ Template.adminNagRow.events({
 		var action = $(evt.currentTarget).data('action');
 		Meteor.call('adminEditNag', template.data._id, action);
 	}
-})
+});
+
+Template.blogAdmin.onCreated(function() {
+	$('head').append('<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">');
+	$('head').append('<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" rel="stylesheet">');
+});
+
+Template.blogAdminEdit.onCreated(function() {
+	$('head').append('<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">');
+	$('head').append('<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" rel="stylesheet">');
+});

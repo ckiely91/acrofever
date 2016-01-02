@@ -40,6 +40,40 @@ FlowRouter.route('/halloffame', {
   }
 });
 
+var blogRoutes = FlowRouter.group({
+  prefix: '/blog',
+  name: 'blog'
+});
+
+blogRoutes.route('/', {
+  name: 'blogIndex',
+  action: function() {
+    BlazeLayout.render('masterLayout', {
+      main: 'blogList'
+    });
+  }
+});
+
+blogRoutes.route('/:slug', {
+  name: 'blogShow',
+  action: function() {
+    BlazeLayout.render('masterLayout', {
+      main: 'blogPost'
+    });
+  }
+});
+
+blogRoutes.route('/tag/:tag', {
+  name: 'blogTagged',
+  action: function() {
+    BlazeLayout.render('masterLayout', {
+      main: 'blogTagged'
+    });
+  }
+});
+
+
+
 var adminRoutes = FlowRouter.group({
   prefix: '/admin',
   name: 'admin',
@@ -72,6 +106,26 @@ adminRoutes.route('/nags', {
     BlazeLayout.render('masterLayout', {
       main: 'adminMain',
       subTemplate: 'adminNags'
+    });
+  }
+});
+
+adminRoutes.route('/blog', {
+  name: 'adminBlog',
+  action: function() {
+    BlazeLayout.render('masterLayout', {
+      main: 'adminMain',
+      subTemplate: 'blogAdmin'
+    });
+  }
+});
+
+adminRoutes.route('/blog/edit/:id', {
+  name: 'adminBlogEdit',
+  action: function() {
+    BlazeLayout.render('masterLayout', {
+      main: 'adminMain',
+      subTemplate: 'blogAdminEdit'
     });
   }
 });

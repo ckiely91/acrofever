@@ -20,6 +20,10 @@
 				<i class="question icon"></i>
 				How to Play
 			</a>
+			<a href="{{getRoutePath 'blogIndex'}}" class="item {{#if isOnRoute 'blogIndex'}}active{{/if}}">
+				<i class="rss icon"></i>
+				Blog
+			</a>
 			<div id="rightNav" class="right menu">
 				{{#if loggedInUser}}
 					{{#with loggedInUser}}
@@ -62,6 +66,10 @@
 				<a id="howToPlay" class="item">
 					<i class="question icon"></i>
 					How to Play
+				</a>
+				<a href="{{getRoutePath 'blogIndex'}}" class="item {{#if isOnRoute 'blogIndex'}}active{{/if}}">
+					<i class="rss icon"></i>
+					Blog
 				</a>
 				{{#if loggedInUser}}
 					{{#with loggedInUser}}
