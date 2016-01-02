@@ -386,6 +386,7 @@ function goToEndGame(gameId, winners) {
 	}, $currentDate: {lastUpdated: true}});
 
 	LobbyManager.addSystemMessage(game.lobbyId, displayname(winner, true) + ' won the game!', 'star', tiebreakText);
+	LobbyManager.addSystemMessage(null, displayname(winner, true) + ' won a game in lobby ' + lobby.displayName, 'star');
 
 	Meteor.setTimeout(function() {
 		lobby = Lobbies.findOne(game.lobbyId);
