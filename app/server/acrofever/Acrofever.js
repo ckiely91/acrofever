@@ -374,7 +374,8 @@ function goToEndGame(gameId, winners) {
 	// we have a single winner
 	var lobby = Lobbies.findOne(game.lobbyId, {fields: {
 		config: true,
-		players: true
+		players: true,
+		displayName: true
 	}});
 
 	var endTime = moment().add(lobby.config.hallOfFameTimeout, 'milliseconds').toDate();
