@@ -218,7 +218,6 @@ Template.acroEndRound.onRendered(function() {
 		// this should run after the child templates have been rerendered
 		Tracker.afterFlush(function() {
 			if (scrollTable.prop('scrollWidth') <= scrollTable.width()) {
-				console.log('element is not overflowing');
 				scrollTableOuter.find('.scrollTable-fade').css({
 			        'opacity': 0
 			    });
@@ -370,6 +369,9 @@ Template["acrofever-endgame"].helpers({
 			if (submissions !== 0)
 				obj.avgTimeLeft = avgTimeLeft / submissions;
 
+			if (obj.bestAcros.length > 1)
+				obj.bestAcros = [_.sample(bestAcros)];
+
 			array.push(obj);
 		});
 
@@ -458,7 +460,6 @@ Template.bestAcroCard.events({
 		template.hasVotedForHallOfFame.set(true);
 
 		var gameId = Lobbies.findOne(FlowRouter.getParam('lobbyId')).currentGame;
-		console.log(template.data);
 		Meteor.call('voteForHallOfFame', gameId, template.data);
 	}
 });
