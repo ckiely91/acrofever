@@ -24,7 +24,6 @@ Template.lobbyFeed.onCreated(function() {
 				if (event.user)
 					playerIds.push(event.user);
 			});
-			console.log(playerIds);
 			Meteor.subscribe('otherPlayers', playerIds);
 		}
 	});

@@ -59,4 +59,8 @@ Meteor.publish('nags', function(closedNags) {
 		return Nags.find({active: true});
 });
 
+Meteor.publish('notifications', function(lobbyId) {
+	return Notifications.find({lobbyId: lobbyId}, {limit: 1, sort: {created: -1}});
+});
+
 //Acro specific stuff

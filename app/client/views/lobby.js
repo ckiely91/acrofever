@@ -46,7 +46,7 @@ Template.lobby.events({
 		$(event.currentTarget).addClass('loading');
 		Meteor.call('joinOrLeaveOfficialLobby', lobbyId, false);
 	}
-})
+});
 
 Template.lobby.onCreated(function() {
 	var self = this;
@@ -63,6 +63,18 @@ Template.lobby.onCreated(function() {
 			}
 		}
 	});
+
+	self.subscribe('notifications', FlowRouter.getParam('lobbyId'));
+
+	self.notifications = Notifications.find().observe({
+		added: function(doc) {
+			notify(doc.title, doc.body);
+		}
+	});
+});
+
+Template.lobby.onDestroyed(function() {
+	this.notifications.stop();
 });
 
 Template.game.helpers({
@@ -149,3 +161,17 @@ Template.scoresPlayerRow.helpers({
 		return (lobby.players.indexOf(id) === -1);
 	}
 });
+
+function notify(title, body) {
+	if (!Notification)
+		return;
+	if (document.hidden && Notification.permission === "granted") {
+		var n = new Notification(title, {
+			icon: 'https://acrofever.com/apple-icon-180x180.png',
+			body: body
+		});
+		setTimeout(n.close.bind(n), 4000);
+	} else if (Notification.permission !== "denied") {
+		Notification.requestPermission();
+	}
+}
