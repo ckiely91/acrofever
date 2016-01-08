@@ -43,49 +43,18 @@ Accounts.onCreateUser(function(options, user) {
 	else
 		user.profile = {};
 
-	var email,
-		firstName,
-		lastName,
-		profilePicture = {};
-
-	if (user.services.password) {
-		// see if they have a gravatar
-		email = user.emails[0].address;
-		firstName = user.username;
-		lastName = '';
-		profilePicture.type = 'gravatar';
-		profilePicture.url = Gravatar.imageUrl(email, {secure: true, default: 'mm'});
-	} else if (user.services.facebook) {
-		email = user.services.facebook.email;
-		firstName = user.services.facebook.first_name;
-		lastName = user.services.facebook.last_name;
-		profilePicture.type = 'facebook';
-		profilePicture.url = 'https://graph.facebook.com/v2.3/' + user.services.facebook.id + '/picture';
-	} else if (user.services.google) {
-		email = user.services.google.email;
-		firstName = user.services.google.given_name;
-		lastName = user.services.google.family_name;
-		profilePicture.type = 'google';
-		profilePicture.url = user.services.google.picture;
-	} else if (user.services.twitter) {
-		email = user.services.twitter.email;
-		firstName = '';
-		lastName = '';
-		profilePicture.type = 'twitter';
-		profilePicture.url = user.services.twitter.profile_image_url_https;
-	}
-
-	user.profile.profilePicture = profilePicture;
+	var userDetails = getUserDetails(user);
+	user.profile.profilePicture = userDetails.profilePicture;
 
 	//if they have an email address, add user to MailChimp list
-	if (email && !Meteor.settings.development) {
+	if (userDetails.email && !Meteor.settings.development) {
 		HTTP.call("POST", "https://" + Meteor.settings.mailchimp.dataCenter + ".api.mailchimp.com/3.0/lists/" + Meteor.settings.mailchimp.listId + "/members/", 
 			{data: {
-				"email_address": email,
+				"email_address": userDetails.email,
 				"status": "subscribed",
 				"merge_fields": {
-					"FNAME": firstName,
-					"LNAME": lastName,
+					"FNAME": userDetails.firstName,
+					"LNAME": userDetails.lastName,
 				}
 			},
 			auth: Meteor.settings.mailchimp.username + ":" + Meteor.settings.mailchimp.apiKey },
@@ -101,3 +70,47 @@ Accounts.onCreateUser(function(options, user) {
 
 	return user;
 });
+
+Accounts.onLogin(function(details) {
+	if (!details.user.profile || !details.user.profile.profilePicture) {
+		var userDetails = getUserDetails(details.user);
+		Meteor.users.update(details.user._id, {$set: {'profile.profilePicture': userDetails.profilePicture}})
+	}
+});
+
+function getUserDetails(user) {
+	var obj = {
+		email: null,
+		firstName: null,
+		lastName: null,
+		profilePicture: {}
+	};
+
+	if (user.services.password) {
+		// see if they have a gravatar
+		obj.email = user.emails[0].address;
+		obj.firstName = user.username;
+		obj.lastName = '';
+		obj.profilePicture.type = 'gravatar';
+		obj.profilePicture.url = Gravatar.imageUrl(obj.email, {secure: true, default: 'mm'});
+	} else if (user.services.facebook) {
+		obj.email = user.services.facebook.email;
+		obj.firstName = user.services.facebook.first_name;
+		obj.lastName = user.services.facebook.last_name;
+		obj.profilePicture.type = 'facebook';
+		obj.profilePicture.url = 'https://graph.facebook.com/v2.3/' + user.services.facebook.id + '/picture';
+	} else if (user.services.google) {
+		obj.email = user.services.google.email;
+		obj.firstName = user.services.google.given_name;
+		obj.lastName = user.services.google.family_name;
+		obj.profilePicture.type = 'google';
+		obj.profilePicture.url = user.services.google.picture;
+	} else if (user.services.twitter) {
+		obj.email = user.services.twitter.email;
+		obj.firstName = '';
+		obj.lastName = '';
+		obj.profilePicture.type = 'twitter';
+		obj.profilePicture.url = user.services.twitter.profile_image_url_https;
+	}
+	return obj;
+}
