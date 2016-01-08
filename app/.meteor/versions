@@ -52,6 +52,7 @@ ecmascript@0.1.6
 ecmascript-runtime@0.2.6
 ejson@1.0.7
 email@1.0.8
+es5-shim@4.1.14
 facebook@1.2.2
 fastclick@1.0.7
 flawless:meteor-toastr@1.0.1
@@ -72,6 +73,7 @@ jparker:crypto-md5@0.1.1
 jparker:gravatar@0.4.1
 jquery@1.11.4
 kadira:blaze-layout@2.3.0
+kadira:dochead@1.4.0
 kadira:flow-router@2.10.0
 kaptron:minimongoid@0.9.8
 konecty:autolinker@1.0.3
@@ -107,6 +109,7 @@ oauth1@1.1.5
 oauth2@1.1.5
 observe-sequence@1.0.7
 olragon:uri-js@1.13.1
+ongoworks:spiderable@1.0.7
 ordered-dict@1.0.4
 promise@0.5.1
 raix:eventemitter@0.1.3

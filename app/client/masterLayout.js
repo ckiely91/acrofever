@@ -26,6 +26,10 @@ Template.masterLayout.onRendered(function() {
 	};
 });
 
+Template.masterLayout.onCreated(function() {
+	DocHead.setTitle('Acrofever');
+});
+
 Template.nags.helpers({
 	nags: function() {
 		var user = Meteor.user();

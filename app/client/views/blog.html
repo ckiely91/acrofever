@@ -44,6 +44,7 @@
 </h2>
 <div class="ui hidden divider"></div>
 {{#with post}}
+	{{> seoTags}}
 	<div class="ui text container">
 		<h1 class="ui center aligned header">
 			{{title}}
@@ -66,4 +67,7 @@
 	</div>
 
 {{/with}}
+</template>
+
+<template name="seoTags">
 </template>

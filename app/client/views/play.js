@@ -20,6 +20,22 @@ Template.play.onCreated(function() {
 		_.uniq(players);
 		Meteor.subscribe('otherPlayers', players);
 	});
+
+	//SEO stuff
+	var title = 'Find Lobbies - Acrofever';
+	var description = 'Acrofever is an Acrophobia clone for the modern web. If you never played Acrophobia, it\'s a fun, zany word game in which players create phrases from a randomly generated acronym, then vote for their favourites.';
+	var metadata = {
+		'description': description,
+		'og:description': description,
+		'og:title': title,
+		'og:image': 'https://acrofever.com/images/fb-image.png',
+		'twitter:card': 'summary'
+	};
+
+	DocHead.setTitle(title);
+	_.each(metadata, function(content, name) {
+		DocHead.addMeta({name: name, content: content})
+	});
 });
 
 Template.lobbyRow.events({
