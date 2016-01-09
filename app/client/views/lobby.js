@@ -72,17 +72,18 @@ Template.lobby.onCreated(function() {
 	// 	}
 	// });
 
-	if (typeof Notification !== 'undefined') {
-		self.notifications = Lobbies.find({_id: FlowRouter.getParam('lobbyId')}).observeChanges({
-			changed: function(id, fields) {
-				if (fields.newGameStarting === true)
-					notify('New game starting soon', 'Acrofever');
-				
-				if (fields.currentGame)
-					notify('New game started', 'Acrofever');
+	self.notifications = Lobbies.find({_id: FlowRouter.getParam('lobbyId')}).observeChanges({
+		changed: function(id, fields) {
+			if (fields.newGameStarting === true) {
+				playSound('relax');
+				notify('New game starting soon', 'Acrofever');
 			}
-		});
-	}
+			
+			if (fields.currentGame) {
+				notify('New game started', 'Acrofever');
+			}
+		}
+	});
 });
 
 Template.lobby.onDestroyed(function() {
@@ -135,9 +136,10 @@ Template.game.onCreated(function() {
 		if (typeof Notification !== 'undefined') {
 			self.notifications = Games.find({_id: currentGame}).observeChanges({
 				changed: function(id, fields) {
-					if (fields.currentRound)
+					if (fields.currentRound) {
+						playSound('action');
 						notify('New round started', 'Acrofever');
-					
+					}					
 				}
 			});
 		}

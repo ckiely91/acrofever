@@ -170,9 +170,13 @@ notify = function(title, body) {
 	}
 }
 
-playSound = function(filename) {
+playSound = function(filename, hiddenOnly) {
+	if (hiddenOnly && !document.hidden)
+		return;
+
 	var sound = new buzz.sound('/sounds/' + filename, {
-		formats: ['ogg', 'mp3']
+		formats: ['ogg', 'mp3'],
+		volume: 50
 	});
 
 	sound.play();

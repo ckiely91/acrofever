@@ -14,8 +14,10 @@ Template.lobbyFeed.onCreated(function() {
 	var self = this;
 	self.ready = new ReactiveVar();
 	Session.set('lobbyChatLimit', 20);
+	var lobbyId = FlowRouter.getParam('lobbyId');
+
 	self.autorun(function() {
-		var lobbyId = FlowRouter.getParam('lobbyId');
+		lobbyId = FlowRouter.getParam('lobbyId');
 		var handle = Meteor.subscribe('lobbyFeed', lobbyId, Session.get('lobbyChatLimit'));
 		self.ready.set(handle.ready());
 		if (handle.ready()) {
@@ -29,6 +31,10 @@ Template.lobbyFeed.onCreated(function() {
 	});
 });
 
+Template.lobbyFeed.onDestroyed(function() {
+	this.notifications.stop();
+});
+
 Template.lobbyFeed.onRendered(function() {
 	var self = this;
 	$(window).scroll(function() {
@@ -38,6 +44,13 @@ Template.lobbyFeed.onRendered(function() {
 			limit += 20;
 			if (limit <= 200)
 				Session.set('lobbyChatLimit', limit);
+		}
+	});
+
+	self.notifications = LobbyFeed.find({lobbyId: FlowRouter.getParam('lobbyId')}).observeChanges({
+		added: function(document) {
+			console.log(document);
+			playSound('chat');
 		}
 	});
 });
