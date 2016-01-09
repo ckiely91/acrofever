@@ -26,6 +26,13 @@ Meteor.startup(function() {
 			    endTime: null
 			});
 			Lobbies.update(insertedLobby._id, {$set: {currentGame: gameId}, $push: {games: gameId}});
+		} else {
+			//game may be in progress, we should end it so timeouts will work properly
+			var active = Games.findOne(insertedLobby.currentGame, {fields: {active: true}}).active;
+			if (active) {
+				Lobbies.update(insertedLobby._id, {$set: {players: []}});
+				GameManager.makeGameInactive(insertedLobby.currentGame);
+			}
 		}
 	});
 });

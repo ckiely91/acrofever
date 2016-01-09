@@ -21,13 +21,6 @@ GameManager.makeGameActive = function(gameId) {
 		
 		Lobbies.update(game.lobbyId, {$set: {newGameStarting: true, endTime: endTime}, $currentDate: {lastUpdated: true}});
 
-		Notifications.insert({
-			created: new Date(),
-			lobbyId: game.lobbyId,
-			title: 'New game starting soon',
-			body: 'Acrofever'
-		});
-
 		Meteor.setTimeout(function() {
 			var lobby = Lobbies.findOne(game.lobbyId, {fields: {players: true}});
 			if (lobby.players.length >= Meteor.settings.acrofever.minimumPlayers)
@@ -159,13 +152,6 @@ GameManager.startNewRound = function(lobbyId, setActive) {
 		}
 
 		Logger.info('New round started', {lobbyId: lobbyId, gameId: lobby.currentGame});
-		LobbyManager.addSystemMessage(lobbyId, 'New round started.');
-		Notifications.insert({
-			created: new Date(),
-			lobbyId: game.lobbyId,
-			title: 'New round started',
-			body: 'Acrofever'
-		});
 
 		Meteor.setTimeout(function() {
 			// Advance to acro phase

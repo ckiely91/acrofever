@@ -38,9 +38,38 @@ Template.nav.events({
 	}
 });
 
+Template.userNavDropdown.helpers({
+	notificationsSupported: function() {
+		if (typeof Notification !== 'undefined')
+			return true;
+		else
+			return false;
+	},
+	notificationsEnabled: function() {
+		var user = Meteor.user();
+		if (user.profile.notificationsEnabled === false)
+			return false;
+
+		return (Notification.permission === 'granted');
+	}
+})
+
 Template.userNavDropdown.events({
 	'click #signOut': function() {
 		Meteor.logout();
+	},
+	'click #turnOnNotifications': function() {
+		Meteor.call('toggleNotifications', true);
+
+		if (Notification.permission === 'denied') {
+			$('#notificationInfoModal').modal('show');
+		} else if (Notification.permission !== 'granted') {
+			Notification.requestPermission();
+		}
+
+	},
+	'click #turnOffNotifications': function() {
+		Meteor.call('toggleNotifications', false);
 	}
 });
 

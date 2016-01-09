@@ -92,6 +92,13 @@
 		<span>{{username _id}}</span>
 		<i class="dropdown icon"></i>
 		<div class="menu">
+			{{#if notificationsSupported}}
+				{{#if notificationsEnabled}}
+					<a id="turnOffNotifications" class="item">Turn off notifications</a>
+				{{else}}
+					<a id="turnOnNotifications" class="item">Turn on notifications</a>
+				{{/if}}
+			{{/if}}
 			<a href="/change-password" class="item">Change password</a>
 			<a id="signOut" class="item">Sign out</a>
 		</div>

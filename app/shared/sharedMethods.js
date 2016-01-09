@@ -32,5 +32,8 @@ Meteor.methods({
 		if (this.userId) {
 			Meteor.users.update(this.userId, {$addToSet: {'profile.closedNags': id}});
 		}
+	},
+	toggleNotifications: function(state) {
+		Meteor.users.update(Meteor.userId(), {$set: {'profile.notificationsEnabled': state}});
 	}
 });

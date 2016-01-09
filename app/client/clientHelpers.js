@@ -149,3 +149,23 @@ getCurrentRound = function(game) {
 getRandomCategories = function() {
 	return _.sample(DefaultCategories, 4);
 }
+
+notify = function(title, body) {
+	if (typeof Notification === 'undefined')
+		return;
+
+	var user = Meteor.user();
+	if (user.profile.notificationsEnabled === false)
+		return;
+
+	if (document.hidden && Notification.permission === "granted") {
+		var n = new Notification(title, {
+			icon: 'https://acrofever.com/apple-icon-180x180.png',
+			body: body,
+			lang: 'en-US'
+		});
+		setTimeout(n.close.bind(n), 4000);
+	} else if (Notification.permission !== "denied") {
+		Notification.requestPermission();
+	}
+}

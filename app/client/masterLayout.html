@@ -7,6 +7,9 @@
     </div>
     {{> howToPlay}}
     {{> pageDimmer}}
+    {{#if notificationsSupported}}
+        {{> notificationInfoModal}}
+    {{/if}}
 </template>
 
 <template name="pageDimmer">
@@ -40,6 +43,18 @@
                 </div>
             {{/if}}
             <p>{{{message}}}</p>
+        </div>
+    </div>
+</template>
+
+<template name="notificationInfoModal">
+    <div class="ui small basic modal" id="notificationInfoModal">
+        <div class="ui icon header">
+            <i class="alarm outline icon"></i>
+            Looks like you've disabled notifications for this site
+        </div>
+        <div class="content" style="text-align:center">
+            To re-enable notifications for Acrofever, <a href="https://acrofever.com/blog/re-enable-web-notifications-after-previously-denying-them" target="_blank">follow these instructions</a>.
         </div>
     </div>
 </template>

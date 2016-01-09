@@ -64,17 +64,30 @@ Template.lobby.onCreated(function() {
 		}
 	});
 
-	self.subscribe('notifications', FlowRouter.getParam('lobbyId'));
+	// self.subscribe('notifications', FlowRouter.getParam('lobbyId'));
 
-	self.notifications = Notifications.find().observe({
-		added: function(doc) {
-			notify(doc.title, doc.body);
-		}
-	});
+	// self.notifications = Notifications.find().observe({
+	// 	added: function(doc) {
+	// 		notify(doc.title, doc.body);
+	// 	}
+	// });
+
+	if (typeof Notification !== 'undefined') {
+		self.notifications = Lobbies.find({_id: FlowRouter.getParam('lobbyId')}).observeChanges({
+			changed: function(id, fields) {
+				if (fields.newGameStarting === true)
+					notify('New game starting soon', 'Acrofever');
+				
+				if (fields.currentGame)
+					notify('New game started', 'Acrofever');
+			}
+		});
+	}
 });
 
 Template.lobby.onDestroyed(function() {
-	this.notifications.stop();
+	if (this.notifications)
+		this.notifications.stop();
 });
 
 Template.game.helpers({
@@ -118,7 +131,22 @@ Template.game.onCreated(function() {
 			currentGame = Lobbies.findOne(lobbyId).currentGame;
 		var	handle = Meteor.subscribe('currentGame', currentGame);
 		self.ready.set(handle.ready());
+
+		if (typeof Notification !== 'undefined') {
+			self.notifications = Games.find({_id: currentGame}).observeChanges({
+				changed: function(id, fields) {
+					if (fields.currentRound)
+						notify('New round started', 'Acrofever');
+					
+				}
+			});
+		}
 	});
+});
+
+Template.game.onDestroyed(function() {
+	if (this.notifications)
+		this.notifications.stop();
 });
 
 Template.scoresPlayerRow.helpers({
@@ -161,17 +189,3 @@ Template.scoresPlayerRow.helpers({
 		return (lobby.players.indexOf(id) === -1);
 	}
 });
-
-function notify(title, body) {
-	if (!Notification)
-		return;
-	if (document.hidden && Notification.permission === "granted") {
-		var n = new Notification(title, {
-			icon: 'https://acrofever.com/apple-icon-180x180.png',
-			body: body
-		});
-		setTimeout(n.close.bind(n), 4000);
-	} else if (Notification.permission !== "denied") {
-		Notification.requestPermission();
-	}
-}

@@ -4,6 +4,15 @@ Template.pageDimmer.onRendered(function() {
 	});
 });
 
+Template.masterLayout.helpers({
+	notificationsSupported: function() {
+		if (typeof Notification !== 'undefined')
+			return true;
+		else
+			return false;
+	}
+});
+
 Template.masterLayout.onRendered(function() {
 	//general helper functions, jquery stuff available on all pages goes here
 	$.fn.isOnScreen = function(){
@@ -68,4 +77,12 @@ Template.nag.events({
 			Meteor.call('markNagAsClosed', template.data._id);
 		}, 300);
 	}
+});
+
+Template.notificationInfoModal.onRendered(function() {
+	var modal = $(this.firstNode);
+	modal.modal({
+		detachable: false,
+		observeChanges: true
+	});
 });
