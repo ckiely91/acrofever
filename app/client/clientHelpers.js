@@ -169,3 +169,11 @@ notify = function(title, body) {
 		Notification.requestPermission();
 	}
 }
+
+playSound = function(filename) {
+	var sound = new buzz.sound('/sounds/' + filename, {
+		formats: ['ogg', 'mp3']
+	});
+
+	sound.play();
+}
