@@ -79,7 +79,19 @@ span {
 
 .hiddenOnMobile {
 	@media screen and (max-width: @tabletBreakpoint) {
-		display:none;
+		display:none !important;
+	}
+}
+
+.showOnMobile {
+	@media screen and (min-width: @tabletBreakpoint) {
+		display:none !important;
+	}
+}
+
+.hiddenOnTablet {
+	@media screen and (min-width: @tabletBreakpoint) and (max-width: @computerBreakpoint) {
+		display: none !important;
 	}
 }
 

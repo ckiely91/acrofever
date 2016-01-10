@@ -29,6 +29,15 @@ Template.lobbyFeed.onCreated(function() {
 			Meteor.subscribe('otherPlayers', playerIds);
 		}
 	});
+
+	self.notifications = LobbyFeed.find({lobbyId: FlowRouter.getParam('lobbyId')}).observeChanges({
+		added: function(id, doc) {
+			if (self.ready.get() && doc.user) {
+				notify(displayname(doc.user, true), doc.detail, profilePicture(doc.user, 250));
+				playSound('chat');
+			}
+		}
+	});
 });
 
 Template.lobbyFeed.onDestroyed(function() {
@@ -44,13 +53,6 @@ Template.lobbyFeed.onRendered(function() {
 			limit += 20;
 			if (limit <= 200)
 				Session.set('lobbyChatLimit', limit);
-		}
-	});
-
-	self.notifications = LobbyFeed.find({lobbyId: FlowRouter.getParam('lobbyId')}).observeChanges({
-		added: function(document) {
-			console.log(document);
-			playSound('chat');
 		}
 	});
 });

@@ -6,23 +6,23 @@
 			</a>
 			<a href="#" class="item playNow">
 				<i class="lightning icon"></i>
-				Play now
+				<span class="hiddenOnTablet">Play now</span>
 			</a>
 			<a href="{{getRoutePath 'play'}}" class="item {{#if isOnRoute 'play'}}active{{/if}}">
 				<i class="search icon"></i>
-				Find a lobby
+				<span class="hiddenOnTablet">Find a lobby</span>
 			</a>
 			<a href="{{getRoutePath 'halloffame'}}" class="item {{#if isOnRoute 'halloffame'}}active{{/if}}">
 				<i class="trophy icon"></i>
-				Hall of Fame
+				<span class="hiddenOnTablet">Hall of Fame</span>
 			</a>
 			<a id="howToPlay" class="item">
 				<i class="question icon"></i>
-				How to Play
+				<span class="hiddenOnTablet">How to Play</span>
 			</a>
 			<a href="{{getRoutePath 'blogIndex'}}" class="item {{#if isOnRoute 'blogIndex'}}active{{/if}}">
 				<i class="rss icon"></i>
-				Blog
+				<span class="hiddenOnTablet">Blog</span>
 			</a>
 			<div id="rightNav" class="right menu">
 				{{#if loggedInUser}}
@@ -87,16 +87,45 @@
 </template>
 
 <template name="userNavDropdown">
+	<a id="toggleSound" class="hiddenOnMobile item" style="font-size:1.2em;padding-left:10px;padding-right:10px" title="Toggle audio">
+		{{#unless soundDisabled}}
+			<i class="volume up icon" style="margin-right:0"></i>
+		{{else}}
+			<i class="volume off icon" style="margin-right:0"></i>
+		{{/unless}}
+	</a>
+	{{#if notificationsSupported}}
+		{{#if notificationsEnabled}}
+			<a id="turnOffNotifications" class="hiddenOnMobile item" style="font-size:1.2em;padding-left:10px;padding-right:10px" title="Toggle notifications">
+				<i class="alarm icon" style="margin-right:0"></i>
+			</a>
+		{{else}}
+			<a id="turnOnNotifications" class="hiddenOnMobile item" style="font-size:1.2em;padding-left:10px;padding-right:10px" title="Toggle notifications">
+				<i class="alarm slash icon" style="margin-right:0"></i>
+			</a>
+		{{/if}}
+	{{/if}}
 	<div class="ui dropdown item">
 		<img class="ui avatar image" src="{{profilePicture _id 30}}" style="margin-right:10px">
 		<span>{{username _id}}</span>
 		<i class="dropdown icon"></i>
 		<div class="menu">
+			<a id="toggleSound" class="showOnMobile item">
+				{{#unless soundDisabled}}
+					<i class="volume up icon"></i> Turn off audio
+				{{else}}
+					<i class="volume off icon"></i> Turn on audio
+				{{/unless}}
+			</a>
 			{{#if notificationsSupported}}
 				{{#if notificationsEnabled}}
-					<a id="turnOffNotifications" class="item">Turn off notifications</a>
+					<a id="turnOffNotifications" class="showOnMobile item">
+						<i class="alarm icon"></i> Turn off notifications
+					</a>
 				{{else}}
-					<a id="turnOnNotifications" class="item">Turn on notifications</a>
+					<a id="turnOnNotifications" class="showOnMobile item">
+						<i class="alarm slash icon"></i> Turn on notifications
+					</a>
 				{{/if}}
 			{{/if}}
 			<a href="/change-password" class="item">Change password</a>

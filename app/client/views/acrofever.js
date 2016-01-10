@@ -25,6 +25,7 @@ Template.chooseCategory.events({
 		var gameId = template.data._id;
 		
 		template.pickedCategory.set(true);
+		playSound('select');
 		Meteor.call('acrofeverChooseCategory', gameId, category, function(err) {
 			if (err) {
 				console.error(err);
@@ -39,6 +40,7 @@ Template.chooseCategory.events({
 		var gameId = template.data._id;
 
 		template.pickedCategory.set(true);
+		playSound('select');
 		Meteor.call('acrofeverChooseCategory', gameId, customCategory, function(err) {
 			if (err) {
 				console.error(err);
@@ -125,6 +127,7 @@ Template.submitAcroForm.events({
 				form.form('add errors', [err.reason]);
 			} else {
 				Session.set('hasChosenAcro', true);
+				playSound('select');
 			}
 		});
 	}
@@ -180,6 +183,7 @@ Template.acroVoting.events({
 		evt.preventDefault();
 		var id = $(evt.currentTarget).data().id;
 		Meteor.call('acrofeverVoteForAcro', template.data._id, id);
+		playSound('select');
 	}
 });
 

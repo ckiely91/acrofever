@@ -64,14 +64,6 @@ Template.lobby.onCreated(function() {
 		}
 	});
 
-	// self.subscribe('notifications', FlowRouter.getParam('lobbyId'));
-
-	// self.notifications = Notifications.find().observe({
-	// 	added: function(doc) {
-	// 		notify(doc.title, doc.body);
-	// 	}
-	// });
-
 	self.notifications = Lobbies.find({_id: FlowRouter.getParam('lobbyId')}).observeChanges({
 		changed: function(id, fields) {
 			if (fields.newGameStarting === true) {
@@ -80,6 +72,7 @@ Template.lobby.onCreated(function() {
 			}
 			
 			if (fields.currentGame) {
+				playSound('action');
 				notify('New game started', 'Acrofever');
 			}
 		}
@@ -98,9 +91,27 @@ Template.game.helpers({
 	game: function() {
 		var currentGame = Lobbies.findOne(FlowRouter.getParam('lobbyId')).currentGame;
 		return Games.findOne(currentGame);
-	},
-	gamePhase: function(game) {
-		return game.type + '-' + game.currentPhase;
+	}
+});
+
+Template.game.onCreated(function() {
+	var self = this;
+	self.ready = new ReactiveVar();
+	self.autorun(function() {
+		var lobbyId = FlowRouter.getParam('lobbyId');
+		var currentGame = Lobbies.findOne(lobbyId).currentGame;
+		var	handle = Meteor.subscribe('currentGame', currentGame);
+		self.ready.set(handle.ready());
+	});
+});
+
+Template.game.onDestroyed(function() {
+	this.notifications.stop();
+});
+
+Template.gameInner.helpers({
+	gamePhase: function() {
+		return this.type + '-' + this.currentPhase;
 	},
 	lobbyPlayers: function(parentContext) {
 		var lobby = parentContext;
@@ -124,29 +135,46 @@ Template.game.helpers({
 	}
 });
 
-Template.game.onCreated(function() {
-	var self = this;
-	self.ready = new ReactiveVar();
-	self.autorun(function() {
-		var lobbyId = FlowRouter.getParam('lobbyId'),
-			currentGame = Lobbies.findOne(lobbyId).currentGame;
-		var	handle = Meteor.subscribe('currentGame', currentGame);
-		self.ready.set(handle.ready());
+Template.gameInner.onCreated(function() {
+	this.notifications = Games.find({_id: this.data._id}).observeChanges({
+		changed: function(id, fields) {
+			if (fields.currentRound) {
+				playSound('action');
+				notify('New round started', 'Acrofever');
+			}
 
-		if (typeof Notification !== 'undefined') {
-			self.notifications = Games.find({_id: currentGame}).observeChanges({
-				changed: function(id, fields) {
-					if (fields.currentRound) {
-						playSound('action');
-						notify('New round started', 'Acrofever');
-					}					
+			if (fields.currentPhase) {
+				switch (fields.currentPhase) {
+					case 'endround':
+						var game = Games.findOne(id),
+							currentRound = game.rounds[game.currentRound - 1];
+
+						if (currentRound.winner === Meteor.userId()) {
+							playSound('roundwin');
+							notify('You won the round!', 'Acrofever');
+						} else {
+							playSound('roundend');
+							notify(displayname(currentRound.winner, true) + ' won the round.', 'Acrofever');
+						}
+						break;
+					case 'endgame':
+						var game = Games.findOne(id);
+
+						if (game.gameWinner === Meteor.userId()) {
+							playSound('gamewin');
+							notify('You won the game!', 'Acrofever');
+						} else {
+							playSound('gameend');
+							notify(displayname(game.gameWinner, true) + ' won the game.', 'Acrofever');
+						}
+						break;
 				}
-			});
+			}
 		}
 	});
 });
 
-Template.game.onDestroyed(function() {
+Template.gameInner.onDestroyed(function() {
 	if (this.notifications)
 		this.notifications.stop();
 });

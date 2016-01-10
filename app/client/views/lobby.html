@@ -103,40 +103,42 @@
 
 <template name="game">
 	{{#if ready}}
-	{{#with lobby}}
-		{{#with game this}}
-			{{#if active}}
-				{{#with gamePhase this}}{{> Template.dynamic template=this}}{{/with}}
-			{{else}}
-				<h3 class="ui center aligned icon header">
-					<i class="wait icon"></i>
-					{{#if newGameStarting ..}}
-						New game starting in {{newGameCountdown ..}}
-					{{else}}
-						Waiting for more players...
-					{{/if}}
-				</h3>
-				<div class="ui divider"></div>
-				{{#if lobbyPlayers ..}}
-					<div class="ui four doubling cards">
-						{{#each lobbyPlayers ..}}
-							<div class="card">
-								<div class="image">
-									<img src="{{profilePicture this 400}}">
-								</div>
-								<div class="content">
-									{{username this}}
-								</div>
-							</div>
-						{{/each}}
-					</div>
-				{{else}}
-					<h3 class="ui center aligned disabled header">No players in lobby</h3>
-				{{/if}}
-			{{/if}}
+		{{#with game}}
+			{{> gameInner}}
 		{{/with}}
-	{{/with}}
 	{{else}}
 		<div class="ui active loader"></div>
+	{{/if}}
+</template>
+
+<template name="gameInner">
+	{{#if active}}
+		{{> Template.dynamic template=gamePhase}}
+	{{else}}
+		<h3 class="ui center aligned icon header">
+			<i class="wait icon"></i>
+			{{#if newGameStarting ..}}
+				New game starting in {{newGameCountdown ..}}
+			{{else}}
+				Waiting for more players...
+			{{/if}}
+		</h3>
+		<div class="ui divider"></div>
+		{{#if lobbyPlayers ..}}
+			<div class="ui four doubling cards">
+				{{#each lobbyPlayers ..}}
+					<div class="card">
+						<div class="image">
+							<img src="{{profilePicture this 400}}">
+						</div>
+						<div class="content">
+							{{username this}}
+						</div>
+					</div>
+				{{/each}}
+			</div>
+		{{else}}
+			<h3 class="ui center aligned disabled header">No players in lobby</h3>
+		{{/if}}
 	{{/if}}
 </template>

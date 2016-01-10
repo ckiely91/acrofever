@@ -29,11 +29,19 @@ Meteor.methods({
 		});
 	},
 	markNagAsClosed: function(id) {
-		if (this.userId) {
+		if (this.userId)
 			Meteor.users.update(this.userId, {$addToSet: {'profile.closedNags': id}});
-		}
 	},
 	toggleNotifications: function(state) {
-		Meteor.users.update(Meteor.userId(), {$set: {'profile.notificationsEnabled': state}});
+		if (this.userId) {
+			check(state, Boolean);
+			Meteor.users.update(this.userId, {$set: {'profile.notificationsEnabled': state}});
+		}
+	},
+	toggleSounds: function(state) {
+		if (this.userId) {
+			check(state, Boolean);
+			Meteor.users.update(this.userId, {$set: {'profile.soundsEnabled': state}});
+		}
 	}
 });

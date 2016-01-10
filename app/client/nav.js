@@ -47,10 +47,10 @@ Template.userNavDropdown.helpers({
 	},
 	notificationsEnabled: function() {
 		var user = Meteor.user();
-		if (user.profile.notificationsEnabled === false)
-			return false;
-
-		return (Notification.permission === 'granted');
+		return user.profile.notificationsEnabled;
+	},
+	soundDisabled: function() {
+		return (Meteor.user().profile.soundsEnabled === false);
 	}
 })
 
@@ -59,18 +59,51 @@ Template.userNavDropdown.events({
 		Meteor.logout();
 	},
 	'click #turnOnNotifications': function() {
-		Meteor.call('toggleNotifications', true);
+		if (Notification.permission === 'granted') {
+			Meteor.call('toggleNotifications', true);
+			return;
+		}
 
 		if (Notification.permission === 'denied') {
 			$('#notificationInfoModal').modal('show');
-		} else if (Notification.permission !== 'granted') {
-			Notification.requestPermission();
+			return;
 		}
 
+		Notification.requestPermission(function(result) {
+			if (result === 'granted') {
+				Meteor.call('toggleNotifications', true);
+			}
+		});
 	},
 	'click #turnOffNotifications': function() {
 		Meteor.call('toggleNotifications', false);
+	},
+	'click #toggleSound': function() {
+		if (Meteor.user().profile.soundsEnabled === false)
+			Meteor.call('toggleSounds', true);
+		else
+			Meteor.call('toggleSounds', false);
 	}
+});
+
+Template.userNavDropdown.onCreated(function() {
+	if (typeof Notification !== 'undefined') {
+		this.tracker = Tracker.autorun(function(c) {
+			var permission = Meteor.user().profile.notificationsEnabled;
+			if (permission === true && Notification.permission !== 'granted') {
+				console.log('set to false');
+				Meteor.call('toggleNotifications', false);
+			} else if (typeof permission === 'undefined' && Notification.permission === 'granted') {
+				console.log('set to true');
+				Meteor.call('toggleNotifications', true);
+			}
+		});
+	}
+});
+
+Template.userNavDropdown.onDestroyed(function() {
+	if (this.tracker)
+		this.tracker.stop();
 });
 
 Template.userNavDropdown.onRendered(function() {
