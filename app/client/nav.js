@@ -72,6 +72,8 @@ Template.userNavDropdown.events({
 		Notification.requestPermission(function(result) {
 			if (result === 'granted') {
 				Meteor.call('toggleNotifications', true);
+			} else if (result === 'denied') {
+				Meteor.call('toggleNotifications', false);
 			}
 		});
 	},
@@ -91,10 +93,8 @@ Template.userNavDropdown.onCreated(function() {
 		this.tracker = Tracker.autorun(function(c) {
 			var permission = Meteor.user().profile.notificationsEnabled;
 			if (permission === true && Notification.permission !== 'granted') {
-				console.log('set to false');
 				Meteor.call('toggleNotifications', false);
 			} else if (typeof permission === 'undefined' && Notification.permission === 'granted') {
-				console.log('set to true');
 				Meteor.call('toggleNotifications', true);
 			}
 		});
