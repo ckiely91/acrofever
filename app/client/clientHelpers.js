@@ -132,8 +132,10 @@ notify = function(title, body, image) {
 		Notification.requestPermission(function(result) {
 			if (result === 'granted') {
 				Meteor.call('toggleNotifications', true);
+				analytics.track("allowNotifications");
 			} else if (result === 'denied') {
 				Meteor.call('toggleNotifications', false);
+				analytics.track("denyNotifications");
 			}
 		});
 	}

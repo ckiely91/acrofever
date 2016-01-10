@@ -64,5 +64,9 @@ Template.lobbyChatInput.events({
 		var lobbyId = FlowRouter.getParam('lobbyId');
 		Meteor.call('addLobbyFeedChat', lobbyId, message);
 		$("#chat-input-form").trigger('reset');
+		analytics.track("addLobbyChat", {
+			lobbyId: lobbyId,
+			message: message
+		});
 	}
 });

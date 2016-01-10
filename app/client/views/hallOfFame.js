@@ -26,7 +26,6 @@ Template.hallOfFame.onCreated(function() {
 	self.limit = new ReactiveVar(18);
 	self.ready = new ReactiveVar();
 	self.autorun(function() {
-		console.log(self.limit);
 		var handle = Meteor.subscribe('hallOfFame', self.limit.get());
 		self.ready.set(handle.ready());
 		if (handle.ready()) {

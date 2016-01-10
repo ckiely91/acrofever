@@ -31,6 +31,10 @@ Template.chooseCategory.events({
 				console.error(err);
 				template.pickedCategory.set(false);
 			}
+			analytics.track("chooseCategory", {
+				category: category,
+				custom: false 
+			});
 		});
 	},
 	'submit form': function(evt, template) {
@@ -46,6 +50,10 @@ Template.chooseCategory.events({
 				console.error(err);
 				template.pickedCategory.set(false);
 			}
+			analytics.track("chooseCategory", {
+				category: customCategory,
+				custom: true 
+			});
 		});
 	}
 });
@@ -95,6 +103,7 @@ Template.submitAcro.events({
 	'click #changeAcro': function(evt, template) {
 		evt.preventDefault();
 		Session.set('hasChosenAcro', false);
+		analytics.track("changeAcro");
 	}
 });
 
@@ -128,6 +137,9 @@ Template.submitAcroForm.events({
 			} else {
 				Session.set('hasChosenAcro', true);
 				playSound('select');
+				analytics.track("submitAcro", {
+					acroLength: acro.length
+				});
 			}
 		});
 	}
@@ -184,6 +196,7 @@ Template.acroVoting.events({
 		var id = $(evt.currentTarget).data().id;
 		Meteor.call('acrofeverVoteForAcro', template.data._id, id);
 		playSound('select');
+		analytics.track("voteForAcro");
 	}
 });
 
@@ -465,6 +478,7 @@ Template.bestAcroCard.events({
 
 		var gameId = Lobbies.findOne(FlowRouter.getParam('lobbyId')).currentGame;
 		Meteor.call('voteForHallOfFame', gameId, template.data);
+		analytics.track("voteForHallOfFame");
 	}
 });
 

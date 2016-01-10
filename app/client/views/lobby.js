@@ -40,11 +40,17 @@ Template.lobby.events({
 		var lobbyId = FlowRouter.getParam('lobbyId');
 		$(event.currentTarget).addClass('loading');
 		Meteor.call('joinOrLeaveOfficialLobby', lobbyId, true);
+		analytics.track("joinLobby", {
+			lobbyId: lobbyId
+		});
 	},
 	'click #leaveLobby': function(event) {
 		var lobbyId = FlowRouter.getParam('lobbyId');
 		$(event.currentTarget).addClass('loading');
 		Meteor.call('joinOrLeaveOfficialLobby', lobbyId, false);
+		analytics.track("leaveLobby", {
+			lobbyId: lobbyId
+		});
 	}
 });
 
@@ -103,10 +109,6 @@ Template.game.onCreated(function() {
 		var	handle = Meteor.subscribe('currentGame', currentGame);
 		self.ready.set(handle.ready());
 	});
-});
-
-Template.game.onDestroyed(function() {
-	this.notifications.stop();
 });
 
 Template.gameInner.helpers({

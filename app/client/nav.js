@@ -12,6 +12,7 @@ Template.nav.events({
 	'click #howToPlay': function(evt) {
 		evt.preventDefault();
 		$('#howToPlayModal').modal('show');
+		analytics.page('howToPlay');
 	},
 	'click .playNow': function(evt) {
 		evt.preventDefault();
@@ -28,6 +29,7 @@ Template.nav.events({
 			else
 				FlowRouter.go(FlowRouter.path('lobby', {lobbyId: res}));
 		});
+		analytics.track("playNowButton");
 	},
 	'click .sidebar.icon': function(evt) {
 		$('.slideMenu').transition('slide down');
@@ -59,6 +61,7 @@ Template.userNavDropdown.events({
 		Meteor.logout();
 	},
 	'click #turnOnNotifications': function() {
+		analytics.track("turnOnNotifications");
 		if (Notification.permission === 'granted') {
 			Meteor.call('toggleNotifications', true);
 			return;
@@ -72,19 +75,25 @@ Template.userNavDropdown.events({
 		Notification.requestPermission(function(result) {
 			if (result === 'granted') {
 				Meteor.call('toggleNotifications', true);
+				analytics.track("allowNotifications");
 			} else if (result === 'denied') {
 				Meteor.call('toggleNotifications', false);
+				analytics.track("denyNotifications");
 			}
 		});
 	},
 	'click #turnOffNotifications': function() {
 		Meteor.call('toggleNotifications', false);
+		analytics.track("turnOffNotifications");
 	},
 	'click #toggleSound': function() {
-		if (Meteor.user().profile.soundsEnabled === false)
+		if (Meteor.user().profile.soundsEnabled === false) {
 			Meteor.call('toggleSounds', true);
-		else
+			analytics.track("turnOnSounds");
+		} else {
 			Meteor.call('toggleSounds', false);
+			analytics.track("turnOffSounds");
+		}
 	}
 });
 

@@ -76,6 +76,9 @@ Template.nag.events({
 			//allow it to fade out first
 			Meteor.call('markNagAsClosed', template.data._id);
 		}, 300);
+		analytics.track("closeNag", {
+			id: template.data._id
+		});
 	}
 });
 

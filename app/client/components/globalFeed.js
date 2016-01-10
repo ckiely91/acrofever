@@ -70,6 +70,9 @@ Template.globalChatInput.events({
 			Meteor.call('addGlobalFeedChat', message);
 			$("#chat-input-form").trigger('reset');
 			$('.feedChatDiv .feedInner').scrollTop(0);
+			analytics.track("addGlobalChat", {
+				message: message
+			});
 		} else {
 			FlowRouter.go('/sign-in');
 		}

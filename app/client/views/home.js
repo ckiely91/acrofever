@@ -21,10 +21,12 @@ Template.home.events({
 			else
 				FlowRouter.go(FlowRouter.path('lobby', {lobbyId: res}));
 		});
+		analytics.track("playNowButton");
 	},
 	'click .howToPlay': function(evt) {
 		evt.preventDefault();
 		$('#howToPlayModal').modal('show');
+		analytics.page('howToPlay');
 	}
 });
 
