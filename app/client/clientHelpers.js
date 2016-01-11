@@ -32,7 +32,7 @@ Template.registerHelper("isThisUser", function(id) {
 });
 
 Template.registerHelper('countdown', function(endTime) {
-	var diff = moment(endTime).diff(mo.now.get());
+	var diff = moment(endTime).diff(TimeSync.serverTime(null, 500) || mo.now.get());
 	if (diff >= 0)
 		return moment(diff).format('m:ss');
 	else
@@ -194,3 +194,12 @@ profilePicture = function(id, size) {
 	}
 	return newUrl;
 }
+
+
+// Resync server time every 10 minutes
+
+Meteor.startup(function() {
+	Meteor.setInterval(function() {
+		TimeSync.resync();
+	}, 600000);
+});

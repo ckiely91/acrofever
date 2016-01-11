@@ -129,7 +129,7 @@ Template.gameInner.helpers({
 	},
 	newGameCountdown: function(parentContext) {
 		var endTime = parentContext.endTime;
-		var diff = moment(endTime).diff(mo.now.get());
+		var diff = moment(endTime).diff(TimeSync.serverTime(null, 500) || mo.now.get());
 		if (diff >= 0)
 			return moment(diff).format('m:ss');
 		else

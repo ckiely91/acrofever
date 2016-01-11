@@ -96,6 +96,7 @@ meteorhacks:subs-manager@1.6.3
 miktam:loggly@1.0.0
 minifiers@1.1.7
 minimongo@1.0.10
+mizzao:timesync@0.3.4
 mobile-experience@1.0.1
 mobile-status-bar@1.0.6
 momentjs:moment@2.10.6

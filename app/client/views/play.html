@@ -41,7 +41,7 @@
 		<td>
 			{{#unless noPlayers players}}
 				{{#each players}}
-					<img class="ui mini circular image" src="{{profilePicture this 35}}" data-content="{{username this}}">
+					<img class="ui mini circular image inline" src="{{profilePicture this 35}}" data-content="{{username this}}">
 				{{/each}}
 			{{else}}
 				<em>No players</em>
