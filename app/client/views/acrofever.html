@@ -135,7 +135,7 @@
 	{{> countdownHeader endTime=endTime header=currentAcro subheader=currentCategory}}
 
 	<div class="ui divider" style="margin-bottom:2em"></div>
-
+	<h3 class="ui center aligned header">Round results</h3>
 	{{> acroEndRound}}
 
 	<div class="ui hidden divider"></div>
@@ -144,7 +144,6 @@
 </template>
 
 <template name="acroEndRound">
-	<h3 class="ui center aligned header">Round results</h3>
 	<div class="ui basic segment">
 		<div class="scrollTable-outer">
 			<div class="scrollTable-fade"></div>
@@ -195,6 +194,11 @@
 		{{/with}}
 
 		<div class="ui divider" style="margin-bottom:2em"></div>
+
+		<h3 class="ui center aligned header">Last round results</h3>
+		{{> acroEndRound}}
+
+		<div class="ui divider"></div>
 
 		<h3 class="ui center aligned header">Game results</h3>
 		<div class="ui basic segment">
