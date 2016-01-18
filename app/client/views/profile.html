@@ -1,0 +1,39 @@
+<template name="profile">
+	<div class="ui text container">
+	{{#if ready}}
+		{{#if user}}
+			{{#with user}}
+				<img class="ui small circular centered image" src="{{profilePicture _id 150}}">
+				<h2 class="ui center aligned header">
+					{{username _id}}
+					<div class="sub header">Member since {{moCalendar createdAt}}</div>
+				</h2>
+				<div class="ui divider"></div>
+				<div class="ui four statistics">
+					<div class="statistic">
+						<div class="value">20</div>
+						<div class="label">Games Played</div>
+					</div>
+					<div class="statistic">
+						<div class="value">10</div>
+						<div class="label">Games Won</div>
+					</div>
+					<div class="statistic">
+						<div class="value">50%</div>
+						<div class="label">Win Rate</div>
+					</div>
+					<div class="statistic">
+						<div class="value">2</div>
+						<div class="label">Hall of Fame</div>
+					</div>
+				</div>
+				<div class="ui divider"></div>
+			{{/with}}
+		{{else}}
+			<em>This user does not exist</em>
+		{{/if}}
+	{{else}}
+		<div class="ui active loader"></div>
+	{{/if}}
+	</div>
+</template>
