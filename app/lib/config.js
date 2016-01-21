@@ -25,6 +25,11 @@ AccountsTemplates.configure({
   }
 });
 
+if (Meteor.isClient && navigator.userAgent.match('CriOS')) {
+  // Fix for Chrome iOS bug where FB login doesn't work
+  AccountsTemplates.configure({socialLoginStyle: 'redirect'});
+}
+
 var pwd = AccountsTemplates.removeField('password');
 AccountsTemplates.removeField('email');
 AccountsTemplates.addFields([

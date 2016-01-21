@@ -9,5 +9,5 @@ AcroSettings = new Mongo.Collection('acro_settings');
 AcroCategoryPacks = new Mongo.Collection('acro_categorypacks');
 
 //global version vars
-appVersion = "2.0.9";
-appLastUpdated = "17 January 2016";
+appVersion = "2.0.10";
+appLastUpdated = "21 January 2016";
