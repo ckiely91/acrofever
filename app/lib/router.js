@@ -72,8 +72,6 @@ blogRoutes.route('/tag/:tag', {
   }
 });
 
-
-
 var adminRoutes = FlowRouter.group({
   prefix: '/admin',
   name: 'admin',

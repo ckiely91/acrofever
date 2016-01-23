@@ -36,5 +36,8 @@ Meteor.methods({
 	},
 	hallOfFameAcroCount: function() {
 		return HallOfFame.find({active: true}).count();
+	},
+	hallOfFameUserAcroCount: function(userId) {
+		return HallOfFame.find({userId: userId, active: true}).count();
 	}
 });

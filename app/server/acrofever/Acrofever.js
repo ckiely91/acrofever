@@ -397,4 +397,13 @@ function goToEndGame(gameId, winners) {
 			GameManager.startNewGame(game.lobbyId);
 		}
 	}, lobby.config.hallOfFameTimeout);
+
+	//update profiles with games played
+
+	var thoseWhoPlayed = [];
+	_.each(game.scores, function(score, player) {
+		thoseWhoPlayed.push(player);
+	});
+	Meteor.users.update({_id: {$in: thoseWhoPlayed}}, {$inc: {'profile.stats.gamesPlayed': 1}}, {multi: true});
+	Meteor.users.update(winner, {$inc: {'profile.stats.gamesWon': 1}});
 }

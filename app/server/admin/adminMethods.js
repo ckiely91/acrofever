@@ -45,7 +45,9 @@ Meteor.methods({
 				break;
 		}
 	},
-	migrateUserBase: function() {
+	//Migrations
+	//Commenting out these methods once they have been run on production
+	/*migrateUserBase: function() {
 		if (!isAdminUser(this.userId))
 			throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
 
@@ -95,6 +97,46 @@ Meteor.methods({
 			HallOfFame.insert(obj);
 			console.log('inserted ' + item.acro);
 		});
+	}*/
+	migrateUserStats: function() {
+		if (!isAdminUser(this.userId))
+			throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
+
+		var gamesPlayed = {},
+			gamesWon = {};
+
+		var games = Games.find({gameWinner: {$exists: true}});
+		console.log(games.count() + ' total games');
+
+		games.forEach(function(game) {
+			_.each(game.scores, function(score, player) {
+				if (!gamesPlayed[player])
+					gamesPlayed[player] = 0;
+
+				gamesPlayed[player] = gamesPlayed[player] + 1;
+			});
+
+			if (!gamesWon[game.gameWinner])
+				gamesWon[game.gameWinner] = 0;
+
+			gamesWon[game.gameWinner] = gamesWon[game.gameWinner] + 1;
+		});
+		console.log(gamesPlayed);
+		console.log('----------------------------');
+		console.log(gamesWon);
+
+		_.each(gamesPlayed, function(number, userId) {
+			Meteor.users.update(userId, {$set: {'profile.stats.gamesPlayed': number}});
+		});
+
+		_.each(gamesWon, function(number, userId) {
+			Meteor.users.update(userId, {$set: {'profile.stats.gamesWon': number}});
+		});
+
+		return {
+			gamesPlayed: gamesPlayed,
+			gamesWon: gamesWon
+		};
 	}
 });
 
