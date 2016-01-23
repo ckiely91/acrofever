@@ -72,18 +72,6 @@ blogRoutes.route('/tag/:tag', {
   }
 });
 
-
-FlowRouter.route('/profile/:userId', {
-  name: 'profile',
-  action: function() {
-    BlazeLayout.render('masterLayout', {
-      main: 'profile'
-    });
-  }
-});
-
-
-
 var adminRoutes = FlowRouter.group({
   prefix: '/admin',
   name: 'admin',

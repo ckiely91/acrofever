@@ -171,13 +171,15 @@
 <template name="acroRoundResultsRow">
 	<tr>
 		<td>
-			<h4 class="ui image header">
-				<img src="{{profilePicture id 35}}" class="ui mini circular image">
-				<div class="content">
-					{{username id true}}
-					{{#if accolades currentRound}}<div class="sub header">{{{accolades currentRound}}}</div>{{/if}}
-				</div>
-			</h4>
+			<a href="#" class="userProfilePicture" data-userid="{{id}}">
+				<h4 class="ui image header">
+					<img src="{{profilePicture id 35}}" class="ui mini circular image">
+					<div class="content">
+						{{username id true}}
+						{{#if accolades currentRound}}<div class="sub header">{{{accolades currentRound}}}</div>{{/if}}
+					</div>
+				</h4>
+			</a>
 		</td>
 		<td>{{submission.acro}}</td>
 		<td>{{votes}}</td>
@@ -227,15 +229,17 @@
 <template name="acroGameResultsRow">
 	<tr>
 		<td>
-			<h4 class="ui image header">
-				<img src="{{profilePicture id 80}}" class="ui circular image">
-				<div class="content">
-					{{#if winner}}<i class="star icon noRightMargin"></i> {{/if}}
-					{{#if isThisUser id}}<i class="user icon noRightMargin"></i> {{/if}}
-					{{username id true}}
-					{{#if accolades}}<div class="sub header">{{{accolades}}}</div>{{/if}}
-				</div>
-			</h4>
+			<a href="#" class="userProfilePicture" data-userid="{{id}}">
+				<h4 class="ui image header">
+					<img src="{{profilePicture id 80}}" class="ui circular image">
+					<div class="content">
+						{{#if winner}}<i class="star icon noRightMargin"></i> {{/if}}
+						{{#if isThisUser id}}<i class="user icon noRightMargin"></i> {{/if}}
+						{{username id true}}
+						{{#if accolades}}<div class="sub header">{{{accolades}}}</div>{{/if}}
+					</div>
+				</h4>
+			</a>
 			<div class="clear"></div>
 			<div class="ui mini grey statistic">
 				<div class="value">{{totalVotes}}</div>

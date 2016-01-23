@@ -3,14 +3,16 @@
         <div class="event">
             <div class="label">
                 {{#if user}}
-                    <img src="{{profilePicture user 35}}">
+                    <a href="#" class="userProfilePicture" data-userid="{{user}}">
+                        <img src="{{profilePicture user 35}}">
+                    </a>
                 {{else}}
                     <i class="{{#if icon}}{{icon}}{{else}}info{{/if}} icon"></i>
                 {{/if}}
             </div>
             <div class="content">
                 <div class="summary">
-                    {{#if user}}{{username user}}{{else}}{{summary}}{{/if}}
+                    {{#if user}}<a href="#" class="userProfilePicture" data-userid="{{user}}">{{username user}}</a>{{else}}{{summary}}{{/if}}
                     <div class="date">
                         {{moFromNow timestamp}}
                     </div>

@@ -89,13 +89,15 @@
 <template name="scoresPlayerRow">
 	<tr class="{{#if isInactive id}}disabled{{/if}}">
 		<td>
-			<h4 class="ui image header">
-		        <img src="{{profilePicture id 35}}" class="ui mini circular image">
-		        <div class="content">
-		            {{username id true}}
-		        <div class="sub header">{{leader id}}</div>
-		        </div>
-		    </h4>
+			<a href="#" class="userProfilePicture" data-userid="{{id}}">
+				<h4 class="ui image header">
+			        <img src="{{profilePicture id 35}}" class="ui mini circular image">
+			        <div class="content">
+			            {{username id true}}
+			        	<div class="sub header">{{leader id}}</div>
+			        </div>
+			    </h4>
+		    </a>
 		</td>
 		<td>{{score}}</td>
 	</tr>
@@ -127,14 +129,14 @@
 		{{#if lobbyPlayers ..}}
 			<div class="ui four doubling cards">
 				{{#each lobbyPlayers ..}}
-					<div class="card">
+					<a href="#" class="userProfilePicture card" data-userid="{{this}}">
 						<div class="image">
 							<img src="{{profilePicture this 400}}">
 						</div>
 						<div class="content">
 							{{username this}}
 						</div>
-					</div>
+					</a>
 				{{/each}}
 			</div>
 		{{else}}

@@ -94,6 +94,10 @@ Template.userNavDropdown.events({
 			Meteor.call('toggleSounds', false);
 			analytics.track("turnOffSounds");
 		}
+	},
+	'click #viewProfile': function() {
+		Session.set('selectedProfileUserId', Meteor.userId());
+		$('#profileModal').modal('show');
 	}
 });
 

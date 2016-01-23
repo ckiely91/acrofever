@@ -1,33 +1,23 @@
-<template name="profile">
-	<div class="ui text container">
+<template name="profileModal">
+	<div class="ui small basic modal" id="profileModal">
 	{{#if ready}}
 		{{#if user}}
 			{{#with user}}
-				<img class="ui small circular centered image" src="{{profilePicture _id 150}}">
-				<h2 class="ui center aligned header">
-					{{username _id}}
-					<div class="sub header">Member since {{moCalendar createdAt}}</div>
-				</h2>
-				<div class="ui divider"></div>
-				<div class="ui four statistics">
-					<div class="statistic">
-						<div class="value">20</div>
-						<div class="label">Games Played</div>
+				<h1 class="ui center aligned inverted header">
+					<img class="ui circular image" src="{{profilePicture _id 70}}">
+					<div class="content">
+						{{username _id}}
+						<div class="sub header">Member since {{moCalendar createdAt}}</div>
 					</div>
-					<div class="statistic">
-						<div class="value">10</div>
-						<div class="label">Games Won</div>
+				</h1>
+				<div class="content">
+					<div class="ui four inverted statistics hiddenOnMobile">
+						{{> userStats}}
 					</div>
-					<div class="statistic">
-						<div class="value">50%</div>
-						<div class="label">Win Rate</div>
-					</div>
-					<div class="statistic">
-						<div class="value">2</div>
-						<div class="label">Hall of Fame</div>
+					<div class="ui two inverted statistics showOnMobile">
+						{{> userStats}}
 					</div>
 				</div>
-				<div class="ui divider"></div>
 			{{/with}}
 		{{else}}
 			<em>This user does not exist</em>
@@ -35,5 +25,24 @@
 	{{else}}
 		<div class="ui active loader"></div>
 	{{/if}}
+	</div>
+</template>
+
+<template name="userStats">
+	<div class="statistic">
+		<div class="value">{{gamesPlayedStat}}</div>
+		<div class="label">Games Played</div>
+	</div>
+	<div class="statistic">
+		<div class="value">{{gamesWonStat}}</div>
+		<div class="label">Games Won</div>
+	</div>
+	<div class="statistic">
+		<div class="value">{{winRateStat gamesPlayedStat gamesWonStat}}%</div>
+		<div class="label">Win Rate</div>
+	</div>
+	<div class="statistic">
+		<div class="value">{{#if hallOfFameStat}}{{hallOfFameStat}}{{else}}<div class="ui active small inline loader" style="font-size:1.5rem"></div>{{/if}}</div>
+		<div class="label">Hall of Fame</div>
 	</div>
 </template>
