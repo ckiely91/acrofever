@@ -97,7 +97,7 @@ Meteor.methods({
 			HallOfFame.insert(obj);
 			console.log('inserted ' + item.acro);
 		});
-	}*/
+	}
 	migrateUserStats: function() {
 		if (!isAdminUser(this.userId))
 			throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
@@ -125,22 +125,33 @@ Meteor.methods({
 		console.log('----------------------------');
 		console.log(gamesWon);
 
-		_.each(gamesPlayed, function(number, userId) {
-			Meteor.users.update(userId, {$set: {'profile.stats.gamesPlayed': number}});
-		});
+		Meteor.users.find({}).forEach(function(user) {
+			var totalGamesPlayed = gamesPlayed[user._id] || 0;
+			var totalGamesWon = gamesWon[user._id] || 0;
+			if (user.profile && user.profile.stats) {
+				if (_.isObject(user.profile.stats.gamesPlayed)) {
+					winner = 0;
+					_.each(user.profile.stats.gamesPlayed, function(game) {
+						if (game.winner) winner ++;
+					});
+					totalGamesPlayed += user.profile.stats.gamesPlayed.length;
+					totalGamesWon += winner;
+				}
+			}
 
-		_.each(gamesWon, function(number, userId) {
-			Meteor.users.update(userId, {$set: {'profile.stats.gamesWon': number}});
+			Meteor.users.update(user._id, {$set: {'profile.stats': {
+				gamesPlayed: totalGamesPlayed,
+				gamesWon: totalGamesWon
+			}}});
 		});
 
 		return {
 			gamesPlayed: gamesPlayed,
 			gamesWon: gamesWon
 		};
-	}
+	}*/
 });
 
 function isAdminUser(userId) {
 	return (Meteor.settings.adminUsers.indexOf(userId) > -1);
 }
-
