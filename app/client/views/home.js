@@ -49,3 +49,20 @@ Template.home.onCreated(function() {
 		DocHead.addMeta({name: name, content: content})
 	});
 });
+
+Template.onlinePlayers.helpers({
+	ready: function() {
+		return Template.instance().subscriptionsReady();
+	},
+	onlinePlayers: function() {
+		return Meteor.users.find({'status.online': true});
+	},
+	playerCount: function(cursor) {
+		var count = cursor.count();
+		return count + ((count <= 1) ? ' player ' : ' players ') + ' online';
+	}
+});
+
+Template.onlinePlayers.onCreated(function() {
+	this.subscribe('allOnlinePlayers');
+});

@@ -39,6 +39,15 @@ Meteor.publish('otherPlayers', function(playerIdList) {
 	}});
 });
 
+Meteor.publish('allOnlinePlayers', function() {
+	return Meteor.users.find({'status.online': true}, {fields: {
+		username: true,
+		createdAt: true,
+		profile: true,
+		'status.online': true
+	}});
+});
+
 Meteor.publish('currentGame', function(currentGame) {
 	if (!this.userId || !currentGame)
 		return [];

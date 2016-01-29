@@ -24,18 +24,11 @@
 				</button>
 			</div>
 			<div class="ui hidden divider"></div>
-			{{#if playersOnline}}
-			<div class="ui horizontal statistic">
-				<div class="value">
-					{{playersOnline}}
-				</div>
-				<div class="label">
-					playing now
-				</div>
-			</div>
-			{{/if}}
 		</div>
 		<div class="eight wide column">
+			<div class="ui raised segment">
+				{{> onlinePlayers}}
+			</div>
 			<div class="ui raised segment">
 				<h3 class="ui header">What is Acrofever?</h3>
 				<p>Acrofever is an Acrophobia clone for the modern web.</p>
@@ -51,4 +44,18 @@
 			{{> globalFeed}}
 		</div>
 	</div>
+</template>
+
+<template name="onlinePlayers">
+	<h3 class="ui header">{{playerCount onlinePlayers}}</h3>
+	{{#if ready}}
+		{{#each onlinePlayers}}
+			<a class="ui image label userProfilePicture" data-userid="{{_id}}">
+				<img src="{{profilePicture _id 50}}">
+				{{username _id}}
+			</a>
+		{{/each}}
+	{{else}}
+		<div class="ui active inline centered loader"></div>
+	{{/if}}
 </template>
