@@ -59,7 +59,7 @@ Template.onlinePlayers.helpers({
 	},
 	playerCount: function(cursor) {
 		var count = cursor.count();
-		return count + ((count <= 1) ? ' player ' : ' players ') + ' online';
+		return count + ((count === 1) ? ' player ' : ' players ') + ' online';
 	}
 });
 

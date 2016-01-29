@@ -47,8 +47,8 @@
 </template>
 
 <template name="onlinePlayers">
-	<h3 class="ui header">{{playerCount onlinePlayers}}</h3>
 	{{#if ready}}
+		<h3 class="ui header">{{playerCount onlinePlayers}}</h3>
 		{{#each onlinePlayers}}
 			<a class="ui image label userProfilePicture" data-userid="{{_id}}">
 				<img src="{{profilePicture _id 50}}">
