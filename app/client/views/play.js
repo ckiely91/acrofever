@@ -53,3 +53,7 @@ Template.lobbyRow.helpers({
 Template.lobbyRow.onRendered(function() {
 	this.$('img').popup();
 });
+
+Template.lobbyRow.onDestroyed(function() {
+	this.$('img').popup('hide');
+});

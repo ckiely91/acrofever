@@ -313,6 +313,11 @@ Template.acroRoundResultsRow.onRendered(function() {
 	});
 });
 
+Template.acroRoundResultsRow.onDestroyed(function() {
+	//destroy those pesky popups
+	this.$('.label').popup('hide');
+});
+
 function totalPoints(results) {
 	return results.votePoints + results.votedForWinnerPoints - results.notVotedNegativePoints + results.winnerPoints;
 }
@@ -490,3 +495,7 @@ Template.bestAcroCard.onCreated(function() {
 Template.bestAcroCard.onRendered(function() {
 	this.$('.hasPopup').popup();
 });
+
+Template.bestAcroCard.onDestroyed(function() {
+	this.$('.hasPopup').popup('hide');
+})
