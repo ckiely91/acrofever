@@ -1,5 +1,8 @@
 Meteor.methods({
 	acrofeverChooseCategory: function(gameId, category) {
+		check(gameId, String);
+		check(category, String);
+
 		var userId = this.userId;
 		var game = standardAcrofeverMethodChecks(gameId, userId, 'category', true, category);
 
@@ -12,6 +15,12 @@ Meteor.methods({
 		GameManager.advancePhase(gameId, 'acrofever', 'category', game.currentRound, category);
 	},
 	acrofeverSubmitAcro: function(gameId, acro) {
+		check(gameId, String);
+		check(acro, String);
+
+		//strip new lines from acro string
+		acro = acro.replace('\n', ' ');
+
 		var userId = this.userId;
 		var game = standardAcrofeverMethodChecks(gameId, userId, 'acro', true, acro);
 		var roundIndex = game.currentRound - 1;

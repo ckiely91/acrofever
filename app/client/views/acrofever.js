@@ -114,10 +114,20 @@ Template.submitAcro.onCreated(function() {
 	var game = self.data;
 	var round = getCurrentRound(game);
 	var userId = Meteor.userId();
+	console.log(round.players[userId]);
 	if (round.players[userId] && round.players[userId].submission) {
 		Session.set('hasChosenAcro', true);
+		Session.set('chosenAcro', round.players[userId].submission.acro);
 	} else {
 		Session.set('hasChosenAcro', false);
+		Session.set('chosenAcro', false);
+	}
+});
+
+Template.submitAcroForm.helpers({
+	chosenAcro: function() {
+		var chosenAcro = Session.get('chosenAcro');
+		return (chosenAcro) ? chosenAcro : '';
 	}
 });
 
@@ -136,6 +146,7 @@ Template.submitAcroForm.events({
 				form.form('add errors', [err.reason]);
 			} else {
 				Session.set('hasChosenAcro', true);
+				Session.set('chosenAcro', acro);
 				playSound('select');
 				analytics.track("submitAcro", {
 					acroLength: acro.length
@@ -162,6 +173,14 @@ Template.submitAcroForm.onRendered(function() {
 					}
 				]
 			}
+		}
+	});
+
+	// make mobile textarea submit on enter, rather than new line
+	$('form.showOnMobile').keypress(function(evt) {
+		if (evt.which == '13') {
+			$('form.showOnMobile').form('submit');
+			return false;
 		}
 	});
 });

@@ -2,6 +2,10 @@
          Site Overrides
 *******************************/
 
+body {
+	background-image: url('/images/acro-bg.png');
+}
+
 div.clear {
 	clear: both;
 }
@@ -11,7 +15,8 @@ div.clear {
 	font-size: 2em;
 	font-weight: 400;
     padding: 10px 15px 15px 10px;
-    color: @primaryColor !important; 
+    color: @primaryColor !important;
+    text-shadow: 2px 2px #171719;
 }
 
 #desktopNav {
@@ -19,6 +24,7 @@ div.clear {
 	@media screen and (max-width: @tabletBreakpoint) {
 		display:none;
 	}
+	background-image: url('/images/asfalt-light.png');
 }
 
 #mobileNav {
@@ -153,6 +159,10 @@ img.ui.image.inline {
 
 .footer iframe {
 	vertical-align: middle;
+}
+
+.semiTransparentWhiteBG {
+	background: rgba(255,255,255,0.6);
 }
 
 /* RESPONSIVE TABLE CSS */

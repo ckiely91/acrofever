@@ -79,13 +79,23 @@
 </template>
 
 <template name="submitAcroForm">
-	<form class="ui form">
+    <!-- desktop version -->
+	<form class="ui form hiddenOnMobile">
 		<div class="ui fluid action input">
-			<input type="text" name="acro" placeholder="Write your acro" required>
+			<input type="text" name="acro" placeholder="Write your acro" value="{{chosenAcro}}" required>
 			<button class="ui primary button" type="submit">Go</button>
 		</div>
 		<div class="ui error message"></div>
 	</form>
+
+    <!-- mobile version -->
+    <form class="ui form showOnMobile">
+        <div class="field">
+            <textarea type="text" name="acro" placeholder="Write your acro" value="{{chosenAcro}}" rows="2" required></textarea>
+        </div>
+        <button class="ui primary fluid button" type="submit">Go</button>
+        <div class="ui error message"></div>
+    </form>
 </template>
 <!-- ACRO PHASE END -->
 

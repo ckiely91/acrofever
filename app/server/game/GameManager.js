@@ -107,13 +107,9 @@ GameManager.startNewRound = function(lobbyId, setActive) {
 
 		var players = lobby.players;
 
-		//Select a random player to choose a category
-		var categoryChooser = _.sample(players);
-
 		var round = {
 			acronym: Acrofever.generateAcronym(),
-			players: {},
-			categoryChooser: categoryChooser
+			players: {}
 		};
 
 		_.each(players, function(playerId) {
@@ -138,6 +134,29 @@ GameManager.startNewRound = function(lobbyId, setActive) {
 			if (!game.scores[playerId])
 				setObj['scores.' + playerId] = 0;
 		});
+
+		//Select random player to pick a category if they haven't yet
+		var categoryChoosers = game.categoryChoosers;
+
+		if (!categoryChoosers) {
+			round.categoryChooser = _.sample(players);
+			setObj.categoryChoosers = [round.categoryChooser];
+		} else {
+			var eligibleCategoryChoosers = [];
+			_.each(players, function(playerId) {
+				if (categoryChoosers.indexOf(playerId) === -1)
+					eligibleCategoryChoosers.push(playerId);
+			});
+
+			if (eligibleCategoryChoosers.length > 0) {
+				round.categoryChooser = _.sample(eligibleCategoryChoosers);
+				categoryChoosers.push(round.categoryChooser);
+				setObj.categoryChoosers = categoryChoosers;
+			} else {
+				round.categoryChooser = _.sample(players);
+				setObj.categoryChoosers = [round.categoryChooser];
+			}
+		}
 
 		// was the last round completed? If not, overwrite this round
 		var newRound = game.currentRound + 1;

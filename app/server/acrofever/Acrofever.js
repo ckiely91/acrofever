@@ -16,8 +16,8 @@ Acrofever.generateAcronym = function() {
 
 			for (var q = weight - 1; q >= 0; q--) {
 				numbersArray.push(numberLetters);
-			};
-		};
+			}
+		}
 
 		var number = numbersArray[Math.floor(Random.fraction() * numbersArray.length)];
 		var acronym = [];
@@ -167,7 +167,7 @@ function getWinnerAndAwardPoints(game) {
 
 	var round = game.rounds[game.currentRound - 1],
 		highestVotes = 1,
-		hasVoted = 0;
+		hasVoted = 0,
 		winners = [];
 
 	//Add to each player's votes for each one they received
@@ -240,9 +240,7 @@ function getWinnerAndAwardPoints(game) {
 		if (round.winner === player.vote)
 			player.votedForWinnerPoints = lobby.config.votedForWinnerPoints;
 
-		var score = player.votePoints + player.winnerPoints + player.votedForWinnerPoints - player.notVotedNegativePoints;
-
-		game.scores[playerId] += score;
+		game.scores[playerId] += player.votePoints + player.winnerPoints + player.votedForWinnerPoints - player.notVotedNegativePoints;
 
 		var newScore = game.scores[playerId];
 		if (newScore >= endGamePoints) {
