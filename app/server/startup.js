@@ -1,3 +1,6 @@
+import GameManager from './imports/GameManager';
+import LobbyManager from './imports/LobbyManager';
+
 Meteor.startup(function() {
 	//Loggly initialisation
 	Logger = new Loggly({
@@ -28,9 +31,11 @@ Meteor.startup(function() {
 			Lobbies.update(insertedLobby._id, {$set: {currentGame: gameId}, $push: {games: gameId}});
 		} else {
 			//game may be in progress, we should end it so timeouts will work properly
+
 			var active = Games.findOne(insertedLobby.currentGame, {fields: {active: true}}).active;
 			if (active) {
 				Lobbies.update(insertedLobby._id, {$set: {players: []}});
+                LobbyManager.addSystemMessage(insertedLobby._id, 'Sorry, the current game was cancelled because of a server restart.', 'warning', 'Please rejoin the lobby to start a new game.');
 				GameManager.makeGameInactive(insertedLobby.currentGame);
 			}
 		}

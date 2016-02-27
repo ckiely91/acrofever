@@ -1,3 +1,5 @@
+
+
 Meteor.methods({
 	addLobbyFeedChat: function(lobbyId, message) {
 		var userId = this.userId;

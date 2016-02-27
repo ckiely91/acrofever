@@ -1,5 +1,7 @@
+import GameManager from '../imports/GameManager';
+
 Meteor.methods({
-	acrofeverChooseCategory: function(gameId, category) {
+	acrofeverChooseCategory(gameId, category) {
 		check(gameId, String);
 		check(category, String);
 
@@ -14,7 +16,7 @@ Meteor.methods({
 		//set the category and advance game round
 		GameManager.advancePhase(gameId, 'acrofever', 'category', game.currentRound, category);
 	},
-	acrofeverSubmitAcro: function(gameId, acro) {
+	acrofeverSubmitAcro(gameId, acro) {
 		check(gameId, String);
 		check(acro, String);
 
@@ -57,7 +59,7 @@ Meteor.methods({
 			GameManager.advancePhase(gameId, 'acrofever', 'acro', game.currentRound);
 		}
 	},
-	voteForHallOfFame: function(gameId, data) {
+	voteForHallOfFame(gameId, data) {
 		var userId = Meteor.userId();
 		if (!userId)
 			throw new Meteor.Error('no-permission', 'You must be logged in to do that');
@@ -89,7 +91,7 @@ Meteor.methods({
 			}
 		});
 	},
-	findPlayNowLobbyId: function() {
+	findPlayNowLobbyId() {
 		var userId = Meteor.userId(),
 			lobbies = Lobbies.find({official: true}, {fields: { players: true }});
 

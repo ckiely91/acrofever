@@ -4,7 +4,6 @@
 # 'meteor add' and 'meteor remove' will edit this file for you,
 # but you can also edit it by hand.
 
-standard-minifiers
 meteor-base
 mobile-experience
 mongo
@@ -20,7 +19,6 @@ spacebars
 check
 ecmascript
 accounts-password
-momentjs:moment
 sacha:spin
 fortawesome:fontawesome
 kadira:flow-router
@@ -33,7 +31,6 @@ semantic:ui
 flemay:less-autoprefixer
 miktam:loggly
 underscorestring:underscore.string
-lbee:moment-helpers
 underscore
 accounts-facebook
 service-configuration
@@ -53,3 +50,7 @@ brentjanderson:buzz
 okgrow:analytics
 mizzao:timesync
 mizzao:user-status
+standard-minifier-css
+standard-minifier-js
+lbee:moment-helpers
+momentjs:moment

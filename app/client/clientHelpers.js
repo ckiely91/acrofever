@@ -1,37 +1,37 @@
-Template.registerHelper('lobby', function() {
+Template.registerHelper('lobby', () => {
 	var lobbyId = FlowRouter.getParam('lobbyId');
 	return Lobbies.findOne(lobbyId);
 });
 
-Template.registerHelper('game', function(lobby) {
+Template.registerHelper('game', (lobby) => {
 	return Games.findOne(lobby.currentGame);
 });
 
-Template.registerHelper('getRoutePath', function(routeName) {
+Template.registerHelper('getRoutePath', (routeName) => {
 	return FlowRouter.path(routeName);
 });
 
-Template.registerHelper('isOnRoute', function(routeName) {
+Template.registerHelper('isOnRoute', (routeName) => {
 	return (FlowRouter.getRouteName() === routeName);
 });
 
-Template.registerHelper('arrayLength', function(array) {
+Template.registerHelper('arrayLength', (array) => {
 	return array.length;
 });
 
-Template.registerHelper('username', function(id, capitalise) {
+Template.registerHelper('username', (id, capitalise) => {
   return displayname(id, capitalise);
 });
 
-Template.registerHelper('profilePicture', function(id, size) {
+Template.registerHelper('profilePicture', (id, size) => {
 	return profilePicture(id, size);
 });
 
-Template.registerHelper("isThisUser", function(id) {
+Template.registerHelper("isThisUser", (id) => {
 	return (id === Meteor.userId());
 });
 
-Template.registerHelper('countdown', function(endTime) {
+Template.registerHelper('countdown', (endTime) => {
 	var diff = moment(endTime).diff(TimeSync.serverTime(null, 500) || mo.now.get());
 	if (diff >= 0)
 		return moment(diff).format('m:ss');
@@ -39,7 +39,7 @@ Template.registerHelper('countdown', function(endTime) {
 		return '0:00';
 });
 
-Template.registerHelper('currentAcro', function() {
+Template.registerHelper('currentAcro', () => {
 	var lobby = Lobbies.findOne(FlowRouter.getParam('lobbyId'));
 	var game = Games.findOne(lobby.currentGame);
 	var round = getCurrentRound(game);
@@ -47,39 +47,39 @@ Template.registerHelper('currentAcro', function() {
 	return acro.join('. ');
 });
 
-Template.registerHelper('joinAcro', function(acro) {
+Template.registerHelper('joinAcro', (acro) => {
 	return acro.join('. ');
 });
 
-Template.registerHelper('currentCategory', function() {
+Template.registerHelper('currentCategory', () => {
 	var lobby = Lobbies.findOne(FlowRouter.getParam('lobbyId'));
 	var game = Games.findOne(lobby.currentGame);
 	var round = getCurrentRound(game);
 	return round.category;
 });
 
-Template.registerHelper('currentRound', function() {
+Template.registerHelper('currentRound', () => {
 	var lobby = Lobbies.findOne(FlowRouter.getParam('lobbyId'));
 	var game = Games.findOne(lobby.currentGame);
 	var round = getCurrentRound(game);
 	return round;
 });
 
-Template.registerHelper('isInRound', function(round) {
+Template.registerHelper('isInRound', (round) => {
 	return (round.players[Meteor.userId()]);
 });
 
-Template.registerHelper('greaterThanOne', function(number) {
+Template.registerHelper('greaterThanOne', (number) => {
 	return (number > 1);
 });
 
-Template.registerHelper('replaceLinksAndEscape', function(input) {
+Template.registerHelper('replaceLinksAndEscape', (input) => {
 	var autolinkedInput = Autolinker.link(input, {
 		truncate: {
 			length: 32,
 			location: 'smart'
 		},
-		replaceFn: function(autolinker, match) {
+		replaceFn(autolinker, match) {
 			switch(match.getType()) {
 				case 'url':
 					var tag = autolinker.getTagBuilder().build(match);
@@ -104,15 +104,15 @@ Template.registerHelper('replaceLinksAndEscape', function(input) {
 	return $autolinkedInput.html();
 });
 
-getCurrentRound = function(game) {
+getCurrentRound = (game) => {
 	return game.rounds[game.currentRound - 1];
-}
+};
 
-getRandomCategories = function() {
+getRandomCategories = () => {
 	return _.sample(DefaultCategories, 4);
-}
+};
 
-notify = function(title, body, image) {
+notify = (title, body, image) => {
 	if (typeof Notification === 'undefined')
 		return;
 
@@ -139,9 +139,9 @@ notify = function(title, body, image) {
 			}
 		});
 	}
-}
+};
 
-playSound = function(filename, hiddenOnly) {
+playSound = (filename, hiddenOnly) => {
 	if ((hiddenOnly && !document.hidden) || Meteor.user().profile.soundsEnabled === false)
 		return;
 
@@ -151,9 +151,9 @@ playSound = function(filename, hiddenOnly) {
 	});
 
 	sound.play();
-}
+};
 
-profilePicture = function(id, size) {
+profilePicture = (id, size) => {
 	var user = Meteor.users.findOne(id);
 
 	if (!user || !user.profile || !user.profile.profilePicture)
@@ -193,13 +193,11 @@ profilePicture = function(id, size) {
         	newUrl = '/images/no-profile-pic.png';
 	}
 	return newUrl;
-}
+};
 
-
-// Resync server time every 10 minutes
-
-Meteor.startup(function() {
-	Meteor.setInterval(function() {
+Meteor.startup(() => {
+    // Resync server time every 10 minutes
+	Meteor.setInterval(() => {
 		TimeSync.resync();
 	}, 600000);
 });

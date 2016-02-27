@@ -1,11 +1,12 @@
 Meteor.methods({
 	acrofeverVoteForAcro: function(gameId, playerId) {
-		var userId = this.userId;
+		var userId = this.userId,
+            game;
 
 		if (!this.isSimulation) {
-			var game = standardAcrofeverMethodChecks(gameId, userId, 'voting');
+			game = standardAcrofeverMethodChecks(gameId, userId, 'voting');
 		} else {
-			var game = Games.findOne(gameId);
+			game = Games.findOne(gameId);
 		}
 
 		var currentRoundIndex = game.currentRound - 1;
@@ -29,7 +30,9 @@ Meteor.methods({
 				}
 			});
 			if (submittedPlayers === totalPlayers) {
-				GameManager.advancePhase(gameId, 'acrofever', 'voting', game.currentRound);
+                const GameManager = require('../../server/imports/GameManager');
+                console.log(GameManager);
+				GameManager.default.advancePhase(gameId, 'acrofever', 'voting', game.currentRound);
 			}
 		}
 	}
