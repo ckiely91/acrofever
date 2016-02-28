@@ -74,6 +74,7 @@ jparker:crypto-core@0.1.0
 jparker:crypto-md5@0.1.1
 jparker:gravatar@0.4.1
 jquery@1.11.5-beta.11
+jsx@0.2.4
 kadira:blaze-layout@2.3.0
 kadira:dochead@1.4.0
 kadira:flow-router@2.10.0
@@ -125,6 +126,12 @@ promise@0.5.2-beta.11
 raix:eventemitter@0.1.3
 random@1.0.6-beta.11
 rate-limit@1.0.1-beta.11
+react@0.14.3_1
+react-meteor-data@0.2.5
+react-runtime@0.14.4
+react-runtime-dev@0.14.4
+react-runtime-prod@0.14.4
+react-template-helper@0.2.5
 reactive-dict@1.1.4-beta.11
 reactive-var@1.0.6
 reload@1.1.5-beta.11

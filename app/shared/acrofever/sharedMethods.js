@@ -31,7 +31,6 @@ Meteor.methods({
 			});
 			if (submittedPlayers === totalPlayers) {
                 const GameManager = require('../../server/imports/GameManager');
-                console.log(GameManager);
 				GameManager.default.advancePhase(gameId, 'acrofever', 'voting', game.currentRound);
 			}
 		}

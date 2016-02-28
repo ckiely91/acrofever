@@ -54,3 +54,5 @@ standard-minifier-css
 standard-minifier-js
 lbee:moment-helpers
 momentjs:moment
+react
+react-template-helper

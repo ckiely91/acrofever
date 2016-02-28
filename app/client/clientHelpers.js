@@ -32,11 +32,7 @@ Template.registerHelper("isThisUser", (id) => {
 });
 
 Template.registerHelper('countdown', (endTime) => {
-	var diff = moment(endTime).diff(TimeSync.serverTime(null, 500) || mo.now.get());
-	if (diff >= 0)
-		return moment(diff).format('m:ss');
-	else
-		return '0:00';
+	return countdown(endTime);
 });
 
 Template.registerHelper('currentAcro', () => {
@@ -103,6 +99,14 @@ Template.registerHelper('replaceLinksAndEscape', (input) => {
 	}
 	return $autolinkedInput.html();
 });
+
+countdown = (endTime) => {
+	var diff = moment(endTime).diff(TimeSync.serverTime(null, 500) || mo.now.get());
+	if (diff >= 0)
+		return moment(diff).format('m:ss');
+	else
+		return '0:00';
+};
 
 getCurrentRound = (game) => {
 	return game.rounds[game.currentRound - 1];
