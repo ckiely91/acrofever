@@ -70,6 +70,10 @@ Template.registerHelper('greaterThanOne', (number) => {
 });
 
 Template.registerHelper('replaceLinksAndEscape', (input) => {
+	return replaceLinksAndEscape(input);
+});
+
+replaceLinksAndEscape = (input) => {
 	var autolinkedInput = Autolinker.link(input, {
 		truncate: {
 			length: 32,
@@ -94,11 +98,11 @@ Template.registerHelper('replaceLinksAndEscape', (input) => {
 	$autolinkedInput = $(autolinkedInput);
 	var $elements = $autolinkedInput.find("*").not("a,img,br");
 	for (var i = $elements.length - 1; i >= 0; i--) {
-	    var e = $elements[i];
-	    $(e).replaceWith(e.innerHTML);
+		var e = $elements[i];
+		$(e).replaceWith(e.innerHTML);
 	}
 	return $autolinkedInput.html();
-});
+};
 
 countdown = (endTime) => {
 	var diff = moment(endTime).diff(TimeSync.serverTime(null, 500) || mo.now.get());
