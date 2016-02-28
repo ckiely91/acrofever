@@ -1,7 +1,7 @@
 <!-- CATEGORY PHASE START -->
 <template name="acrofever-category">
 {{#with game lobby}}
-    <div>{{> React component=countdownHeader endTime=endTime header=currentAcro}}</div>
+    <div>{{> React component=CountdownHeader endTime=endTime header=currentAcro}}</div>
 
 	<div class="ui divider" style="margin-bottom:2em"></div>
 
@@ -50,7 +50,7 @@
 <!-- ACRO PHASE START -->
 <template name="acrofever-acro">
 {{#with game lobby}}
-    <div>{{> React component=countdownHeader endTime=endTime header=currentAcro subheader=currentCategory}}</div>
+    <div>{{> React component=CountdownHeader endTime=endTime header=currentAcro subheader=currentCategory}}</div>
 
 	<div class="ui divider" style="margin-bottom:2em"></div>
 
@@ -102,7 +102,7 @@
 <!-- VOTING PHASE START -->
 <template name="acrofever-voting">
 {{#with game lobby}}
-    <div>{{> React component=countdownHeader endTime=endTime header=currentAcro subheader=currentCategory}}</div>
+    <div>{{> React component=CountdownHeader endTime=endTime header=currentAcro subheader=currentCategory}}</div>
 
 	<div class="ui divider" style="margin-bottom:2em"></div>
 
@@ -142,7 +142,7 @@
 <!-- ENDROUND PHASE START -->
 <template name="acrofever-endround">
 {{#with game lobby}}
-    <div>{{> React component=countdownHeader endTime=endTime header=currentAcro subheader=currentCategory}}</div>
+    <div>{{> React component=CountdownHeader endTime=endTime header=currentAcro subheader=currentCategory}}</div>
 
 	<div class="ui divider" style="margin-bottom:2em"></div>
 	<h3 class="ui center aligned header">Round results</h3>
@@ -202,7 +202,7 @@
 <template name="acrofever-endgame">
 	{{#with game lobby}}
 		{{#with winnerHeader}}
-            <div>{{> React component=countdownHeader endTime=endTime header=header subheader=subheader}}</div>
+            <div>{{> React component=CountdownHeader endTime=endTime header=header subheader=subheader}}</div>
 		{{/with}}
 
 		<div class="ui divider" style="margin-bottom:2em"></div>

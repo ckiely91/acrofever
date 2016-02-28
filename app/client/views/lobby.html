@@ -79,13 +79,7 @@
 				<div class="ui hidden divider"></div>
 
                 <div class="semiTransparentWhiteBG">
-                    {{> lobbyChatInput}}
-
-                    <div class="ui hidden divider"></div>
-
-                    <div class="ui small feed">
-                        {{> lobbyFeed}}
-                    </div>
+                    {{> React component=LobbyFeedComponent lobbyId=this._id}}
                 </div>
 			</div>
 		</div>

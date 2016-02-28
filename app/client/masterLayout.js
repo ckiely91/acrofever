@@ -13,15 +13,6 @@ Template.masterLayout.helpers({
 	}
 });
 
-Template.masterLayout.events({
-	'click .userProfilePicture': function(evt) {
-		evt.preventDefault();
-		var userId = $(evt.currentTarget).data('userid');
-		Session.set('selectedProfileUserId', userId);
-		$('#profileModal').modal('show');
-	}
-});
-
 Template.masterLayout.onRendered(function() {
 	//general helper functions, jquery stuff available on all pages goes here
 	$.fn.isOnScreen = function(){
