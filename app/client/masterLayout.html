@@ -1,64 +1,19 @@
 <template name="masterLayout">
     {{> nav}}
     <div class="ui main container">
-        {{> nags}}
+        <div>{{> React component=NagsComponent}}</div>
 
    	    {{> Template.dynamic template=main}}
 
-    	{{> footer}}
+    	<div>{{> React component=FooterComponent}}</div>
     </div>
     <div>{{> React component=HowToPlayModal}}</div>
 
-    {{> pageDimmer}}
-    {{> profileModal}}
+    <div>{{> React component=PageDimmer}}</div>
+
+    <div>{{> React component=ProfileModal}}</div>
+
     {{#if notificationsSupported}}
-        {{> notificationInfoModal}}
+        <div>{{> React component=NotificationInfoModal}}</div>
     {{/if}}
-</template>
-
-<template name="pageDimmer">
-	<div class="ui page dimmer">
-	  <div class="content">
-	    <div class="ui inverted loader"></div>
-	  </div>
-	</div>
-</template>
-
-<template name="nags">
-{{#if nags}}
-    <div class="ui centered grid">
-        {{#each nags}}
-            <div class="sixteen-wide-tablet ten-wide-computer column">
-                {{> nag}}
-            </div>
-        {{/each}}
-    </div>
-{{/if}}
-</template>
-
-<template name="nag">
-    <div class="ui {{#if icon}}icon{{/if}} {{#if colour}}{{colour}}{{/if}} message">
-        <i class="close icon"></i>
-        {{#if icon}}<i class="{{icon}} icon"></i>{{/if}}
-        <div class="content">
-            {{#if title}}
-                <div class="header">
-                    {{title}}
-                </div>
-            {{/if}}
-            <p>{{{message}}}</p>
-        </div>
-    </div>
-</template>
-
-<template name="notificationInfoModal">
-    <div class="ui small basic modal" id="notificationInfoModal">
-        <div class="ui icon header">
-            <i class="alarm outline icon"></i>
-            Looks like you've disabled notifications for this site
-        </div>
-        <div class="content" style="text-align:center">
-            To re-enable notifications for Acrofever, <a href="https://acrofever.com/blog/re-enable-web-notifications-after-previously-denying-them" target="_blank">follow these instructions</a>.
-        </div>
-    </div>
 </template>

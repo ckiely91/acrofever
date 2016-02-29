@@ -1,9 +1,3 @@
-Template.pageDimmer.onRendered(function() {
-	$(this.firstNode).dimmer({
-		closable: false
-	});
-});
-
 Template.masterLayout.helpers({
 	notificationsSupported: function() {
 		if (typeof Notification !== 'undefined')
@@ -37,60 +31,4 @@ Template.masterLayout.onRendered(function() {
 
 Template.masterLayout.onCreated(function() {
 	DocHead.setTitle('Acrofever');
-});
-
-Template.nags.helpers({
-	nags: function() {
-		var user = Meteor.user();
-		if (!user)
-			return false;
-
-		var closedNags = (user.profile && user.profile.closedNags) ? user.profile.closedNags : [];
-		var nags = Nags.find({active: true, _id: {$not: {$in: closedNags}}}, {sort: {timestamp: -1}});
-		if (nags.count() > 0)
-			return nags;
-		else
-			return false;
-	}
-});
-
-Template.nags.onCreated(function() {
-	var self = this;
-	self.autorun(function() {
-		var user = Meteor.user();
-		if (user) {
-			if (user.profile && user.profile.closedNags) {
-				Meteor.subscribe('nags', user.profile.closedNags);
-			} else {
-				Meteor.subscribe('nags');
-			}
-		}
-	})
-});
-
-Template.nag.events({
-	'click .close': function(evt, template) {
-		evt.preventDefault();
-		$(evt.currentTarget).closest('.message').transition('fade', '300ms');
-		Meteor.setTimeout(function() {
-			//allow it to fade out first
-			Meteor.call('markNagAsClosed', template.data._id);
-		}, 300);
-		analytics.track("closeNag", {
-			id: template.data._id
-		});
-	}
-});
-
-Template.notificationInfoModal.onRendered(function() {
-	var modal = $(this.firstNode);
-	modal.modal({
-		detachable: false,
-		observeChanges: true
-	});
-});
-
-Template.privacy.onRendered(function() {
-	//privacy policy thing
-	(function (w,d) {var loader = function () {var s = d.createElement("script"), tag = d.getElementsByTagName("script")[0]; s.src = "//cdn.iubenda.com/iubenda.js"; tag.parentNode.insertBefore(s,tag);}; if(w.addEventListener){w.addEventListener("load", loader, false);}else if(w.attachEvent){w.attachEvent("onload", loader);}else{w.onload = loader;}})(window, document);
 });

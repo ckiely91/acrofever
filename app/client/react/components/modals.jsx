@@ -50,3 +50,50 @@ const HowToPlayModal = React.createClass({
 });
 
 Template.registerHelper('HowToPlayModal', () => HowToPlayModal);
+
+const NotificationInfoModal = React.createClass({
+    componentDidMount() {
+        $(this.refs.modal).modal({
+            detachable: false,
+            observeChanges: true
+        });
+    },
+    render() {
+        var contentInlineStyle = {
+            textAlign: 'center'
+        };
+
+        return (
+            <div className="ui small basic modal" id="notificationInfoModal">
+                <div className="ui icon header">
+                    <i className="alarm outline icon"></i>
+                    Looks like you've disabled notifications for this site
+                </div>
+                <div className="content" style={contentInlineStyle}>
+                    To re-enable notifications for Acrofever, <a href="https://acrofever.com/blog/re-enable-web-notifications-after-previously-denying-them" target="_blank">follow these instructions</a>.
+                </div>
+            </div>
+        );
+    }
+});
+
+Template.registerHelper('NotificationInfoModal', () => NotificationInfoModal);
+
+const PageDimmer = React.createClass({
+    componentDidMount() {
+        $(this.refs.dimmer).dimmer({
+            closable: false
+        });
+    },
+    render() {
+        return (
+            <div ref="dimmer" className="ui page dimmer">
+                <div className="content">
+                    <div className="ui inverted loader"></div>
+                </div>
+            </div>
+        )
+    }
+});
+
+Template.registerHelper('PageDimmer', () => PageDimmer);
