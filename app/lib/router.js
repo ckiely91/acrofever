@@ -1,34 +1,34 @@
 FlowRouter.route('/', {
-	name: "home",
-  action: function(params, queryParams) {
+  name: "home",
+  action: function() {
     BlazeLayout.render('masterLayout', {
-      main: "home"
+      main: 'home'
     });
   }
 });
 
 var lobbyRoutes = FlowRouter.group({
-	prefix: '/play',
-	name: 'lobbies'
+  prefix: '/play',
+  name: 'lobbies'
 });
 
 lobbyRoutes.route('/', {
-	name: 'play',
-	action: function() {
-		BlazeLayout.render('masterLayout', { 
-      main: 'play' 
+  name: 'play',
+  action: function() {
+    BlazeLayout.render('masterLayout', {
+      main: 'play'
     });
-	}
+  }
 });
 
 lobbyRoutes.route('/:lobbyId', {
-	name: 'lobby',
+  name: 'lobby',
   triggersEnter: [AccountsTemplates.ensureSignedIn],
-	action: function() {
-		BlazeLayout.render('masterLayout', { 
+  action: function() {
+    BlazeLayout.render('masterLayout', {
       main: 'lobby'
     });
-	}
+  }
 });
 
 FlowRouter.route('/halloffame', {

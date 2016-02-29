@@ -1,4 +1,4 @@
-var ChatInput = React.createClass({
+const ChatInput = React.createClass({
     propTypes: {
         lobbyId: React.PropTypes.string
     },
@@ -39,7 +39,7 @@ var ChatInput = React.createClass({
     }
 });
 
-var SingleEvent = React.createClass({
+const SingleEvent = React.createClass({
    mixins: [ReactMeteorData],
    propTypes: {
        user: React.PropTypes.string,
@@ -95,7 +95,7 @@ var SingleEvent = React.createClass({
    }
 });
 
-var GlobalFeedComponent = React.createClass({
+GlobalFeedComponent = React.createClass({
     mixins: [ReactMeteorData],
     getMeteorData() {
        if (!Session.get('globalFeedLimit'))
@@ -187,7 +187,7 @@ Template.registerHelper('GlobalFeedComponent', () => {
     return GlobalFeedComponent;
 });
 
-var LobbyFeedComponent = React.createClass({
+const LobbyFeedComponent = React.createClass({
     mixins: [ReactMeteorData],
     propTypes: {
         lobbyId: React.PropTypes.string.isRequired
@@ -217,8 +217,6 @@ var LobbyFeedComponent = React.createClass({
                 Meteor.subscribe('otherPlayers', playerIds);
             }
         }
-
-        //TODO: Add notifications stuff
 
         return data;
     },
@@ -266,6 +264,4 @@ var LobbyFeedComponent = React.createClass({
     }
 });
 
-Template.registerHelper('LobbyFeedComponent', () => {
-    return LobbyFeedComponent;
-});
+Template.registerHelper('LobbyFeedComponent', () => LobbyFeedComponent);

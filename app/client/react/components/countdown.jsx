@@ -1,4 +1,4 @@
-var CountdownHeader = React.createClass({
+const CountdownHeader = React.createClass({
     propTypes: {
         endTime: React.PropTypes.instanceOf(Date).isRequired,
         header: React.PropTypes.string.isRequired,
@@ -25,9 +25,7 @@ var CountdownHeader = React.createClass({
     }
 });
 
-Template.registerHelper('CountdownHeader', () => {
-    return CountdownHeader;
-});
+Template.registerHelper('CountdownHeader', () => CountdownHeader);
 
 Meteor.startup(() => {
     Session.set('minuteUpdater', Date.now());
