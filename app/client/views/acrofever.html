@@ -1,55 +1,19 @@
 <!-- CATEGORY PHASE START -->
 <template name="acrofever-category">
 {{#with game lobby}}
-    <div>{{> React component=CountdownHeader endTime=endTime header=currentAcro}}</div>
-
-	<div class="ui divider" style="margin-bottom:2em"></div>
-
-	{{#if isCategoryChooser this}}
-		{{> chooseCategory}}
-	{{else}}
-		<h3 class="ui center aligned disabled header">{{categoryChooserUsername this}} is picking a category...</h3>
-	{{/if}}
-
-	<div class="ui hidden divider"></div>
+    <div>{{>React component=AcrofeverCategoryPhase round=currentRound endTime=this.endTime gameId=this._id}}</div>
 {{/with}}
-</template>
-
-<template name="chooseCategory">
-{{#unless hasPickedCategory}}
-	<h3 class="ui center aligned header">You're picking the category!</h3>
-	<div class="ui basic segment">
-		<div class="ui stackable two column very relaxed grid" style="position:relative">
-			<div class="column">
-				<div class="ui relaxed celled list">
-					{{#each randomCategories}}
-						<a href="#" class="item categoryListItem">{{this}}</a>
-					{{/each}}
-				</div>
-			</div>
-			<div class="ui vertical divider">
-				OR
-			</div>
-			<div class="column">
-				<form class="ui form">
-					<div class="ui fluid action input">
-						<input type="text" name="customCategory" placeholder="Category" required>
-						<button class="ui primary button" type="submit">Go</button>
-					</div>
-					<div class="ui error message"></div>
-				</form>
-			</div>
-		</div>
-	</div>
-{{else}}
-	<div class="ui active centered inline loader"></div>
-{{/unless}}
 </template>
 <!-- CATEGORY PHASE END -->
 
 <!-- ACRO PHASE START -->
 <template name="acrofever-acro">
 {{#with game lobby}}
+    <div>{{> React component=AcrofeverAcroPhase round=currentRound endTime=this.endTime gameId=this._id}}</div>
+
+
+
+    <!--
     <div>{{> React component=CountdownHeader endTime=endTime header=currentAcro subheader=currentCategory}}</div>
 
 	<div class="ui divider" style="margin-bottom:2em"></div>
@@ -61,6 +25,7 @@
 	{{/if}}
 
 	<div class="ui hidden divider"></div>
+	-->
 {{/with}}
 </template>
 

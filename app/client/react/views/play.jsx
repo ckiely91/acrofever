@@ -5,14 +5,14 @@ const PlayerAvatar = React.createClass({
         id: React.PropTypes.string.isRequired
     },
     componentDidMount() {
-        this.popupImg = $(this.refs.popupImg);
-        this.popupImg.popup();
+        this.$popupImg = $(this.popupImg);
+        this.$popupImg.popup();
     },
     componentWillUnmount() {
-        this.popupImg.popup('hide');
+        this.$popupImg.popup('hide');
     },
     render() {
-        return <img ref="popupImg" className="ui mini circular image inline" src={profilePicture(this.props.id, 35)} data-content={displayname(this.props.id)} />;
+        return <img ref={(ref) => this.popupImg = ref} className="ui mini circular image inline" src={profilePicture(this.props.id, 35)} data-content={displayname(this.props.id)} />;
     }
 });
 
@@ -119,6 +119,8 @@ const PlayView = React.createClass({
                 <div className="ui stackable grid">
                     <div className="eight wide column">
                         {lobbyTable}
+                        <div className="ui hidden divider"></div>
+                        <div><OnlinePlayers /></div>
                     </div>
                     <div className="eight wide column">
                         <GlobalFeedComponent />

@@ -1,4 +1,4 @@
-const CountdownHeader = React.createClass({
+CountdownHeader = React.createClass({
     propTypes: {
         endTime: React.PropTypes.instanceOf(Date).isRequired,
         header: React.PropTypes.string.isRequired,

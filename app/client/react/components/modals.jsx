@@ -1,13 +1,13 @@
 const HowToPlayModal = React.createClass({
     componentDidMount() {
-        $(this.refs.modal).modal({
+        $(this.modal).modal({
             detachable: false,
             observeChanges: true
         });
     },
     render() {
         return (
-            <div ref="modal" className="ui modal" id="howToPlayModal">
+            <div className="ui modal" id="howToPlayModal" ref={(ref) => this.modal = ref}>
                 <div className="content">
                     <h2 className="ui header">
                         <i className="question icon"></i>
@@ -53,7 +53,7 @@ Template.registerHelper('HowToPlayModal', () => HowToPlayModal);
 
 const NotificationInfoModal = React.createClass({
     componentDidMount() {
-        $(this.refs.modal).modal({
+        $(this.modal).modal({
             detachable: false,
             observeChanges: true
         });
@@ -64,7 +64,7 @@ const NotificationInfoModal = React.createClass({
         };
 
         return (
-            <div className="ui small basic modal" id="notificationInfoModal">
+            <div className="ui small basic modal" id="notificationInfoModal" ref={(ref) => this.modal = ref}>
                 <div className="ui icon header">
                     <i className="alarm outline icon"></i>
                     Looks like you've disabled notifications for this site
@@ -81,13 +81,13 @@ Template.registerHelper('NotificationInfoModal', () => NotificationInfoModal);
 
 const PageDimmer = React.createClass({
     componentDidMount() {
-        $(this.refs.dimmer).dimmer({
+        $(this.dimmer).dimmer({
             closable: false
         });
     },
     render() {
         return (
-            <div ref="dimmer" className="ui page dimmer">
+            <div className="ui page dimmer" ref={(ref) => this.dimmer = ref}>
                 <div className="content">
                     <div className="ui inverted loader"></div>
                 </div>

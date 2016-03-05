@@ -78,7 +78,7 @@ const ProfileModal = React.createClass({
         return data;
     },
     componentDidMount() {
-        $(this.refs.modal).modal({
+        $(this.modal).modal({
             detachable: false,
             observeChanges: true
         });
@@ -109,7 +109,7 @@ const ProfileModal = React.createClass({
             body = <div className="ui active loader"></div>;
         }
 
-        return <div ref="modal" className="ui small basic modal" id="profileModal">{body}</div>;
+        return <div ref={(ref) => this.modal = ref} className="ui small basic modal" id="profileModal">{body}</div>;
     }
 });
 

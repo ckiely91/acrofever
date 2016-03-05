@@ -1,91 +1,4 @@
-Template["acrofever-category"].helpers({
-    isCategoryChooser: function(game) {
-        var round = getCurrentRound(game);
-        return (round.categoryChooser === Meteor.userId());
-    },
-    categoryChooserUsername: function(game) {
-        var round = getCurrentRound(game);
-        return displayname(round.categoryChooser, true);
-    }
-});
-
-Template.chooseCategory.helpers({
-    randomCategories: function() {
-        return Template.instance().randomCategories;
-    },
-    hasPickedCategory: function() {
-        return Template.instance().pickedCategory.get();
-    }
-});
-
-Template.chooseCategory.events({
-    'click .categoryListItem': function(evt, template) {
-        evt.preventDefault();
-        var category = $(evt.currentTarget).html();
-        var gameId = template.data._id;
-
-        template.pickedCategory.set(true);
-        playSound('select');
-        Meteor.call('acrofeverChooseCategory', gameId, category, function(err) {
-            if (err) {
-                console.error(err);
-                template.pickedCategory.set(false);
-            }
-            analytics.track("chooseCategory", {
-                category: category,
-                custom: false
-            });
-        });
-    },
-    'submit form': function(evt, template) {
-        evt.preventDefault();
-        var form = $(evt.currentTarget);
-        var customCategory = form.form('get values').customCategory;
-        var gameId = template.data._id;
-
-        template.pickedCategory.set(true);
-        playSound('select');
-        Meteor.call('acrofeverChooseCategory', gameId, customCategory, function(err) {
-            if (err) {
-                console.error(err);
-                template.pickedCategory.set(false);
-            }
-            analytics.track("chooseCategory", {
-                category: customCategory,
-                custom: true
-            });
-        });
-    }
-});
-
-Template.chooseCategory.onCreated(function() {
-    var self = this;
-    self.randomCategories = getRandomCategories();
-    self.pickedCategory = new ReactiveVar();
-});
-
-Template.chooseCategory.onRendered(function() {
-    var form = this.$('form');
-    form.form({
-        fields: {
-            customCategory: {
-                identifier: 'customCategory',
-                rules: [
-                    {
-                        type: 'empty',
-                        prompt: 'Enter a custom category'
-                    },
-                    {
-                        type: 'maxLength[100]',
-                        prompt: 'Enter at most 100 characters'
-                    }
-                ]
-            }
-        }
-    })
-});
-
-Template.submitAcro.helpers({
+/* Template.submitAcro.helpers({
     hasChosenAcro: function() {
         return Session.get('hasChosenAcro');
     },
@@ -183,7 +96,7 @@ Template.submitAcroForm.onRendered(function() {
             return false;
         }
     });
-});
+}); */
 
 Template.acroVoting.helpers({
     roundAcros: function() {
