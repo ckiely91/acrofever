@@ -10,110 +10,31 @@
 <template name="acrofever-acro">
 {{#with game lobby}}
     <div>{{> React component=AcrofeverAcroPhase round=currentRound endTime=this.endTime gameId=this._id}}</div>
-
-
-
-    <!--
-    <div>{{> React component=CountdownHeader endTime=endTime header=currentAcro subheader=currentCategory}}</div>
-
-	<div class="ui divider" style="margin-bottom:2em"></div>
-
-	{{#if isInRound currentRound}}
-		{{> submitAcro}}
-	{{else}}
-		<h3 class="ui center aligned disabled header">Players are writing their acros...</h3>
-	{{/if}}
-
-	<div class="ui hidden divider"></div>
-	-->
 {{/with}}
-</template>
-
-<template name="submitAcro">
-	<div class="ui centered grid">
-		<div class="sixteen-wide-tablet ten-wide-computer center aligned column">
-			<h3 class="ui header">Write your Acro</h3>
-			{{#unless hasChosenAcro}}
-				{{> submitAcroForm hasChosenAcro=hasChosenAcro game=this}}
-			{{else}}
-				<p><strong>Submitted acro:</strong> {{playerAcro this}}<br>
-				(<a href="#" id="changeAcro">change?</a>)</p>
-			{{/unless}}
-		</div>
-	</div>
-</template>
-
-<template name="submitAcroForm">
-    <!-- desktop version -->
-	<form class="ui form hiddenOnMobile">
-		<div class="ui fluid action input">
-			<input type="text" name="acro" placeholder="Write your acro" value="{{chosenAcro}}" required>
-			<button class="ui primary button" type="submit">Go</button>
-		</div>
-		<div class="ui error message"></div>
-	</form>
-
-    <!-- mobile version -->
-    <form class="ui form showOnMobile">
-        <div class="field">
-            <textarea type="text" name="acro" placeholder="Write your acro" value="{{chosenAcro}}" rows="2" required></textarea>
-        </div>
-        <button class="ui primary fluid button" type="submit">Go</button>
-        <div class="ui error message"></div>
-    </form>
 </template>
 <!-- ACRO PHASE END -->
 
 <!-- VOTING PHASE START -->
 <template name="acrofever-voting">
 {{#with game lobby}}
-    <div>{{> React component=CountdownHeader endTime=endTime header=currentAcro subheader=currentCategory}}</div>
-
-	<div class="ui divider" style="margin-bottom:2em"></div>
-
-	{{> acroVoting}}
-
-	<div class="ui hidden divider"></div>
-
+    <div>{{> React component=AcrofeverVotingPhase round=currentRound endTime=this.endTime gameId=this._id}}</div>
 {{/with}}
 </template>
-
-<template name="acroVoting">
-	<div class="ui ten column centered grid">
-		<div class="ten wide center aligned column">
-			{{#if isInRound currentRound}}
-				<h3 class="ui header">Vote for your favourite Acro</h3>
-				<div class="ui fluid relaxed vertical text menu">
-					{{#each roundAcros}}
-						<a href="#" class="{{#if votedForThisAcro .. id}}active{{/if}} item" data-id="{{id}}">
-							{{acro}} {{#if votedForThisAcro .. id}}<i class="check icon"></i>{{/if}}
-						</a>
-					{{/each}}
-				</div>
-			{{else}}
-				<h3 class="ui disabled header">Players are voting for their favourite Acros...</h3>
-				<div class="ui relaxed list">
-					{{#each roundAcros}}
-						<div class="item">{{acro}}</div>
-					{{/each}}
-				</div>
-			{{/if}}
-		</div>
-	</div>
-</template>
-
 <!-- VOTING PHASE END -->
 
 <!-- ENDROUND PHASE START -->
 <template name="acrofever-endround">
 {{#with game lobby}}
-    <div>{{> React component=CountdownHeader endTime=endTime header=currentAcro subheader=currentCategory}}</div>
+
+    <div>{{> React component=AcrofeverEndRoundPhase round=currentRound endTime=this.endTime}}</div>
+
+    <!--<div>{{> React component=CountdownHeader endTime=endTime header=currentAcro subheader=currentCategory}}</div>
 
 	<div class="ui divider" style="margin-bottom:2em"></div>
 	<h3 class="ui center aligned header">Round results</h3>
 	{{> acroEndRound}}
 
-	<div class="ui hidden divider"></div>
+	<div class="ui hidden divider"></div>-->
 
 {{/with}}
 </template>

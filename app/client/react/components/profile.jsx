@@ -94,7 +94,7 @@ const ProfileModal = React.createClass({
                             <img className="ui circular image" src={profilePicture(this.data.user._id, 70)} />
                             <div className="content">
                                 {displayname(this.data.user._id)}
-                                <div className="sub header">{moment(this.data.user.createdAt).calendar()}</div>
+                                <div className="sub header">Joined {moment(this.data.user.createdAt).calendar()}</div>
                             </div>
                         </h1>
                         <div className="content">

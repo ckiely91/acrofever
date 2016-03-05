@@ -5,14 +5,26 @@ const PlayerAvatar = React.createClass({
         id: React.PropTypes.string.isRequired
     },
     componentDidMount() {
-        this.$popupImg = $(this.popupImg);
-        this.$popupImg.popup();
-    },
-    componentWillUnmount() {
-        this.$popupImg.popup('hide');
+        $(this.popupImg).popup({
+            inline: true
+        });
     },
     render() {
-        return <img ref={(ref) => this.popupImg = ref} className="ui mini circular image inline" src={profilePicture(this.props.id, 35)} data-content={displayname(this.props.id)} />;
+        const thisStyle = {
+            display: 'inline-block',
+            marginRight: '0.5em'
+        };
+
+        return (
+            <div style={thisStyle}>
+                <img ref={(ref) => this.popupImg = ref} className="ui mini circular image" src={profilePicture(this.props.id, 35)} />
+                <div className="ui popup">
+                    <div className="content">
+                        {displayname(this.props.id)}
+                    </div>
+                </div>
+            </div>
+        );
     }
 });
 
