@@ -16,3 +16,5 @@ sftp-config.json
 *.bat
 
 .idea
+
+node_modules/

@@ -1,4 +1,4 @@
-
+import {checkValidChatString} from '../imports/validators';
 
 Meteor.methods({
 	addLobbyFeedChat: function(lobbyId, message) {

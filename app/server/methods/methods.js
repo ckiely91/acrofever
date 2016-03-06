@@ -1,6 +1,8 @@
 import GameManager from '../imports/GameManager';
 import LobbyManager from '../imports/LobbyManager';
 
+import {displayName} from '../../imports/helpers';
+
 Meteor.methods({
     joinOrLeaveOfficialLobby(lobbyId, join) {
         var userId = Meteor.userId();
@@ -14,7 +16,7 @@ Meteor.methods({
         if (join) {
             //user is joining the lobby
             Lobbies.update(lobbyId, {$addToSet: {players: userId}});
-            let username = displayname(userId, true);
+            let username = displayName(userId, true);
             LobbyManager.addSystemMessage(lobbyId, username + ' joined the lobby.');
             LobbyManager.addSystemMessage(null, username + ' joined the lobby ' + lobby.displayName);
 
@@ -31,7 +33,7 @@ Meteor.methods({
         } else {
             //user is leaving the lobby
             Lobbies.update(lobbyId, {$pull: {players: userId}});
-            let username = displayname(userId, true);
+            let username = displayName(userId, true);
             LobbyManager.addSystemMessage(lobbyId, username + ' left the lobby.');
             LobbyManager.addSystemMessage(null, username + ' left the lobby ' + lobby.displayName);
             //lobby should only be made inactive at the end of the round

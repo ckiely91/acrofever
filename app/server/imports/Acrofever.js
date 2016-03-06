@@ -1,6 +1,9 @@
 import GameManager from './GameManager';
 import LobbyManager from './LobbyManager';
 
+import {displayName} from '../../imports/helpers';
+import {defaultCategories} from '../../imports/statics';
+
 function ensureCorrectPhase(gameId, phase) {
     /*	This returns the game object only if it is in the correct phase
      Useful for making sure the game is in the correct phase and getting the game object at the same time */
@@ -61,7 +64,7 @@ function getWinnerAndAwardPoints(game) {
                 if (lastRoundPlayer && !lastRoundPlayer.vote && !lastRoundPlayer.submission) {
                     //Remove this player from the lobby, they're inactive
                     Lobbies.update(game.lobbyId, {$pull: {players: playerId}});
-                    LobbyManager.addSystemMessage(game.lobbyId, displayname(playerId, true) + ' was removed for being inactive');
+                    LobbyManager.addSystemMessage(game.lobbyId, displayName(playerId, true) + ' was removed for being inactive');
                 }
             }
         }
@@ -98,7 +101,7 @@ function getWinnerAndAwardPoints(game) {
 
     round.winner = winner.id;
 
-    LobbyManager.addSystemMessage(game.lobbyId, displayname(round.winner, true) + ' won the round!', 'empty star');
+    LobbyManager.addSystemMessage(game.lobbyId, displayName(round.winner, true) + ' won the round!', 'empty star');
 
     //give points to people for voting for the winner (and give the winner points too)
     let ultimateWinners = [],
@@ -256,8 +259,8 @@ function goToEndGame(gameId, winners) {
         gameWinner: winner
     }, $currentDate: {lastUpdated: true}});
 
-    LobbyManager.addSystemMessage(game.lobbyId, displayname(winner, true) + ' won the game!', 'star', tiebreakText);
-    LobbyManager.addSystemMessage(null, displayname(winner, true) + ' won a game in lobby ' + lobby.displayName, 'star');
+    LobbyManager.addSystemMessage(game.lobbyId, displayName(winner, true) + ' won the game!', 'star', tiebreakText);
+    LobbyManager.addSystemMessage(null, displayName(winner, true) + ' won a game in lobby ' + lobby.displayName, 'star');
 
     Meteor.setTimeout(function() {
         lobby = Lobbies.findOne(game.lobbyId);
@@ -328,7 +331,7 @@ const Acrofever = {
             acroTimeout = lobby.config.acronymTimeout;
 
         if (!category)
-            category = Random.choice(DefaultCategories);
+            category = Random.choice(defaultCategories);
 
         let setObj = {};
         setObj['rounds.' + roundIndex + '.category'] = category;
