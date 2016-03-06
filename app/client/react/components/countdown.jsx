@@ -1,11 +1,32 @@
+CountdownSpan = React.createClass({
+    mixins: [ReactMeteorData],
+    getMeteorData() {
+        return {
+            now: TimeSync.serverTime(null, 500) || mo.now.get()
+        }
+    },
+    propTypes: {
+        endTime: React.PropTypes.instanceOf(Date).isRequired
+    },
+    countdown(endTime) {
+        console.log('running');
+        let diff = moment(endTime).diff(this.data.now);
+        console.log(diff);
+        if (diff >= 0)
+            return moment(diff).format('m:ss');
+        else
+            return '0:00';
+    },
+    render() {
+        return <span>{countdown(this.props.endTime)}</span>
+    }
+});
+
 CountdownHeader = React.createClass({
     propTypes: {
         endTime: React.PropTypes.instanceOf(Date).isRequired,
         header: React.PropTypes.string.isRequired,
         subheader: React.PropTypes.string
-    },
-    countdown(endTime) {
-        return countdown(endTime);
     },
     render() {
         return (
@@ -13,7 +34,7 @@ CountdownHeader = React.createClass({
                 <div className="four wide column">
                     <h3 className="ui center aligned icon header">
                         <i className="clock icon"></i>
-                        {this.countdown(this.props.endTime)}
+                        <CountdownSpan endTime={this.props.endTime} />
                     </h3>
                 </div>
                 <div className="twelve wide column">

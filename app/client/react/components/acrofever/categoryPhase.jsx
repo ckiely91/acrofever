@@ -99,11 +99,17 @@ const ChooseCategory = React.createClass({
     }
 });
 
-const AcrofeverCategoryPhase = React.createClass({
+AcrofeverCategoryPhase = React.createClass({
+    mixins: [ReactMeteorData],
     propTypes: {
         round: React.PropTypes.object.isRequired,
         endTime: React.PropTypes.instanceOf(Date).isRequired,
         gameId: React.PropTypes.string.isRequired
+    },
+    getMeteorData() {
+        return {
+            categoryChooserDisplayName: displayname(this.props.round.categoryChooser)
+        };
     },
     currentAcro() {
         var acro = this.props.round.acronym;
@@ -118,7 +124,7 @@ const AcrofeverCategoryPhase = React.createClass({
                 </div>
                 <div className="ui divider" style={dividerStyle}></div>
                 <div>
-                    {this.props.round.categoryChooser === Meteor.userId() ? <ChooseCategory gameId={this.props.gameId}/> : <h3 className="ui center aligned disabled header">{displayname(this.props.round.categoryChooser)} is picking a category...</h3>}
+                    {this.props.round.categoryChooser === Meteor.userId() ? <ChooseCategory gameId={this.props.gameId}/> : <h3 className="ui center aligned disabled header">{this.data.categoryChooserDisplayName} is picking a category...</h3>}
                 </div>
                 <div className="ui hidden divider"></div>
             </div>

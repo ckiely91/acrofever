@@ -1,7 +1,4 @@
-const SingleNag = React.createClass({
-    propTypes: {
-        nag: React.PropTypes.object.isRequired
-    },
+class SingleNag extends React.Component {
     closeNag(evt) {
         evt.preventDefault();
         $(evt.currentTarget).closest('.message').transition('fade', '300ms');
@@ -15,12 +12,13 @@ const SingleNag = React.createClass({
         analytics.track("closeNag", {
             id: this.props.nag._id
         });
-    },
+    }
+
     render() {
         return (
             <div className="sixteen-wide-tablet ten-wide-computer column">
                 <div className={"ui " + (this.props.nag.icon ? 'icon' : '') + ' ' + (this.props.nag.colour ? this.props.nag.colour : '') + ' message'}>
-                    <i className="close icon" onClick={this.closeNag}></i>
+                    <i className="close icon" onClick={(evt) => this.closeNag(evt)}></i>
                     {this.props.nag.icon ? <i className={this.props.nag.icon + ' icon'}></i> : null}
                     <div className="content">
                         {this.props.nag.title ? <div className="header">{this.props.nag.title}</div> : null}
@@ -30,7 +28,11 @@ const SingleNag = React.createClass({
             </div>
         );
     }
-});
+}
+
+SingleNag.propTypes = {
+    nag: React.PropTypes.object.isRequired
+};
 
 const NagsComponent = React.createClass({
     mixins: [ReactMeteorData],

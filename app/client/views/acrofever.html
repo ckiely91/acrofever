@@ -25,150 +25,15 @@
 <!-- ENDROUND PHASE START -->
 <template name="acrofever-endround">
 {{#with game lobby}}
-
     <div>{{> React component=AcrofeverEndRoundPhase round=currentRound endTime=this.endTime}}</div>
-
-    <!--<div>{{> React component=CountdownHeader endTime=endTime header=currentAcro subheader=currentCategory}}</div>
-
-	<div class="ui divider" style="margin-bottom:2em"></div>
-	<h3 class="ui center aligned header">Round results</h3>
-	{{> acroEndRound}}
-
-	<div class="ui hidden divider"></div>-->
-
 {{/with}}
-</template>
-
-<template name="acroEndRound">
-	<div class="ui basic segment">
-		<div class="scrollTable-outer">
-			<div class="scrollTable-fade"></div>
-			<div class="scrollTable">
-				<table class="ui very basic celled unstackable table" style="min-width:500px">
-					<thead>
-						<tr>
-							<th>Player</th>
-							<th>Acro</th>
-							<th>Votes</th>
-							<th>Points</th>
-						</tr>
-					</thead>
-					<tbody>
-						{{#each roundResults}}
-							{{> acroRoundResultsRow}}
-						{{/each}}
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
-</template>
-
-<template name="acroRoundResultsRow">
-	<tr>
-		<td>
-			<a href="#" class="userProfilePicture" data-userid="{{id}}">
-				<h4 class="ui image header">
-					<img src="{{profilePicture id 35}}" class="ui mini circular image">
-					<div class="content">
-						{{username id true}}
-						{{#if accolades currentRound}}<div class="sub header">{{{accolades currentRound}}}</div>{{/if}}
-					</div>
-				</h4>
-			</a>
-		</td>
-		<td>{{submission.acro}}</td>
-		<td>{{votes}}</td>
-		<td><a class="ui grey circular label">{{totalPoints}}</a></td>
-	</tr>
 </template>
 <!-- ENDROUND PHASE END -->
 
 <!-- ENDGAME PHASE START -->
 <template name="acrofever-endgame">
 	{{#with game lobby}}
-		{{#with winnerHeader}}
-            <div>{{> React component=CountdownHeader endTime=endTime header=header subheader=subheader}}</div>
-		{{/with}}
-
-		<div class="ui divider" style="margin-bottom:2em"></div>
-
-		<h3 class="ui center aligned header">Last round results</h3>
-		{{> acroEndRound}}
-
-		<div class="ui divider"></div>
-
-		<h3 class="ui center aligned header">Game results</h3>
-		<div class="ui basic segment">
-			<div class="scrollTable-outer">
-				<div class="scrollTable-fade"></div>
-				<div class="scrollTable">
-					<table class="ui very basic celled unstackable table" id="endRoundTable" style="min-width:500px">
-						<thead>
-							<tr>
-								<th>Player</th>
-								<th>Best Acro</th>
-							</tr>
-						</thead>
-						<tbody>
-							{{#each gameResults}}
-								{{> acroGameResultsRow}}
-							{{/each}}
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
+		<div>{{> React component=AcrofeverEndGamePhase scores=this.scores rounds=this.rounds currentRound=this.currentRound winner=this.gameWinner endTime=this.endTime}}</div>
 	{{/with}}
 </template>
-
-<template name="acroGameResultsRow">
-	<tr>
-		<td>
-			<a href="#" class="userProfilePicture" data-userid="{{id}}">
-				<h4 class="ui image header">
-					<img src="{{profilePicture id 80}}" class="ui circular image">
-					<div class="content">
-						{{#if winner}}<i class="star icon noRightMargin"></i> {{/if}}
-						{{#if isThisUser id}}<i class="user icon noRightMargin"></i> {{/if}}
-						{{username id true}}
-						{{#if accolades}}<div class="sub header">{{{accolades}}}</div>{{/if}}
-					</div>
-				</h4>
-			</a>
-			<div class="clear"></div>
-			<div class="ui mini grey statistic">
-				<div class="value">{{totalVotes}}</div>
-				<div class="label">Votes</div>
-			</div>
-			<div class="ui mini grey statistic">
-				<div class="value">{{score}}</div>
-				<div class="label">Score</div>
-			</div>
-		</td>
-		<td>
-			{{#each bestAcros}}
-				{{> bestAcroCard}}
-			{{/each}}
-		</td>
-	</tr>
-</template>
-
-<template name="bestAcroCard">
-	<div class="ui fluid card acroCard">
-		<div class="content">
-			{{#unless isOwnAcro}}<a class="ui right corner {{#if hasVotedForHallOfFame}}green{{else}}yellow{{/if}} label hasPopup voteForHallOfFame" href="#" data-content="Vote to add this to the Hall of Fame" data-variation="tiny">
-				<i class="trophy icon"></i>
-			</a>{{/unless}}
-			<div class="header">
-				{{joinAcro acronym}}
-			</div>
-		</div>
-		<div class="content">
-			<div class="meta">{{category}}</div>
-			<div class="description hasPopup" data-content="{{votes}} votes" data-variation="mini">{{acro}}</div>
-		</div>
-	</div>
-</template>
-
 <!-- ENDGAME PHASE END -->

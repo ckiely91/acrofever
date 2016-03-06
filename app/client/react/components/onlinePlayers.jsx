@@ -1,21 +1,23 @@
-const PlayerLabel = React.createClass({
-    propTypes: {
-        id: React.PropTypes.string.isRequired
-    },
+class PlayerLabel extends React.Component {
     openProfilePopup(evt) {
         evt.preventDefault();
         Session.set('selectedProfileUserId', this.props.id);
         $('#profileModal').modal('show');
-    },
+    }
+
     render() {
         return (
-            <a className="ui image label userProfilePicture" onClick={this.openProfilePopup}>
+            <a className="ui image label userProfilePicture" onClick={(evt) => this.openProfilePopup(evt)}>
                 <img src={profilePicture(this.props.id, 50)} />
                 {displayname(this.props.id)}
             </a>
         )
     }
-});
+}
+
+PlayerLabel.propTypes = {
+    id: React.PropTypes.string.isRequired
+};
 
 OnlinePlayers = React.createClass({
    mixins: [ReactMeteorData],

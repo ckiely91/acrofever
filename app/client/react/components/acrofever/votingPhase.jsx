@@ -81,7 +81,7 @@ const AcroVoting = React.createClass({
     }
 });
 
-const AcrofeverVotingPhase = React.createClass({
+AcrofeverVotingPhase = React.createClass({
     propTypes: {
         round: React.PropTypes.object.isRequired,
         endTime: React.PropTypes.instanceOf(Date).isRequired,

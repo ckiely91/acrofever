@@ -126,7 +126,7 @@ const SubmitAcro = React.createClass({
     }
 });
 
-const AcrofeverAcroPhase = React.createClass({
+AcrofeverAcroPhase = React.createClass({
     propTypes: {
         round: React.PropTypes.object.isRequired,
         endTime: React.PropTypes.instanceOf(Date).isRequired,

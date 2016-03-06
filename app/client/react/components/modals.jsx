@@ -1,10 +1,11 @@
-const HowToPlayModal = React.createClass({
+class HowToPlayModal extends React.Component {
     componentDidMount() {
         $(this.modal).modal({
             detachable: false,
             observeChanges: true
         });
-    },
+    }
+
     render() {
         return (
             <div className="ui modal" id="howToPlayModal" ref={(ref) => this.modal = ref}>
@@ -47,17 +48,18 @@ const HowToPlayModal = React.createClass({
             </div>
         );
     }
-});
+}
 
 Template.registerHelper('HowToPlayModal', () => HowToPlayModal);
 
-const NotificationInfoModal = React.createClass({
+class NotificationInfoModal extends React.Component {
     componentDidMount() {
         $(this.modal).modal({
             detachable: false,
             observeChanges: true
         });
-    },
+    }
+
     render() {
         var contentInlineStyle = {
             textAlign: 'center'
@@ -75,16 +77,17 @@ const NotificationInfoModal = React.createClass({
             </div>
         );
     }
-});
+}
 
 Template.registerHelper('NotificationInfoModal', () => NotificationInfoModal);
 
-const PageDimmer = React.createClass({
+class PageDimmer extends React.Component {
     componentDidMount() {
         $(this.dimmer).dimmer({
             closable: false
         });
-    },
+    }
+
     render() {
         return (
             <div className="ui page dimmer" ref={(ref) => this.dimmer = ref}>
@@ -94,6 +97,6 @@ const PageDimmer = React.createClass({
             </div>
         )
     }
-});
+}
 
 Template.registerHelper('PageDimmer', () => PageDimmer);

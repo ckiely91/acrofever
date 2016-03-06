@@ -1,4 +1,5 @@
 const RoundResultsRow = React.createClass({
+    mixins: [ReactMeteorData],
     propTypes: {
         result: React.PropTypes.object.isRequired,
         totalPoints: React.PropTypes.func.isRequired,
@@ -8,6 +9,12 @@ const RoundResultsRow = React.createClass({
         $(this.label).popup({
             inline: true
         });
+    },
+    getMeteorData() {
+        return {
+            profilePicture: profilePicture(this.props.result.id, 35),
+            displayName: displayname(this.props.result.id)
+        };
     },
     openProfilePopup(evt) {
         evt.preventDefault();
@@ -38,9 +45,9 @@ const RoundResultsRow = React.createClass({
                 <td>
                     <a href="#" className="userProfilePicture" onClick={this.openProfilePopup}>
                         <h4 className="ui image header">
-                            <img src={profilePicture(this.props.result.id, 35)} className="ui mini circular image" />
+                            <img src={this.data.profilePicture} className="ui mini circular image" />
                             <div className="content">
-                                {displayname(this.props.result.id)}
+                                {this.data.displayName}
                                 {this.props.accolades(this.props.result) ? <div className="sub header" dangerouslySetInnerHTML={this.props.accolades(this.props.result)}></div> : null}
                             </div>
                         </h4>
@@ -59,7 +66,7 @@ const RoundResultsRow = React.createClass({
     }
 });
 
-const RoundResultsTable = React.createClass({
+RoundResultsTable = React.createClass({
     propTypes: {
         round: React.PropTypes.object.isRequired
     },
@@ -164,7 +171,7 @@ const RoundResultsTable = React.createClass({
     }
 });
 
-const AcrofeverEndRoundPhase = React.createClass({
+AcrofeverEndRoundPhase = React.createClass({
     propTypes: {
         round: React.PropTypes.object.isRequired,
         endTime: React.PropTypes.instanceOf(Date).isRequired

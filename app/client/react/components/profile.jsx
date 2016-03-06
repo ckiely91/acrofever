@@ -1,16 +1,19 @@
-const UserStats = React.createClass({
+class UserStats extends React.Component {
     gamesPlayed() {
         return (this.props.stats && this.props.stats.gamesPlayed) ? this.props.stats.gamesPlayed : 0;
-    },
+    }
+
     gamesWon() {
         return (this.props.stats && this.props.stats.gamesWon) ? this.props.stats.gamesWon : 0;
-    },
+    }
+
     winRate() {
         var percent = this.gamesWon() / this.gamesPlayed() * 100;
         if (_.isFinite(percent))
             return Math.round(percent);
         return 0;
-    },
+    }
+
     renderStatistic(stat, index) {
         return (
             <div key={index} className="statistic">
@@ -18,7 +21,8 @@ const UserStats = React.createClass({
                 <div className="label">{stat.label}</div>
             </div>
         )
-    },
+    }
+
     render() {
         var stats = [
             {
@@ -50,7 +54,7 @@ const UserStats = React.createClass({
             </div>
         );
     }
-});
+}
 
 const ProfileModal = React.createClass({
     mixins: [ReactMeteorData],

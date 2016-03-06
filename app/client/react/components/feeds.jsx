@@ -1,7 +1,4 @@
-const ChatInput = React.createClass({
-    propTypes: {
-        lobbyId: React.PropTypes.string
-    },
+class ChatInput extends React.Component {
     handleSubmit(evt) {
         evt.preventDefault();
         if (Meteor.userId()) {
@@ -26,104 +23,109 @@ const ChatInput = React.createClass({
         } else {
             FlowRouter.go('/sign-in');
         }
-    },
+    }
+
     render() {
         return (
-            <form id="chat-input-form" className="ui form" onSubmit={this.handleSubmit}>
+            <form id="chat-input-form" className="ui form" onSubmit={(evt) => this.handleSubmit(evt)}>
                 <div className="ui fluid action input">
-                    <input type="text" id="chat-input-box" name="message" className="ui input" placeholder="Type here to chat..." autoComplete="off" required />
+                    <input type="text" id="chat-input-box" name="message" className="ui input" placeholder="Type here to chat..." autoComplete="off" required="true" />
                     <button className="ui button" type="submit">Send</button>
                 </div>
             </form>
         );
     }
-});
+}
+
+ChatInput.propTypes = {
+    lobbyId: React.PropTypes.string
+};
 
 const SingleEvent = React.createClass({
-   mixins: [ReactMeteorData],
-   propTypes: {
-       user: React.PropTypes.string,
-       icon: React.PropTypes.string,
-       timestamp: React.PropTypes.instanceOf(Date).isRequired,
-       summary: React.PropTypes.string,
-       detail: React.PropTypes.string
-   },
-   getMeteorData() {
-       return {
-           username: displayname(this.props.user, true),
-           profileImgSrc: profilePicture(this.props.user, 35)
-       }
-   },
-   openProfilePopup(evt) {
-       evt.preventDefault();
-       Session.set('selectedProfileUserId', this.props.user);
-       $('#profileModal').modal('show');
-   },
-   renderProfilePicOrIcon(user, icon) {
-     if (user) {
-         return (
-             <a href="#" className="userProfilePicture" onClick={this.openProfilePopup}>
-                <img src={this.data.profileImgSrc} />
-             </a>
-         )
-     } else {
-         return <i className={(icon ? icon : 'info') + ' icon'}></i>;
-     }
-   },
-   detailHtml(html) {
-       return {
-           __html: replaceLinksAndEscape(html)
-       }
-   },
-   render() {
-       return (
-           <div className="event">
-               <div className="label">
-                   {this.renderProfilePicOrIcon(this.props.user, this.props.icon)}
-               </div>
-               <div className={"content " + (this.props.user ? "userProfilePicture" : "")}>
-                   <div className="summary">
-                       {this.props.user ? <a href="#" className="userProfilePicture" onClick={this.openProfilePopup}>{this.data.username}</a> : this.props.summary}
-                       <div className="date">
-                           <MomentFromNow time={this.props.timestamp} />
-                       </div>
-                   </div>
-                   {this.props.detail ? <div className="detailed-content" dangerouslySetInnerHTML={this.detailHtml(this.props.detail)}></div> : null}
-               </div>
-           </div>
-       );
-   }
+    mixins: [ReactMeteorData],
+    propTypes: {
+        user: React.PropTypes.string,
+        icon: React.PropTypes.string,
+        timestamp: React.PropTypes.instanceOf(Date).isRequired,
+        summary: React.PropTypes.string,
+        detail: React.PropTypes.string
+    },
+    getMeteorData() {
+        return {
+            username: displayname(this.props.user, true),
+            profileImgSrc: profilePicture(this.props.user, 35)
+        }
+    },
+    openProfilePopup(evt) {
+        evt.preventDefault();
+        Session.set('selectedProfileUserId', this.props.user);
+        $('#profileModal').modal('show');
+    },
+    renderProfilePicOrIcon(user, icon) {
+        if (user) {
+            return (
+                <a href="#" className="userProfilePicture" onClick={this.openProfilePopup}>
+                    <img src={this.data.profileImgSrc} />
+                </a>
+            )
+        } else {
+            return <i className={(icon ? icon : 'info') + ' icon'}></i>;
+        }
+    },
+    detailHtml(html) {
+        return {
+            __html: replaceLinksAndEscape(html)
+        }
+    },
+    render() {
+        return (
+            <div className="event">
+                <div className="label">
+                    {this.renderProfilePicOrIcon(this.props.user, this.props.icon)}
+                </div>
+                <div className={"content " + (this.props.user ? "userProfilePicture" : "")}>
+                    <div className="summary">
+                        {this.props.user ? <a href="#" className="userProfilePicture" onClick={this.openProfilePopup}>{this.data.username}</a> : this.props.summary}
+                        <div className="date">
+                            <MomentFromNow time={this.props.timestamp} />
+                        </div>
+                    </div>
+                    {this.props.detail ? <div className="detailed-content" dangerouslySetInnerHTML={this.detailHtml(this.props.detail)}></div> : null}
+                </div>
+            </div>
+        );
+    }
 });
 
 GlobalFeedComponent = React.createClass({
     mixins: [ReactMeteorData],
     getMeteorData() {
-       if (!Session.get('globalFeedLimit'))
+        if (!Session.get('globalFeedLimit'))
             Session.set('globalFeedLimit', 20);
 
-       var handle = Meteor.subscribe('globalFeed', Session.get('globalFeedLimit'));
+        var handle = Meteor.subscribe('globalFeed', Session.get('globalFeedLimit'));
 
-       var data = {
-           globalFeedLimit: Session.get('globalFeedLimit'),
-           subsReady: handle.ready(),
-           events: GlobalFeed.find({},{sort: {timestamp:-1}}).fetch()
-       };
+        var data = {
+            globalFeedLimit: Session.get('globalFeedLimit'),
+            subsReady: handle.ready(),
+            events: GlobalFeed.find({},{sort: {timestamp:-1}}).fetch()
+        };
 
-       if (handle.ready()) {
-           let playerIds = [];
+        if (handle.ready()) {
+            let playerIds = [];
 
-           data.events.forEach((event) => {
-               if (event.user && event.user !== Meteor.userId())
-                   playerIds.push(event.user);
-           });
+            data.events.forEach((event) => {
+                if (event.user && event.user !== Meteor.userId())
+                    playerIds.push(event.user);
+            });
 
-           if (playerIds.length > 0) {
-               playerIds = _.uniq(playerIds);
-               Meteor.subscribe('otherPlayers', playerIds);
-           }
-       }
+            if (playerIds.length > 0) {
+                playerIds = _.uniq(playerIds);
+                Meteor.subscribe('otherPlayers', playerIds);
+            }
+        }
 
-       return data;
+        return data;
     },
     componentDidMount() {
         var feedOuter = $('.feedChatDiv');
@@ -161,10 +163,10 @@ GlobalFeedComponent = React.createClass({
         return <SingleEvent key={index} {...event} />;
     },
     showGetMoreDiv(events) {
-       return (events.length === this.data.globalFeedLimit);
+        return (events.length === this.data.globalFeedLimit);
     },
-	render() {
-		return (
+    render() {
+        return (
             <div>
                 <div><ChatInput /></div>
                 <div className="feedChatDiv">
@@ -179,15 +181,15 @@ GlobalFeedComponent = React.createClass({
                     </div>
                 </div>
             </div>
-		);
-	}
+        );
+    }
 });
 
 Template.registerHelper('GlobalFeedComponent', () => {
     return GlobalFeedComponent;
 });
 
-const LobbyFeedComponent = React.createClass({
+LobbyFeedComponent = React.createClass({
     mixins: [ReactMeteorData],
     propTypes: {
         lobbyId: React.PropTypes.string.isRequired
@@ -220,17 +222,6 @@ const LobbyFeedComponent = React.createClass({
 
         return data;
     },
-    componentWillMount() {
-        var self = this;
-        this.notifications = LobbyFeed.find({lobbyId: this.props.lobbyId}).observeChanges({
-            added(id, doc) {
-                if (self.data.subsReady && doc.user) {
-                    notify(displayname(doc.user, true), doc.detail, profilePicture(doc.user, 250));
-                    playSound('chat');
-                }
-            }
-        });
-    },
     componentDidMount() {
         $(window).scroll(function() {
             var getMoreDiv = $('.getMoreDiv');
@@ -239,10 +230,24 @@ const LobbyFeedComponent = React.createClass({
                 limit += 20;
                 if (limit <= 200)
                     Session.set('lobbyFeedLimit', limit);
-            }        });
+            }
+        });
+
+        setTimeout(this.startComputation, 0);
     },
     componentWillUnmount() {
-        this.notifications.stop();
+        this.tracker.stop();
+    },
+    startComputation() {
+        this.tracker = Tracker.autorun(() => {
+            LobbyFeed.find({lobbyId: this.props.lobbyId}).observeChanges({
+                added: (id, doc) => {
+                    if (this.data.subsReady && doc.user) {
+                        playSound('chat');
+                    }
+                }
+            });
+        });
     },
     renderEvent(event, index) {
         return <SingleEvent key={index} {...event} />;
