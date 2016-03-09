@@ -1,5 +1,6 @@
 import React from 'react';
 
+import {NavComponent} from '../components/Nav';
 import {NagsComponent} from '../components/Nags';
 import {FooterComponent} from '../components/Footer';
 import {HowToPlayModal, PageDimmer, NotificationInfoModal} from '../components/Modals';
@@ -45,7 +46,7 @@ export class Layout extends React.Component {
     render() {
         return (
             <div>
-                <BlazeToReact blazeTemplate="nav" />
+                <NavComponent />
                 <div className="ui main container">
                     <NagsComponent />
                     {_.isFunction(this.props.content) ? this.props.content() : this.props.content}

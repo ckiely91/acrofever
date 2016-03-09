@@ -9,6 +9,7 @@ import {PlayView} from '../imports/views/Play';
 import {LobbyView} from '../imports/views/Lobby';
 import {HallOfFameView} from '../imports/views/HallOfFame';
 import {PageNotFound} from '../imports/views/PageNotFound';
+import {AdminMain, AdminHome, AdminHallOfFame, AdminNags} from '../imports/views/Admin';
 
 FlowRouter.route('/', {
     name: 'home',
@@ -62,38 +63,6 @@ FlowRouter.notFound = {
 
 /* BLAZE ROUTES */
 
-const blogRoutes = FlowRouter.group({
-    prefix: '/blog',
-    name: 'blog'
-});
-
-blogRoutes.route('/', {
-    name: 'blogIndex',
-    action: function() {
-        mount(Layout, {
-            content: () => (<BlazeToReact blazeTemplate="blogList" />)
-        });
-    }
-});
-
-blogRoutes.route('/:slug', {
-    name: 'blogShow',
-    action: function() {
-        mount(Layout, {
-            content: () => (<BlazeToReact blazeTemplate="blogPost" />)
-        });
-    }
-});
-
-blogRoutes.route('/tag/:tag', {
-    name: 'blogTagged',
-    action: function() {
-        mount(Layout, {
-            content: () => (<BlazeToReact blazeTemplate="blogTagged" />)
-        });
-    }
-});
-
 const adminRoutes = FlowRouter.group({
     prefix: '/admin',
     name: 'admin',
@@ -103,8 +72,9 @@ const adminRoutes = FlowRouter.group({
 adminRoutes.route('/', {
     name: 'adminHome',
     action: function() {
+        const subContent = <AdminHome />;
         mount(Layout, {
-            content: () => (<BlazeToReact blazeTemplate="adminMain" subTemplate="adminHome" />)
+            content: () => (<AdminMain subContent={subContent} />)
         });
     }
 });
@@ -112,8 +82,9 @@ adminRoutes.route('/', {
 adminRoutes.route('/halloffame', {
     name: 'adminHallOfFame',
     action: function() {
+        const subContent = <AdminHallOfFame />;
         mount(Layout, {
-            content: () => (<BlazeToReact blazeTemplate="adminMain" subTemplate="adminHallOfFame" />)
+            content: () => (<AdminMain subContent={subContent} />)
         });
     }
 });
@@ -121,26 +92,9 @@ adminRoutes.route('/halloffame', {
 adminRoutes.route('/nags', {
     name: 'adminNags',
     action: function() {
+        const subContent = <AdminNags />;
         mount(Layout, {
-            content: () => (<BlazeToReact blazeTemplate="adminMain" subTemplate="adminNags" />)
-        });
-    }
-});
-
-adminRoutes.route('/blog', {
-    name: 'adminBlog',
-    action: function() {
-        mount(Layout, {
-            content: () => (<BlazeToReact blazeTemplate="adminMain" subTemplate="blogAdmin" />)
-        });
-    }
-});
-
-adminRoutes.route('/blog/edit/:id', {
-    name: 'adminBlogEdit',
-    action: function() {
-        mount(Layout, {
-            content: () => (<BlazeToReact blazeTemplate="adminMain" subTemplate="blogAdminEdit" />)
+            content: () => (<AdminMain subContent={subContent} />)
         });
     }
 });
