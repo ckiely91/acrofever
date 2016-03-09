@@ -137,7 +137,12 @@ const UserNavWrapper = React.createClass({
         }
     },
     render() {
-        return (this.data.user ? <UserNavDropdown desktop={this.props.desktop} {...this.data.user} /> : <HeaderItem href="/sign-in" icon="sign in">Sign in / Register</HeaderItem>);
+        const signInItem = <HeaderItem href="/sign-in" icon="sign in">Sign in / Register</HeaderItem>;
+        let signIn = signInItem;
+        if (this.props.desktop)
+            signIn = <div id="rightNav" className="right menu">{signInItem}</div>;
+
+        return (this.data.user ? <UserNavDropdown desktop={this.props.desktop} {...this.data.user} /> : signIn);
     }
 });
 

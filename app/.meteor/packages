@@ -22,7 +22,6 @@ accounts-password
 sacha:spin
 fortawesome:fontawesome
 kadira:flow-router
-kadira:blaze-layout
 meteorhacks:subs-manager
 reactive-var
 useraccounts:semantic-ui
