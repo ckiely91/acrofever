@@ -2,6 +2,7 @@ import React from 'react';
 
 import {OnlinePlayers} from '../components/OnlinePlayers';
 import {GlobalFeedComponent} from '../components/Feeds';
+import {lobbySubs} from '../subsManagers';
 
 export const HomeView = React.createClass({
     componentWillMount() {

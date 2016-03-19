@@ -1,3 +1,5 @@
+import {HallOfFame, Nags} from '../../imports/collections';
+
 Meteor.publish('adminHallOfFame', function() {
 	if (!isAdminUser(this.userId))
 		return [];

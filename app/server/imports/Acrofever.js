@@ -3,6 +3,7 @@ import LobbyManager from './LobbyManager';
 
 import {displayName} from '../../imports/helpers';
 import {defaultCategories} from '../../imports/statics';
+import {Games, Lobbies} from '../../imports/collections';
 
 function ensureCorrectPhase(gameId, phase) {
     /*	This returns the game object only if it is in the correct phase

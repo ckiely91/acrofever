@@ -1,6 +1,8 @@
 import GameManager from './imports/GameManager';
 import LobbyManager from './imports/LobbyManager';
 
+import {Games, Lobbies} from '../imports/collections';
+
 Meteor.startup(function() {
 	//Loggly initialisation
 	Logger = new Loggly({

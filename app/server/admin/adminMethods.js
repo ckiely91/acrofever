@@ -1,3 +1,5 @@
+import {HallOfFame, Nags} from '../../imports/collections';
+
 Meteor.methods({
 	isAdminUser: function() {
 		return isAdminUser(this.userId);

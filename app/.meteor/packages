@@ -19,7 +19,6 @@ spacebars
 check
 ecmascript
 accounts-password
-sacha:spin
 fortawesome:fontawesome
 kadira:flow-router
 meteorhacks:subs-manager
@@ -38,12 +37,10 @@ jparker:gravatar
 http
 olragon:uri-js
 meteorhacks:kadira
-simple:reactive-method
 konecty:autolinker
 email
 ongoworks:spiderable
 kadira:dochead
-brentjanderson:buzz
 okgrow:analytics
 mizzao:timesync
 mizzao:user-status

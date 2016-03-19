@@ -2,6 +2,7 @@ import React from 'react';
 
 import {MomentFromNow} from './Countdown';
 import {replaceLinksAndEscape, playSound, profilePicture, displayName} from '../helpers';
+import {GlobalFeed, LobbyFeed} from '../collections';
 
 class ChatInput extends React.Component {
     handleSubmit(evt) {

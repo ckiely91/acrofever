@@ -5,6 +5,8 @@ import {MomentFromNow} from '../components/Countdown';
 import {OnlinePlayers} from '../components/OnlinePlayers';
 
 import {profilePicture, displayName} from '../helpers';
+import {Lobbies} from '../collections';
+import {lobbySubs} from '../subsManagers';
 
 const PlayerAvatar = React.createClass({
     mixins: [ReactMeteorData],

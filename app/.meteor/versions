@@ -14,7 +14,6 @@ blaze@2.1.4-beta.12
 blaze-html-templates@1.0.1
 blaze-tools@1.0.5-beta.12
 boilerplate-generator@1.0.5-beta.12
-brentjanderson:buzz@1.1.10
 caching-compiler@1.0.1-beta.12
 caching-html-compiler@1.0.3-beta.12
 callback-hook@1.0.5-beta.12
@@ -99,13 +98,11 @@ reactive-var@1.0.6
 reload@1.1.5-beta.12
 retry@1.0.4
 routepolicy@1.0.7-beta.12
-sacha:spin@2.3.1
 semantic:ui@2.1.7
 semantic:ui-data@2.1.7
 service-configuration@1.0.6-beta.12
 session@1.1.2-beta.12
 sha@1.0.4
-simple:reactive-method@1.0.2
 softwarerero:accounts-t9n@1.2.0
 spacebars@1.0.8-beta.12
 spacebars-compiler@1.0.8-beta.12

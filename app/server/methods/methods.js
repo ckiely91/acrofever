@@ -2,6 +2,7 @@ import GameManager from '../imports/GameManager';
 import LobbyManager from '../imports/LobbyManager';
 
 import {displayName} from '../../imports/helpers';
+import {Games, Lobbies, HallOfFame} from '../../imports/collections';
 
 Meteor.methods({
     joinOrLeaveOfficialLobby(lobbyId, join) {

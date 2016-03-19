@@ -1,5 +1,7 @@
 import React from 'react';
 
+import {Nags} from '../collections';
+
 class SingleNag extends React.Component {
     closeNag(evt) {
         evt.preventDefault();

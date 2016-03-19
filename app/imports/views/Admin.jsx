@@ -1,6 +1,7 @@
 import React from 'react';
 
 import {displayName} from '../helpers';
+import {HallOfFame, Nags} from '../collections';
 
 class AdminNagRow extends React.Component {
     editNag(evt, action) {

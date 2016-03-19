@@ -4,6 +4,7 @@ import {CountdownHeader} from '../Countdown';
 import {RoundResultsTable} from './EndRoundPhase';
 
 import {profilePicture, displayName} from '../../helpers';
+import {Lobbies} from '../../collections';
 
 const BestAcroCard = React.createClass({
     propTypes: {

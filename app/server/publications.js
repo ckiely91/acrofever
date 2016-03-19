@@ -1,3 +1,5 @@
+import {Games, Lobbies, GlobalFeed, LobbyFeed, HallOfFame, Nags} from '../imports/collections';
+
 Meteor.publish('globalFeed', function(limit) {
 	var maxFeedResults = 200;
 	if (limit > maxFeedResults)
@@ -67,10 +69,6 @@ Meteor.publish('nags', function(closedNags) {
 		return Nags.find({active: true, _id: {$not: {$in: closedNags}}});
 	else
 		return Nags.find({active: true});
-});
-
-Meteor.publish('notifications', function(lobbyId) {
-	return Notifications.find({lobbyId: lobbyId}, {limit: 1, sort: {created: -1}});
 });
 
 //Acro specific stuff

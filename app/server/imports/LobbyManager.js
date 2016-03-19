@@ -1,3 +1,5 @@
+import {Lobbies, GlobalFeed, LobbyFeed} from '../../imports/collections';
+
 const LobbyManager = {
 	addSystemMessage(lobbyId, summary, icon, detail) {
 		let feedEvent = {

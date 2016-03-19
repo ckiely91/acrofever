@@ -14,6 +14,9 @@ export class Layout extends React.Component {
 
         headerMeta.map((item) => DocHead.addMeta(item));
         headerLinks.map((item) => DocHead.addLink(item));
+
+        //Buzz library
+        DocHead.loadScript('https://cdnjs.cloudflare.com/ajax/libs/buzz/1.1.10/buzz.js');
     }
 
     componentDidMount() {

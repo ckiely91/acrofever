@@ -1,4 +1,5 @@
 import GameManager from '../imports/GameManager';
+import {Games, Lobbies, HallOfFame} from '../../imports/collections';
 
 Meteor.methods({
 	acrofeverChooseCategory(gameId, category) {
@@ -154,4 +155,9 @@ standardAcrofeverMethodChecks = function(gameId, userId, phase, inputRequired, i
 	checkCorrectPhase(game, phase);
 
 	return game;
+};
+
+function checkCorrectPhase(game, phase) {
+    if (game.currentPhase !== phase)
+        throw new Meteor.Error('wrong-phase', 'You can\'t take that action in the current game phase.');
 }

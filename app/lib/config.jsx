@@ -39,7 +39,7 @@ AccountsTemplates.addFields([
     type: "text",
     displayName: "username",
     required: true,
-    minLength: 5,
+    minLength: 5
   },
   {
     _id: 'email',
@@ -47,13 +47,13 @@ AccountsTemplates.addFields([
     required: true,
     displayName: "email",
     re: /.+@(.+){2,}\.(.+){2,}/,
-    errStr: 'Invalid email',
+    errStr: 'Invalid email'
   },
   {
     _id: 'username_and_email',
     type: 'text',
     required: true,
-    displayName: "Username or email",
+    displayName: "Username or email"
   },
   pwd
 ]);

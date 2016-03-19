@@ -10,6 +10,8 @@ import {AcrofeverEndRoundPhase} from'../components/acrofever/EndRoundPhase';
 import {AcrofeverEndGamePhase} from'../components/acrofever/EndGamePhase';
 
 import {notify, playSound, profilePicture, displayName} from '../helpers';
+import {Games, Lobbies} from '../collections';
+import {lobbySubs} from '../subsManagers';
 
 class GameWindowInner extends React.Component {
     componentDidMount() {

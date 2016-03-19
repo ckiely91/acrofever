@@ -54,7 +54,7 @@ Accounts.onCreateUser(function(options, user) {
 				"status": "subscribed",
 				"merge_fields": {
 					"FNAME": userDetails.firstName,
-					"LNAME": userDetails.lastName,
+					"LNAME": userDetails.lastName
 				}
 			},
 			auth: Meteor.settings.mailchimp.username + ":" + Meteor.settings.mailchimp.apiKey },

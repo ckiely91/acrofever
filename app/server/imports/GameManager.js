@@ -1,6 +1,8 @@
 import Acrofever from './Acrofever';
 import LobbyManager from './LobbyManager';
 
+import {Games, Lobbies} from '../../imports/collections';
+
 const GameManager = {
     makeGameActive(gameId) {
         //this function assumes that checks have already been made to ensure this game SHOULD go active

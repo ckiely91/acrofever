@@ -1,6 +1,7 @@
 import React from 'react';
 
 import {profilePicture, displayName} from '../helpers';
+import {HallOfFame} from '../collections';
 
 const HallOfFameAcroCard = React.createClass({
     mixins: [ReactMeteorData],
