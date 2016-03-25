@@ -2,6 +2,7 @@ import React from 'react';
 
 import {OnlinePlayers} from '../components/OnlinePlayers';
 import {GlobalFeedComponent} from '../components/Feeds';
+import {UpcomingEvents} from '../components/Events';
 import {lobbySubs} from '../subsManagers';
 
 export const HomeView = React.createClass({
@@ -50,7 +51,10 @@ export const HomeView = React.createClass({
         return (
             <div className="ui stackable grid">
                 <div className="sixteen wide center aligned column">
-                    <h1 className="ui header" id="homeHeader">Acrofever!</h1>
+                    <h1 className="ui header" id="homeHeader">
+                        Acrofever!
+                    </h1>
+                    <h2 className="ui header" id="homeSubHeader">The acronym word game for witty humans.</h2>
                     <div className="row">
                         <button className="big ui primary labeled icon button mobileBottomMargin" style={buttonStyle} onClick={this.playNow}>
                             <i className="lightning icon"></i>
@@ -79,6 +83,17 @@ export const HomeView = React.createClass({
                         <OnlinePlayers />
                     </div>
                     <div className="ui raised segment">
+                        <UpcomingEvents />
+                    </div>
+                </div>
+                <div className="eight wide column">
+                    <GlobalFeedComponent />
+                </div>
+                <div className="sixteen wide column">
+                    <div className="ui divider"></div>
+                </div>
+                <div className="eight wide column">
+                    <div className="ui raised segment">
                         <h3 className="ui header">What is Acrofever?</h3>
                         <p>Acrofever is an Acrophobia clone for the modern web.</p>
                         <p>If you never played Acrophobia, it's a fun, zany word game in which players create phrases
@@ -86,6 +101,8 @@ export const HomeView = React.createClass({
                             round will score points, and the most popular Acros from a whole game might be immortalised
                             in the Hall of Fame!</p>
                     </div>
+                </div>
+                <div className="eight wide column">
                     <div className="ui raised segment">
                         <h3 className="ui header">About</h3>
                         <p>Acrofever was created to be fast, user-friendly and playable on desktops and mobiles. This
@@ -94,9 +111,6 @@ export const HomeView = React.createClass({
                         <p>For bug reports, feature requests, feedback or just to say 'I love you', please contact the
                             overlord at <a href="mailto:christian@acrofever.com">christian@acrofever.com</a>.</p>
                     </div>
-                </div>
-                <div className="eight wide column">
-                    <GlobalFeedComponent />
                 </div>
             </div>
         )

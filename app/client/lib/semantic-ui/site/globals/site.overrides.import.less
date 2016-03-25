@@ -24,15 +24,26 @@ div.clear {
 	text-shadow: 1px 1px #171719;
 }
 
+#homeSubHeader {
+    font-size: 1.5rem;
+    font-weight: normal;
+    margin-top: 0;
+    margin-bottom: 2rem;
+}
+
 #desktopNav {
 	border-radius:0;
-	@media screen and (max-width: @tabletBreakpoint) {
-		display:none;
+    margin-bottom:0;
+    display: none;
+	@media screen and (min-width: @tabletBreakpoint) {
+		display:block;
 	}
 	background-image: url('/images/asfalt-light.png');
 }
 
 #mobileNav {
+    margin-bottom:0;
+
 	@media screen and (min-width: @tabletBreakpoint) {
 		display:none;
 	}
@@ -89,8 +100,9 @@ span {
 }
 
 .hiddenOnMobile {
-	@media screen and (max-width: @tabletBreakpoint) {
-		display:none !important;
+    display: none !important;
+	@media screen and (min-width: @tabletBreakpoint) {
+		display: block !important;
 	}
 }
 
@@ -117,7 +129,10 @@ span {
 .feedChatDiv {
 	position: relative;
 	.feedInner {
-		max-height:400px;
+		max-height:480px;
+        @media screen and (max-width: @tabletBreakpoint) {
+          max-height:300px;
+        }
 		overflow-y: auto;
 		overflow-x: hidden;
 		margin-top:10px;
@@ -170,6 +185,46 @@ img.ui.image.inline {
 	background: rgba(255,255,255,0.6);
 }
 
+.singleEvent {
+    .description .header {
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+
+    .description .time {
+        font-size: 1.1em;
+        float: right;
+    }
+
+    .moveup {
+        margin-top: -28px !important;
+    }
+}
+
+#eventBanner {
+    margin: 0;
+    background: @lightGrey;
+    padding: 10px 0;
+    color: @textColor;
+
+    &.red {
+        background: @primaryColor;
+        color: @white;
+    }
+
+    .container {
+        padding: 0 10px;
+    }
+
+    i {
+        margin: 0 10px;
+    }
+
+    .marginned {
+        margin-right: 10px;
+    }
+}
+
 /* RESPONSIVE TABLE CSS */
 .scrollTable {
 	width: 100%;
@@ -189,8 +244,8 @@ img.ui.image.inline {
 	}
 }
 
-.scrollTable-outer { 
-	position: relative; 
+.scrollTable-outer {
+	position: relative;
 }
 
 .scrollTable-fade {

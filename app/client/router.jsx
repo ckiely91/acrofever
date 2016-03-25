@@ -9,7 +9,7 @@ import {PlayView} from '../imports/views/Play';
 import {LobbyView} from '../imports/views/Lobby';
 import {HallOfFameView} from '../imports/views/HallOfFame';
 import {PageNotFound} from '../imports/views/PageNotFound';
-import {AdminMain, AdminHome, AdminHallOfFame, AdminNags} from '../imports/views/Admin';
+import {AdminMain, AdminHome, AdminHallOfFame, AdminNags, AdminEvents} from '../imports/views/Admin';
 
 FlowRouter.route('/', {
     name: 'home',
@@ -93,6 +93,16 @@ adminRoutes.route('/nags', {
     name: 'adminNags',
     action: function() {
         const subContent = <AdminNags />;
+        mount(Layout, {
+            content: () => (<AdminMain subContent={subContent} />)
+        });
+    }
+});
+
+adminRoutes.route('/events', {
+    name: 'adminEvents',
+    action: function() {
+        const subContent = <AdminEvents />;
         mount(Layout, {
             content: () => (<AdminMain subContent={subContent} />)
         });

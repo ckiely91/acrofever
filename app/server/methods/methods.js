@@ -2,7 +2,9 @@ import GameManager from '../imports/GameManager';
 import LobbyManager from '../imports/LobbyManager';
 
 import {displayName} from '../../imports/helpers';
-import {Games, Lobbies, HallOfFame} from '../../imports/collections';
+import {Games, Lobbies, HallOfFame, Events} from '../../imports/collections';
+import {checkValidEmail} from '../../imports/validators';
+import {getUserEmail} from '../imports/ServerHelpers';
 
 Meteor.methods({
     joinOrLeaveOfficialLobby(lobbyId, join) {
@@ -45,5 +47,59 @@ Meteor.methods({
     },
     hallOfFameUserAcroCount(userId) {
         return HallOfFame.find({userId: userId, active: true}).count();
+    },
+    changeEmailAddress(email) {
+        if (!this.userId)
+            throw new Meteor.Error(403, 'You don\'t have permission to do that.');
+
+        check(email, checkValidEmail);
+
+        const user = Meteor.users.findOne(this.userId);
+        let oldEmail;
+
+        if (user.emails && user.emails.length > 0) {
+            oldEmail = user.emails[0].address;
+            try {
+                Accounts.removeEmail(this.userId, oldEmail);
+            } catch(e) {
+                console.log(`Error removing email address: ${e}`);
+                throw new Meteor.Error('unknown-error', 'Internal server error');
+            }
+        }
+
+        try {
+            Accounts.addEmail(this.userId, email);
+        } catch(e) {
+            console.log(`Error adding email address: ${e}`);
+            throw new Meteor.Error('email-in-use', 'That email address is already in use.');
+        }
+    },
+    registerForReminder(eventId, deregister) {
+        if (!this.userId)
+            throw new Meteor.Error(403, 'You don\'t have permission to do that.');
+
+        const event = Events.findOne(eventId);
+
+        if (!event)
+            throw new Meteor.Error('no-event', 'That event does not exist');
+
+        const user = Meteor.users.findOne(this.userId);
+
+        if (!((user.emails && user.emails.length > 0) || user.services.facebook || user.services.google))
+            throw new Meteor.Error('no-email-address', 'You must have an email address set to do that');
+
+        if (deregister === true) {
+            Events.update(eventId, {$pull: {users: this.userId}});
+        } else {
+            Events.update(eventId, {$addToSet: {users: this.userId}});
+        }
+    },
+    isEmailAddressSet() {
+        if (!this.userId)
+            throw new Meteor.Error(403, 'You don\'t have permission to do that.');
+
+        const user = Meteor.users.findOne(this.userId);
+
+        return (getUserEmail(user) ? true : false);
     }
 });

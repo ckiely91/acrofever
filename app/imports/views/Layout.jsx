@@ -5,6 +5,7 @@ import {NagsComponent} from '../components/Nags';
 import {FooterComponent} from '../components/Footer';
 import {HowToPlayModal, PageDimmer, NotificationInfoModal} from '../components/Modals';
 import {ProfileModal} from '../components/Profile';
+import {EventBanner} from '../components/Events';
 
 import {headerMeta, headerLinks} from '../statics';
 
@@ -50,6 +51,7 @@ export class Layout extends React.Component {
         return (
             <div>
                 <NavComponent />
+                <EventBanner />
                 <div className="ui main container">
                     <NagsComponent />
                     {_.isFunction(this.props.content) ? this.props.content() : this.props.content}

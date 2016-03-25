@@ -1,4 +1,4 @@
-import {Games, Lobbies, GlobalFeed, LobbyFeed, HallOfFame, Nags} from '../imports/collections';
+import {Games, Lobbies, GlobalFeed, LobbyFeed, HallOfFame, Nags, Events} from '../imports/collections';
 
 Meteor.publish('globalFeed', function(limit) {
 	var maxFeedResults = 200;
@@ -71,4 +71,7 @@ Meteor.publish('nags', function(closedNags) {
 		return Nags.find({active: true});
 });
 
-//Acro specific stuff
+Meteor.publish('events', function() {
+    const date = moment().subtract(1, 'h').toDate();
+    return Events.find({ date: { $gte: date } }, { sort: {date: 1 }, limit: 3 });
+});

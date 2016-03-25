@@ -2,16 +2,29 @@ import React from 'react';
 
 import {profilePicture, displayName} from '../helpers';
 
-const PlayerLabel = React.createClass({
+export const PlayerLabel = React.createClass({
     mixins: [ReactMeteorData],
     propTypes: {
         id: React.PropTypes.string.isRequired
     },
     getMeteorData() {
-        return {
+        const data = {
             profilePicture: profilePicture(this.props.id, 50),
-            displayName: displayName(this.props.id)
+            displayName: displayName(this.props.id),
+            ready: false
+        };
+
+        const user = Meteor.users.findOne(this.props.id);
+
+        if (user) {
+            data.ready = true;
+            data.online = user.status ? user.status.online : false;
+        } else {
+            Meteor.subscribe('otherPlayers', [this.props.id]);
+            data.ready = false;
         }
+
+        return data;
     },
     openProfilePopup(evt) {
         evt.preventDefault();
@@ -19,12 +32,16 @@ const PlayerLabel = React.createClass({
         $('#profileModal').modal('show');
     },
     render() {
-        return (
-            <a className="ui image label userProfilePicture" onClick={this.openProfilePopup}>
-                <img src={this.data.profilePicture} />
-                {this.data.displayName}
-            </a>
-        )
+        if (this.data.ready) {
+            return (
+                <a className={`ui image label userProfilePicture`} onClick={this.openProfilePopup} ref={(ref) => this.label = ref}>
+                    <img src={this.data.profilePicture} />
+                    {this.data.displayName}
+                </a>
+            );
+        } else {
+            return <div className="ui label"><div className="ui inline active mini loader"></div></div>;
+        }
     }
 });
 

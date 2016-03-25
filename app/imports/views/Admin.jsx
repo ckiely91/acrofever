@@ -1,7 +1,149 @@
 import React from 'react';
 
 import {displayName} from '../helpers';
-import {HallOfFame, Nags} from '../collections';
+import {HallOfFame, Nags, Events} from '../collections';
+
+export const AdminEvents = React.createClass({
+    mixins: [ReactMeteorData],
+    getMeteorData() {
+        Meteor.subscribe('adminEvents');
+        const events = Events.find().fetch().sort(function(a, b) {
+            return b.date - a.date;
+        });
+
+        const pastEvents = [],
+            futureEvents = [];
+
+        const now = moment().subtract(1, 'h');
+
+        _.each(events, function(event) {
+             if (moment(event.date).isBefore(now)) {
+                 pastEvents.push(event);
+             } else {
+                 futureEvents.push(event);
+             }
+        });
+
+        return {pastEvents, futureEvents};
+    },
+    adminEventRow(event, key) {
+        return (
+            <tr key={key}>
+                <td>{event.name} <br /> {event._id.toString()}</td>
+                <td>{moment(event.date).format('MMMM Do YYYY, h:mm:ss a')}</td>
+                <td>{event.lobbyId}</td>
+                <td>{event.recurring ? <i className="check icon" /> : <i className="cancel icon" />}</td>
+                <td>{event.description}</td>
+                <td>{event.region}<br /><i className={event.region + ' flag'} /></td>
+                <td>{event.users ? event.users.join(', ') : null}</td>
+            </tr>
+        );
+    },
+    submitForm(evt, fields) {
+        evt.preventDefault();
+
+        fields.date = moment(fields.date, 'DD-MM-YYYY HH:mm Z').toDate();
+        fields.recurring = fields.recurring ? true : false;
+        console.log(fields);
+        
+        var $form = $(evt.currentTarget),
+            $btn = $form.find('button');
+
+        $btn.addClass('loading');
+        
+        Meteor.call('adminAddEvent', fields, (err) => {
+            $btn.removeClass('loading');
+            if (err) {
+                $form.form('add errors', [err.reason]);
+            } else {
+                $form.trigger('reset');
+            }
+        });
+    },
+    componentDidMount() {
+        $(this.form).form({
+            onSuccess: (evt, fields) => {
+                this.submitForm(evt, fields);
+            }
+        });
+
+        $(this.form).find('.checkbox').checkbox();
+    },
+    render() {
+        return (
+            <div>
+                <a href={FlowRouter.path('adminHome')} className="ui labeled icon button"><i className="arrow left icon" /> Back</a>
+                <h2 className="ui header">Manage events</h2>
+                <h3 className="ui dividing header">Add event</h3>
+
+                <form className="ui form" ref={(ref) => this.form = ref}>
+                    <div className="field">
+                        <input name="name" type="text" placeholder="name" required="true"/>
+                    </div>
+                    <div className="field">
+                        <input name="date" type="text" placeholder="date" required="true"/>
+                        <p>Input in format DD-MM-YYYY HH:mm Z <br />
+                            eg. 03-01-2016 20:30 +1000
+                        </p>
+                    </div>
+                    <div className="field">
+                        <input name="lobbyId" type="text" placeholder="lobbyId" required="true"/>
+                    </div>
+                    <div className="field">
+                        <div className="ui checkbox">
+                            <input name="recurring" type="checkbox" tabIndex="0" className="hidden" />
+                            <label>Recurring</label>
+                        </div>
+                    </div>
+                    <div className="field">
+                        <textarea name="description" placeholder="description" required="true"/>
+                    </div>
+                    <div className="field">
+                        <input name="region" type="text" placeholder="region" />
+                    </div>
+                    <div className="ui error message"></div>
+                    <button className="ui primary button">Save</button>
+                </form>
+
+                <h3 className="ui dividing header">Current/future events</h3>
+                <table className="ui table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Date</th>
+                            <th>Lobby</th>
+                            <th>Recurring</th>
+                            <th>Description</th>
+                            <th>Region</th>
+                            <th>Users</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {this.data.futureEvents.map((event, index) => this.adminEventRow(event, index))}
+                    </tbody>
+                </table>
+
+                <h3 className="ui dividing header">Past events</h3>
+                <table className="ui table">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Lobby</th>
+                        <th>Recurring</th>
+                        <th>Description</th>
+                        <th>Region</th>
+                        <th>Users</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {this.data.pastEvents.map((event, index) => this.adminEventRow(event, index))}
+                    </tbody>
+                </table>
+            </div>
+        )
+    }
+});
 
 class AdminNagRow extends React.Component {
     editNag(evt, action) {
@@ -123,7 +265,7 @@ export const AdminNags = React.createClass({
                     </tr>
                     </thead>
                     <tbody>
-                        {this.data.nags.map((item, index) => <AdminNagRow key={index} {...item} />)}
+                    {this.data.nags.map((item, index) => <AdminNagRow key={index} {...item} />)}
                     </tbody>
                 </table>
             </div>
@@ -230,7 +372,7 @@ export const AdminHallOfFame = React.createClass({
                     </tr>
                     </thead>
                     <tbody>
-                        {this.data.hallOfFame.map((item, index) => <AdminHallOfFameRow key={index} {...item} />)}
+                    {this.data.hallOfFame.map((item, index) => <AdminHallOfFameRow key={index} {...item} />)}
                     </tbody>
                 </table>
             </div>
@@ -242,6 +384,7 @@ export const AdminHome = () => (
     <div>
         <a href={FlowRouter.path('adminHallOfFame')} className="ui button">Approve Hall of Fame</a>
         <a href={FlowRouter.path('adminNags')} className="ui button">Manage nags</a>
+        <a href={FlowRouter.path('adminEvents')} className="ui button">Manage events</a>
     </div>
 );
 

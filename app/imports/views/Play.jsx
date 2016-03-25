@@ -3,6 +3,7 @@ import React from 'react';
 import {GlobalFeedComponent} from '../components/Feeds';
 import {MomentFromNow} from '../components/Countdown';
 import {OnlinePlayers} from '../components/OnlinePlayers';
+import {UpcomingEvents} from '../components/Events';
 
 import {profilePicture, displayName} from '../helpers';
 import {Lobbies} from '../collections';
@@ -136,7 +137,7 @@ export const PlayView = React.createClass({
         return (
             <div>
                 <h2 className="ui header">
-                    <i className="search icon"></i>
+                    <i className="search icon" />
                     <div className="content">
                         Find a lobby
                         <div className="sub header">Join a lobby to start playing</div>
@@ -147,9 +148,14 @@ export const PlayView = React.createClass({
                     <div className="eight wide column">
                         {lobbyTable}
                         <div className="ui hidden divider"></div>
-                        <div><OnlinePlayers /></div>
+                        <div className="ui raised segment">
+                            <UpcomingEvents />
+                        </div>
                     </div>
                     <div className="eight wide column">
+                        <div className="ui raised segment">
+                            <OnlinePlayers />
+                        </div>
                         <GlobalFeedComponent />
                     </div>
                 </div>

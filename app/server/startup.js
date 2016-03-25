@@ -1,7 +1,11 @@
+import {CronJob} from 'cron';
+
 import GameManager from './imports/GameManager';
 import LobbyManager from './imports/LobbyManager';
+import {SendReminderEmails} from './imports/Emails';
+import {UpdateRecurringEvents} from './imports/Events';
 
-import {Games, Lobbies} from '../imports/collections';
+import {Games, Lobbies, Events} from '../imports/collections';
 
 Meteor.startup(function() {
 	//Loggly initialisation
@@ -42,4 +46,19 @@ Meteor.startup(function() {
 			}
 		}
 	});
+});
+
+//start cron jobs
+
+const eventRemindersJob = new CronJob({
+    cronTime: "*/15 * * * *", // every 15 minutes
+    onTick: Meteor.bindEnvironment(SendReminderEmails),
+    start: true,
+    runOnInit: true
+});
+
+const updateRecurringEventsJob = new CronJob({
+    cronTime: '1,16,31,46 * * * *', // one minute past every 15 min interval
+    onTick: Meteor.bindEnvironment(UpdateRecurringEvents),
+    start: true
 });

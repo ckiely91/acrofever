@@ -1,4 +1,4 @@
-import {HallOfFame, Nags} from '../../imports/collections';
+import {HallOfFame, Nags, Events} from '../../imports/collections';
 
 Meteor.methods({
 	isAdminUser: function() {
@@ -47,6 +47,15 @@ Meteor.methods({
 				break;
 		}
 	},
+	adminAddEvent: function(fields) {
+        if (!isAdminUser(this.userId))
+            throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
+
+        fields.creator = this.userId;
+        Events.insert(fields);
+	}
+
+
 	//Migrations
 	//Commenting out these methods once they have been run on production
 	/*migrateUserBase: function() {

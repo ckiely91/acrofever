@@ -1,0 +1,292 @@
+import React from 'react';
+
+import {Lobbies, Events} from '../collections';
+import {CountdownSpan} from './Countdown';
+
+const SetEmailModal = React.createClass({
+    componentDidMount() {
+        $(this.modal).modal({
+            detachable: false,
+            observeChanges: true,
+            onApprove: () => {
+                $(this.form).submit();
+                return false;
+            }
+        });
+
+        $(this.form).form({
+            onSuccess: (evt, fields) => {
+                evt.preventDefault();
+                const btn = $(this.modal).find('.ok.button'),
+                    form = $(this.form);
+                btn.addClass('loading');
+                Meteor.call('changeEmailAddress', fields.email, (err) => {
+                    if (err) {
+                        form.form('add errors', [err.reason]);
+                        btn.removeClass('loading');
+                    } else {
+                        Meteor.call('registerForReminder', Session.get('setReminderId'), (err) => {
+                            btn.removeClass('loading');
+                            if (err) {
+                                form.form('add errors', [err.reason]);
+                            } else {
+                                $(this.modal).modal('hide');
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    },
+    render() {
+        return (
+            <div className="ui small basic modal" id="setEmailModal" ref={(ref) => this.modal = ref}>
+                <div className="ui icon header">
+                    <i className="warning icon" />
+                    Set your email address
+                </div>
+                <div className="content">
+                    <p>You need to set an email address on your account to set reminders.</p>
+                    <form className="ui form" ref={(ref) => this.form = ref}>
+                        <div className="field">
+                            <input type="email" required="true" name="email" placeholder="Email address" />
+                        </div>
+                        <div className="ui error message"></div>
+                    </form>
+                </div>
+                <div className="actions">
+                    <div className="ui basic cancel inverted button">Cancel</div>
+                    <div className="ui green ok inverted button">Save</div>
+                </div>
+            </div>
+        )
+    }
+});
+
+const SingleEvent = React.createClass({
+    propTypes: {
+        _id: React.PropTypes.string.isRequired,
+        name: React.PropTypes.string.isRequired,
+        date: React.PropTypes.instanceOf(Date).isRequired,
+        creator: React.PropTypes.string.isRequired,
+        lobbyId: React.PropTypes.string.isRequired,
+        recurring: React.PropTypes.bool,
+        description: React.PropTypes.string.isRequired,
+        region: React.PropTypes.string
+    },
+    joinEvent(evt) {
+        evt.preventDefault();
+        FlowRouter.go(FlowRouter.path('lobby', {lobbyId: this.props.lobbyId}));
+    },
+    remindMe(evt) {
+        evt.preventDefault();
+        if (!Meteor.userId()) {
+            FlowRouter.go('/sign-in');
+        } else {
+            const button = $(this.button);
+            button.addClass('loading');
+            const user = Meteor.user();
+
+            const doReminder = () => {
+                Meteor.call('registerForReminder', this.props._id, (err) => {
+                    button.removeClass('loading');
+                    if (err) console.log(err.reason);
+                });
+            };
+
+            if (user.emails && user.emails.length > 0) {
+                doReminder();
+            } else {
+                Meteor.call('isEmailAddressSet', (err, res) => {
+                    if (err) {
+                        button.removeClass('loading');
+                        console.log(err);
+                    } else if (res === true) {
+                        doReminder();
+                    } else {
+                        // user must set email address
+                        button.removeClass('loading');
+                        Session.set('setReminderId', this.props._id);
+                        $('#setEmailModal').modal('show');
+                    }
+                });
+            }
+        }
+    },
+    dontRemindMe(evt) {
+        evt.preventDefault();
+        const button = $(this.button);
+        button.addClass('loading');
+        Meteor.call('registerForReminder', this.props._id, true, (err) => {
+            button.removeClass('loading');
+            if (err) console.log(err.reason);
+        });
+    },
+    isInReminderList() {
+        const userId = Meteor.userId();
+        return (userId && this.props.users && this.props.users.indexOf(userId) > -1);
+    },
+    render() {
+        let label, button, labelShown;
+        const now = moment(),
+            ahead = moment(this.props.date).add(1, 'h'),
+            behind = moment(this.props.date).subtract(2, 'h');
+
+        if (now.isBetween(this.props.date, ahead)) {
+            // this event is on right now
+            label = <div className="ui left ribbon label">Happening now</div>;
+            labelShown = true;
+            button = (
+                <a href="#" className="ui right floated mini primary button moveup" onClick={(evt) => this.joinEvent(evt)} ref={(ref) => this.button = ref}>
+                    <i className="lightning icon" />
+                    Join this event
+                </a>
+            );
+        } else {
+            if (now.isBetween(behind, this.props.date)) {
+                // this event is happening soon
+                label = <div className="ui left ribbon label">Starting soon</div>;
+                labelShown = true;
+            }
+
+            if (this.isInReminderList()) {
+                button = (
+                    <a href="#" className={"ui right floated mini green button" + (labelShown ? ' moveup' : '')} onClick={(evt) => this.dontRemindMe(evt)} ref={(ref) => this.button = ref}>
+                        <i className="check icon" />
+                        Reminder set
+                    </a>
+                )
+            } else {
+                button = (
+                    <a href="#" className={"ui right floated mini secondary button" + (labelShown ? ' moveup' : '')} onClick={(evt) => this.remindMe(evt)} ref={(ref) => this.button = ref}>
+                        <i className="calendar icon" />
+                        Remind me
+                    </a>
+                );
+            }
+        }
+
+        return (
+            <div className="item singleEvent">
+                <div className="content">
+                    {label}
+                    <div className="description">
+                        <p className={'time' + (labelShown ? ' moveup' : '')}>{moment(this.props.date).calendar()}</p>
+                        <p className="header">{this.props.region ? <i className={this.props.region + ' flag'} /> : null} {this.props.name}</p>
+                        {button}
+                        <p>{this.props.description}</p>
+                    </div>
+                    <div className="extra">
+                        <p>{Lobbies.findOne(this.props.lobbyId).displayName}</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+});
+
+export const UpcomingEvents = React.createClass({
+    mixins: [ReactMeteorData],
+    getMeteorData() {
+        const handle1 = Meteor.subscribe('events'),
+            handle2 = Meteor.subscribe('lobbies'),
+            events = Events.find().fetch();
+
+        const sortedEvents = events.sort((a, b) => {
+            return a.date - b.date;
+        });
+
+        return {
+            ready: handle1.ready() && handle2.ready(),
+            events: sortedEvents
+        };
+    },
+    render() {
+        let events;
+
+        if (this.data.ready) {
+            if (this.data.events.length > 0) {
+                events = (
+                    <div className="ui divided items">
+                        {this.data.events.map((item, index) => <SingleEvent key={index} {...item} />)}
+                    </div>
+                );
+            } else {
+                events = <p><em>No upcoming events</em></p>;
+            }
+        } else {
+            events = <div className="ui active inline loader"></div>;
+        }
+
+        return (
+            <div>
+                <h2 className="ui header">
+                    <span><i className="calendar icon" /> Upcoming events</span>
+                </h2>
+                <div className="ui divider"></div>
+                {events}
+                <SetEmailModal />
+            </div>
+        );
+    }
+});
+
+export const EventBanner = React.createClass({
+    mixins: [ReactMeteorData],
+    getMeteorData() {
+        Meteor.subscribe('events');
+        const events = Events.find().fetch(),
+            now = moment();
+
+        let currentEvent, futureEvent;
+
+        for (let i = 0; i < events.length; i++) {
+            const ahead = moment(events[i].date).add(1, 'h'),
+                behind = moment(events[i].date).subtract(2, 'h');
+
+            if (now.isBetween(events[i].date, ahead)) {
+                console.log(i + ' is current');
+                currentEvent = events[i];
+            } else if (now.isBetween(behind, events[i].date)) {
+                console.log(i + ' is future');
+                futureEvent = events[i];
+            }
+        }
+
+        return {
+            currentEvent: currentEvent,
+            futureEvent: futureEvent,
+            currentRoute: FlowRouter.getRouteName()
+        };
+    },
+    joinEvent(evt) {
+        evt.preventDefault();
+        const lobbyId = this.data.currentEvent ? this.data.currentEvent.lobbyId : this.data.futureEvent.lobbyId;
+        FlowRouter.go(FlowRouter.path('lobby', {lobbyId: lobbyId}));
+    },
+    render() {
+        if (this.data.currentRoute !== 'lobby' && this.data.currentEvent || this.data.futureEvent) {
+            let region;
+
+            if (this.data.currentEvent && this.data.currentEvent.region) {
+                region = <i className={`${this.data.currentEvent.region} flag`} />;
+            } else if (this.data.futureEvent && this.data.futureEvent.region) {
+                region = <i className={`${this.data.futureEvent.region} flag`} />;
+            }
+
+
+            return (
+                <div id="eventBanner" className={this.data.currentEvent ? 'red' : ''}>
+                    <div className="ui container">
+                        <strong>{this.data.currentEvent ? 'Event happening now' : <span>Event starting in <CountdownSpan endTime={this.data.futureEvent.date} /></span>} </strong>
+                        {region}
+                        <span className="marginned">{this.data.currentEvent ? this.data.currentEvent.name : this.data.futureEvent.name}</span>
+                        <a href="#" className="ui secondary tiny button" onClick={(evt) => this.joinEvent(evt)}>Join event</a>
+                    </div>
+                </div>
+            );
+        } else {
+            return false;
+        }
+    }
+});
