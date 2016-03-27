@@ -68,7 +68,7 @@ const SingleEvent = React.createClass({
         _id: React.PropTypes.string.isRequired,
         name: React.PropTypes.string.isRequired,
         date: React.PropTypes.instanceOf(Date).isRequired,
-        creator: React.PropTypes.string.isRequired,
+        creator: React.PropTypes.string,
         lobbyId: React.PropTypes.string.isRequired,
         recurring: React.PropTypes.bool,
         description: React.PropTypes.string.isRequired,

@@ -38,6 +38,7 @@ export function SendReminderEmails() {
             });
 
             const eventName = event.name,
+                eventDescription = event.description,
                 lobbyName = Lobbies.findOne(event.lobbyId).displayName,
                 link = 'https://acrofever.com/play/' + event.lobbyId;
 
@@ -47,6 +48,7 @@ export function SendReminderEmails() {
                     email.addSmtpapiTo(userEmail);
                     email.addSubstitution(':link', link);
                     email.addSubstitution(':eventname', eventName);
+                    email.addSubstitution(':eventdescription', eventDescription);
                     email.addSubstitution(':lobbyname', lobbyName);
                 }
             });
