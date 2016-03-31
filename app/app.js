@@ -1,3 +1,3 @@
 //global version vars
-appVersion = "2.2";
-appLastUpdated = "27 February 2016";
+appVersion = "2.2.0";
+appLastUpdated = "31 March 2016";
