@@ -1,3 +1,3 @@
 //global version vars
-appVersion = "2.2.0";
-appLastUpdated = "31 March 2016";
+appVersion = require('./package.json').version;
+appLastUpdated = "7 April 2016";
