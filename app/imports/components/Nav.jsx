@@ -176,6 +176,10 @@ export const NavComponent = React.createClass({
         $('#howToPlayModal').modal('show');
         analytics.page('howToPlay');
     },
+    blog(evt) {
+        evt.preventDefault();
+        location.assign('https://acrofever.com/blog');
+    },
     toggleMobileMenu(evt) {
         evt.preventDefault();
         $(this.slideMenu).transition('slide down');
@@ -192,7 +196,7 @@ export const NavComponent = React.createClass({
                         <HeaderItem path="play" icon="search">Find a lobby</HeaderItem>
                         <HeaderItem path="halloffame" icon="trophy">Hall of Fame</HeaderItem>
                         <HeaderItem href="#" icon="question" onClick={(evt) => this.howToPlay(evt)}>How to Play</HeaderItem>
-                        <HeaderItem href="/blog" icon="rss">Blog</HeaderItem>
+                        <HeaderItem href="/blog" icon="rss" onClick={(evt) => this.blog(evt)}>Blog</HeaderItem>
                         <UserNavWrapper desktop={true} />
                     </div>
                 </div>
@@ -212,7 +216,7 @@ export const NavComponent = React.createClass({
                             <HeaderItem path="play" icon="search">Find a lobby</HeaderItem>
                             <HeaderItem path="halloffame" icon="trophy">Hall of Fame</HeaderItem>
                             <HeaderItem href="#" icon="question" onClick={(evt) => this.howToPlay(evt)}>How to Play</HeaderItem>
-                            <HeaderItem href="/blog" icon="rss">Blog</HeaderItem>
+                            <HeaderItem href="/blog" icon="rss" onClick={(evt) => location.assign('/blog')}>Blog</HeaderItem>
                             <UserNavWrapper desktop={false}/>
                         </div>
                     </div>
