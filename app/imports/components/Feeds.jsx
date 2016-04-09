@@ -62,15 +62,10 @@ const SingleEvent = React.createClass({
             profileImgSrc: profilePicture(this.props.user, 35)
         }
     },
-    openProfilePopup(evt) {
-        evt.preventDefault();
-        Session.set('selectedProfileUserId', this.props.user);
-        $('#profileModal').modal('show');
-    },
     renderProfilePicOrIcon(user, icon) {
         if (user) {
             return (
-                <a href="#" className="userProfilePicture" onClick={this.openProfilePopup}>
+                <a href={FlowRouter.path('profile', {userId: this.props.user})} target="_blank" className="userProfilePicture">
                     <img src={this.data.profileImgSrc} />
                 </a>
             )
@@ -91,7 +86,7 @@ const SingleEvent = React.createClass({
                 </div>
                 <div className={"content " + (this.props.user ? "userProfilePicture" : "")}>
                     <div className="summary">
-                        {this.props.user ? <a href="#" className="userProfilePicture" onClick={this.openProfilePopup}>{this.data.username}</a> : this.props.summary}
+                        {this.props.user ? <a href={FlowRouter.path('profile', {userId: this.props.user})} target="_blank"  className="userProfilePicture">{this.data.username}</a> : this.props.summary}
                         <div className="date">
                             <MomentFromNow time={this.props.timestamp} />
                         </div>

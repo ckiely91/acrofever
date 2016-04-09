@@ -22,11 +22,6 @@ const RoundResultsRow = React.createClass({
             displayName: displayName(this.props.result.id)
         };
     },
-    openProfilePopup(evt) {
-        evt.preventDefault();
-        Session.set('selectedProfileUserId', this.props.result.id);
-        $('#profileModal').modal('show');
-    },
     getPopupHtml() {
         const points = this.props.totalPoints(this.props.result),
             spanStyle = {display: 'block', whiteSpace: 'nowrap'};
@@ -49,7 +44,7 @@ const RoundResultsRow = React.createClass({
         return (
             <tr>
                 <td>
-                    <a href="#" className="userProfilePicture" onClick={this.openProfilePopup}>
+                    <a href={FlowRouter.path('profile', {userId: this.props.result.id})} target="_blank"  className="userProfilePicture">
                         <h4 className="ui image header">
                             <img src={this.data.profilePicture} className="ui mini circular image" />
                             <div className="content">

@@ -26,15 +26,10 @@ export const PlayerLabel = React.createClass({
 
         return data;
     },
-    openProfilePopup(evt) {
-        evt.preventDefault();
-        Session.set('selectedProfileUserId', this.props.id);
-        $('#profileModal').modal('show');
-    },
     render() {
         if (this.data.ready) {
             return (
-                <a className={`ui image label userProfilePicture`} onClick={this.openProfilePopup} ref={(ref) => this.label = ref}>
+                <a href={FlowRouter.path('profile', {userId: this.props.id})} className={`ui image label userProfilePicture`} ref={(ref) => this.label = ref}>
                     <img src={this.data.profilePicture} />
                     {this.data.displayName}
                 </a>

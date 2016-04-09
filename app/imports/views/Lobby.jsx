@@ -133,14 +133,9 @@ const LobbyPlayerCard = React.createClass({
             displayName: displayName(this.props.id)
         }
     },
-    openProfilePopup(evt) {
-        evt.preventDefault();
-        Session.set('selectedProfileUserId', this.props.id);
-        $('#profileModal').modal('show');
-    },
     render() {
         return (
-            <a href="#" className="userProfilePicture card" onClick={this.openProfilePopup}>
+            <a href={FlowRouter.path('profile', {userId: this.props.id})} target="_blank" className="userProfilePicture card">
                 <div className="image">
                     <img src={this.data.profilePicture} />
                 </div>
@@ -208,16 +203,11 @@ const ScoresTableRow = React.createClass({
             active: React.PropTypes.bool.isRequired
         })
     },
-    openProfilePopup(evt) {
-        evt.preventDefault();
-        Session.set('selectedProfileUserId', this.props.score.id);
-        $('#profileModal').modal('show');
-    },
     render() {
         return (
             <tr className={this.props.score.active ? null : 'disabled'}>
                 <td>
-                    <a href="#" className="userProfilePicture" onClick={this.openProfilePopup}>
+                    <a href={FlowRouter.path('profile', {userId: this.props.score.id})} target="_blank" className="userProfilePicture">
                         <h4 className="ui image header">
                             <img src={this.data.profilePicture} className="ui mini circular image" />
                             <div className="content">
@@ -288,13 +278,14 @@ const Beggar = () => {
 
 export const LobbyView = React.createClass({
     mixins: [ReactMeteorData],
+    propTypes: {
+        lobbyId: React.PropTypes.string.isRequired
+    },
     getMeteorData() {
         lobbySubs.subscribe('lobbies');
 
-        const lobbyId = FlowRouter.getParam('lobbyId');
-
         let data = {
-            lobby: Lobbies.findOne(lobbyId)
+            lobby: Lobbies.findOne(this.props.lobbyId)
         };
 
         if (data.lobby) {
@@ -313,7 +304,7 @@ export const LobbyView = React.createClass({
         return data;
     },
     componentWillMount() {
-        this.notifications = Lobbies.find({_id: FlowRouter.getParam('lobbyId')}).observeChanges({
+        this.notifications = Lobbies.find({_id: this.props.lobbyId}).observeChanges({
             changed: function(id, fields) {
                 if (fields.newGameStarting === true) {
                     playSound('relax');
@@ -358,17 +349,17 @@ export const LobbyView = React.createClass({
             isInLobby = this.isInLobby();
 
         btn.addClass('loading');
-        Meteor.call('joinOrLeaveOfficialLobby', this.data.lobby._id, !isInLobby, (err) => {
+        Meteor.call('joinOrLeaveOfficialLobby', this.props.lobbyId, !isInLobby, (err) => {
             btn.removeClass('loading');
             if (err) console.error(err);
 
             if (isInLobby) {
                 analytics.track("leaveLobby", {
-                    lobbyId: this.data.lobby._id
+                    lobbyId: this.props.lobbyId
                 });
             } else {
                 analytics.track("joinLobby", {
-                    lobbyId: this.data.lobby._id
+                    lobbyId: this.props.lobbyId
                 });
             }
         });
@@ -445,7 +436,7 @@ export const LobbyView = React.createClass({
                         </div>
                         <div className="ui hidden divider"></div>
                         <div className="semiTransparentWhiteBG">
-                            <LobbyFeedComponent lobbyId={this.data.lobby._id} />
+                            <LobbyFeedComponent lobbyId={this.props.lobbyId} />
                         </div>
                     </div>
                 </div>

@@ -82,11 +82,6 @@ const UserNavDropdown = React.createClass({
             });
         }
     },
-    viewProfile(evt) {
-        evt.preventDefault();
-        Session.set('selectedProfileUserId', this.props._id);
-        $('#profileModal').modal('show');
-    },
     logout(evt) {
         evt.preventDefault();
         Meteor.logout();
@@ -119,7 +114,7 @@ const UserNavDropdown = React.createClass({
                             Turn {this.props.profile.soundsEnabled === false ? 'on' : 'off'} audio
                         </a>
                         {this.notificationsSupported() ? notificationsItem(true) : null}
-                        <a className="item" onClick={(evt) => this.viewProfile(evt)}>View profile</a>
+                        <a href={FlowRouter.path('profile', {userId: this.props._id})} className="item">View profile</a>
                         <a href="/change-password" className="item">Change password</a>
                         <a className="item" onClick={(evt) => this.logout(evt)}>Sign out</a>
                     </div>

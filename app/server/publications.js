@@ -57,8 +57,15 @@ Meteor.publish('currentGame', function(currentGame) {
 	return Games.find({_id: currentGame});
 });
 
-Meteor.publish('hallOfFame', function(limit) {
-	return HallOfFame.find({ active: true }, { sort: { created: -1 }, limit: limit });
+Meteor.publish('hallOfFame', function(limit, userId) {
+	const selector = {
+		active: true
+	};
+	
+	if (userId)
+		selector.userId = userId;
+	
+	return HallOfFame.find(selector, { sort: { created: -1 }, limit: limit });
 });
 
 Meteor.publish('nags', function(closedNags) {

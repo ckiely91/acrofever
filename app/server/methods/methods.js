@@ -42,11 +42,12 @@ Meteor.methods({
             //lobby should only be made inactive at the end of the round
         }
     },
-    hallOfFameAcroCount() {
-        return HallOfFame.find({active: true}).count();
-    },
-    hallOfFameUserAcroCount(userId) {
-        return HallOfFame.find({userId: userId, active: true}).count();
+    hallOfFameAcroCount(userId) {
+        if (userId) {
+            return HallOfFame.find({userId: userId, active: true}).count();
+        } else {
+            return HallOfFame.find({active: true}).count();   
+        }
     },
     changeEmailAddress(email) {
         if (!this.userId)
@@ -101,5 +102,83 @@ Meteor.methods({
         const user = Meteor.users.findOne(this.userId);
 
         return (getUserEmail(user) ? true : false);
+    },
+    getUserStat(userId, statType) {
+
+        switch(statType) {
+            case 'gamesPlayed':
+                const stats = {};
+
+                const selector = {};
+                selector['scores.' + userId] = {$exists: true};
+
+                const games = Games.find(selector, {sort: {created: 1}, fields: {created: true, gameWinner: true}}).fetch();
+                console.log(games.length);
+                
+                if (games.length === 0) {
+                    return;
+                }
+
+                _.each(games, (game) => {
+                    const day = moment(game.created).format('YYYY-MM-DD');
+
+                    if (stats[day]) {
+                        stats[day].played++;
+                        if (game.gameWinner === userId)
+                            stats[day].won++;
+                    } else {
+                        const keys = Object.keys(stats);
+                        stats[day] = {};
+                        if (keys.length > 0) {
+                            const prevStats = stats[keys[keys.length - 1]];
+                            stats[day].played = prevStats.played + 1;
+                            if (game.gameWinner === userId)
+                                stats[day].won = prevStats.won + 1;
+                            else
+                                stats[day].won = prevStats.won;
+                        } else {
+                            stats[day].played = 1;
+                            if (game.gameWinner === userId)
+                                stats[day].won = 1;
+                            else
+                                stats[day].won = 0;
+                        }
+                    }
+                });
+                
+                /*const firstDate = moment(games[0].created).format('YYYY-MM-DD'),
+                    lastDate = moment(games[games.length - 1].created).add(1,'d').format('YYYY-MM-DD');
+                let currentDate = firstDate;
+
+                do {
+                    stats[currentDate] = {played: 0, won: 0};
+                    currentDate = moment(currentDate).add(1,'d').format('YYYY-MM-DD');
+                } while (currentDate !== lastDate && Object.keys(stats).length < 366);
+
+                _.each(games, function(game) {
+                    const day = moment(game.created).format('YYYY-MM-DD');
+                    if (stats[day] && typeof stats[day].played === "number") {
+                        stats[day].played++;
+                        if (game.gameWinner === userId && typeof stats[day].won === "number")
+                            stats[day].won++;
+                    }
+                });*/
+
+                const formattedStats = {};
+                _.each(stats, function(value, key) {
+                    const newKey = moment(key, 'YYYY-MM-DD').valueOf();
+                    if (value.won > 0) {
+                        value.winRate = Math.round(value.won / value.played * 100);
+                    } else {
+                        value.winRate = 0;
+                    }
+
+                    formattedStats[newKey] = value;
+                });
+
+                return formattedStats;
+            default:
+                throw new Meteor.Error('invalid-stat-type', 'Invalid stat type requested');
+        }
     }
 });

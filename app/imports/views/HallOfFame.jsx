@@ -20,11 +20,6 @@ const HallOfFameAcroCard = React.createClass({
             username: displayName(this.props.acro.userId)
         }
     },
-    openProfilePopup(evt) {
-        evt.preventDefault();
-        Session.set('selectedProfileUserId', this.props.acro.userId);
-        $('#profileModal').modal('show');
-    },
     render() {
         return (
             <div className="ui card">
@@ -35,7 +30,7 @@ const HallOfFameAcroCard = React.createClass({
                 </div>
                 <div className="content">
                     <div className="ui list">
-                        <a href="#" className="userProfilePicture item" onClick={this.openProfilePopup}>
+                        <a href={FlowRouter.path('profile', {userId: this.props.acro.userId})} className="userProfilePicture item">
                             <img className="ui avatar image" src={this.data.profilePicture} />
                             <div className="content">
                                 <div className="header">{this.data.username}</div>
@@ -49,11 +44,11 @@ const HallOfFameAcroCard = React.createClass({
     }
 });
 
-export const HallOfFameView = React.createClass({
+export const HallOfFameAcros = React.createClass({
     mixins: [ReactMeteorData],
     getInitialState() {
         return {
-            limit: new ReactiveVar(18),
+            limit: new ReactiveVar(this.props.limit || 18),
             totalAcros: new ReactiveVar()
         };
     },
@@ -63,8 +58,13 @@ export const HallOfFameView = React.createClass({
             totalAcros: this.state.totalAcros.get()
         };
 
-        var handle = Meteor.subscribe('hallOfFame', data.limit);
-        data.acros = HallOfFame.find({}, {sort: {created: -1}}).fetch();
+        var handle = Meteor.subscribe('hallOfFame', data.limit, this.props.userId);
+        
+        if (this.props.userId) {
+            data.acros = HallOfFame.find({userId: this.props.userId}, {sort: {created: -1}}).fetch();   
+        } else {
+            data.acros = HallOfFame.find({}, {sort: {created: -1}}).fetch();
+        }
 
         var userIds = data.acros.map((acro) => acro.userId);
 
@@ -72,13 +72,46 @@ export const HallOfFameView = React.createClass({
         data.ready = handle.ready() && handle2.ready();
 
         var self = this;
-        Meteor.call('hallOfFameAcroCount', (err, res) => {
+
+
+        Meteor.call('hallOfFameAcroCount', this.props.userId, (err, res) => {
             if (err) return console.log(err);
             self.state.totalAcros.set(res);
         });
 
         return data;
     },
+    getMore(evt) {
+        evt.preventDefault();
+        var limit = this.state.limit.get();
+        limit += 18;
+        this.state.limit.set(limit);
+    },
+    render() {
+        var getMoreButton = (
+            <button className={"ui labeled icon" + (this.data.ready ? "" : " loading") + " button"} onClick={this.getMore}>
+                <i className="plus icon"></i>
+                Get more
+            </button>
+        );
+
+        if (this.data.acros && this.data.acros.length === 0) {
+            return <em>No data</em>;
+        }
+
+        return (
+            <div>
+                <div className="ui cards">
+                    {this.data.acros.map((acro, index) => <HallOfFameAcroCard key={index} acro={acro} />)}
+                </div>
+                <div className="ui hidden divider"></div>
+                {(this.data.limit < this.data.totalAcros) ? getMoreButton : null}
+            </div>
+        );
+    }
+});
+
+export class HallOfFameView extends React.Component {
     componentWillMount() {
         //SEO stuff
         var title = 'Hall of Fame - Acrofever';
@@ -95,21 +128,9 @@ export const HallOfFameView = React.createClass({
         _.each(metadata, function(content, name) {
             DocHead.addMeta({name: name, content: content})
         });
-    },
-    getMore(evt) {
-        evt.preventDefault();
-        var limit = this.state.limit.get();
-        limit += 18;
-        this.state.limit.set(limit);
-    },
+    }
+    
     render() {
-        var getMoreButton = (
-            <button className={"ui labeled icon" + (this.data.ready ? "" : " loading") + " button"} onClick={this.getMore}>
-                <i className="plus icon"></i>
-                Get more
-            </button>
-        );
-
         return (
             <div>
                 <h2 className="ui header">
@@ -124,12 +145,8 @@ export const HallOfFameView = React.createClass({
                     added to the Hall of Fame.<br />
                     You too could be immortalised on the Hall of Fame one day, so <a href={FlowRouter.path('play')}>get playing</a>!
                 </p>
-                <div className="ui cards">
-                    {this.data.acros.map((acro, index) => <HallOfFameAcroCard key={index} acro={acro} />)}
-                </div>
-                <div className="ui hidden divider"></div>
-                {(this.data.limit < this.data.totalAcros) ? getMoreButton : null}
+                <HallOfFameAcros />
             </div>
         );
     }
-});
+}

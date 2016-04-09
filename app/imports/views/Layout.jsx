@@ -4,7 +4,6 @@ import {NavComponent} from '../components/Nav';
 import {NagsComponent} from '../components/Nags';
 import {FooterComponent} from '../components/Footer';
 import {HowToPlayModal, PageDimmer, NotificationInfoModal} from '../components/Modals';
-import {ProfileModal} from '../components/Profile';
 import {EventBanner} from '../components/Events';
 
 import {headerMeta, headerLinks} from '../statics';
@@ -59,7 +58,6 @@ export class Layout extends React.Component {
                 </div>
                 <HowToPlayModal />
                 <PageDimmer />
-                <ProfileModal />
                 {this.notificationsSupported() ? <NotificationInfoModal /> : null}
             </div>
         );

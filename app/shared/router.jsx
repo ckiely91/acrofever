@@ -8,6 +8,7 @@ import {HomeView} from '../imports/views/Home';
 import {PlayView} from '../imports/views/Play';
 import {LobbyView} from '../imports/views/Lobby';
 import {HallOfFameView} from '../imports/views/HallOfFame';
+import {ProfileView} from '../imports/views/Profile';
 import {PageNotFound} from '../imports/views/PageNotFound';
 import {AdminMain, AdminHome, AdminHallOfFame, AdminNags, AdminEvents} from '../imports/views/Admin';
 
@@ -37,9 +38,9 @@ lobbyRoutes.route('/', {
 lobbyRoutes.route('/:lobbyId', {
     name: 'lobby',
     triggersEnter: [AccountsTemplates.ensureSignedIn],
-    action: function() {
+    action: function(params) {
         mount(Layout, {
-            content: () => (<LobbyView />)
+            content: () => (<LobbyView lobbyId={params.lobbyId}/>)
         });
     }
 });
@@ -49,6 +50,15 @@ FlowRouter.route('/halloffame', {
     action: function() {
         mount(Layout, {
             content: () => (<HallOfFameView />)
+        });
+    }
+});
+
+FlowRouter.route('/profile/:userId', {
+    name: 'profile',
+    action: function(params) {
+        mount(Layout, {
+            content: () => (<ProfileView userId={params.userId}/>)
         });
     }
 });

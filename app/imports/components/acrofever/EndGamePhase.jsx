@@ -84,11 +84,6 @@ const GameResultsRow = React.createClass({
             displayName: displayName(this.props.result.id)
         };
     },
-    openProfilePopup(evt) {
-        evt.preventDefault();
-        Session.set('selectedProfileUserId', this.props.result.id);
-        $('#profileModal').modal('show');
-    },
     isThisUser() {
         return (this.props.result.id === Meteor.userId());
     },
@@ -97,7 +92,7 @@ const GameResultsRow = React.createClass({
         return (
             <tr>
                 <td>
-                    <a href="#" className="userProfilePicture" onClick={this.openProfilePopup}>
+                    <a href={FlowRouter.path('profile', {userId: this.props.result.id})} target="_blank" className="userProfilePicture">
                         <h4 className="ui image header">
                             <img src={this.data.profilePicture} className="ui circular image" />
                             <div className="content">
