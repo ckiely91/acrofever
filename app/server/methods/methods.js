@@ -107,20 +107,20 @@ Meteor.methods({
 
         switch(statType) {
             case 'gamesPlayed':
-                const stats = {};
+                var stats = {};
 
-                const selector = {};
+                var selector = {};
                 selector['scores.' + userId] = {$exists: true};
                 selector.gameWinner = {$exists: true};
 
-                const games = Games.find(selector, {sort: {created: 1}, fields: {created: true, gameWinner: true}}).fetch();
+                var games = Games.find(selector, {sort: {created: 1}, fields: {created: true, gameWinner: true}}).fetch();
                 
                 if (games.length === 0) {
                     return;
                 }
 
                 _.each(games, (game) => {
-                    const day = moment(game.created).format('YYYY-MM-DD');
+                    var day = moment(game.created).format('YYYY-MM-DD');
 
                     if (stats[day]) {
                         stats[day].played++;
@@ -146,7 +146,7 @@ Meteor.methods({
                     }
                 });
 
-                const formattedStats = {};
+                var formattedStats = {};
                 _.each(stats, function(value, key) {
                     const newKey = moment(key, 'YYYY-MM-DD').valueOf();
                     if (value.won > 0) {
@@ -159,6 +159,35 @@ Meteor.methods({
                 });
 
                 return formattedStats;
+            case 'averageScore':
+                var scoresArr = [],
+                    averageArr = [];
+
+                var selector = {};
+                selector['scores.' + userId] = {$gt: 0};
+                selector.gameWinner = {$exists: true};
+
+                var games = Games.find(selector, {sort: {created: 1}, fields: {created: true, scores: true}});
+
+                if (games.count() === 0) {
+                    return;
+                }
+
+                let gamesCount = 0,
+                    scoreSum = 0;
+
+                games.forEach((game) => {
+                    const score = game.scores[userId],
+                        time = moment(game.created).valueOf();
+                    scoreSum += score;
+                    gamesCount++;
+                    scoresArr.push([time, score]);
+                    const avg = Math.round(scoreSum / gamesCount * 100) / 100;
+                    averageArr.push([time, avg]);
+                });
+
+                return {scoresArr, averageArr};
+
             default:
                 throw new Meteor.Error('invalid-stat-type', 'Invalid stat type requested');
         }

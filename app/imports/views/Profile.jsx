@@ -58,12 +58,12 @@ class UserStats extends React.Component {
     }
 }
 
-class UserStatCharts extends React.Component {
+class UserStatChartGamesPlayed extends React.Component {
     constructor(props) {
         super(props);
     }
 
-    formatGamesPlayedChartData(inputData) {
+    formatChartData(inputData) {
         const config = {
             chart: {
                 zoomType: 'x'
@@ -135,7 +135,57 @@ class UserStatCharts extends React.Component {
     }
 
     render() {
-        return <Highchart config={this.formatGamesPlayedChartData(this.props.stats)} />;
+        return <Highchart config={this.formatChartData(this.props.stats)} />;
+    }
+}
+
+class UserStatChartAverageScore extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    formatChartData(inputData) {
+        const config = {
+            chart: {
+                zoomType: 'x'
+            },
+            title: {
+                text: 'Scores'
+            },
+            xAxis: {
+                type: 'datetime',
+                title: {
+                    text: 'Date'
+                }
+            },
+            yAxis: {
+                title: {
+                    text: 'Score'
+                },
+                min: 0
+            },
+            tooltip: {
+                shared: true
+            },
+            series: [
+                {
+                    name: 'Score',
+                    type: 'spline',
+                    data: inputData.scoresArr
+                },
+                {
+                    name: 'Rolling average',
+                    type: 'spline',
+                    data: inputData.averageArr
+                }
+            ]
+        };
+
+        return config;
+    }
+
+    render() {
+        return <Highchart config={this.formatChartData(this.props.stats)} />;
     }
 }
 
@@ -147,7 +197,8 @@ export const ProfileView = React.createClass({
     getInitialState() {
         let numberOfHallOfFame = new ReactiveVar();
         let gamesPlayedStats = null;
-        return {numberOfHallOfFame, gamesPlayedStats};
+        let averageScoreStats = null;
+        return {numberOfHallOfFame, gamesPlayedStats, averageScoreStats};
     },
     getMeteorData() {
         var data = {
@@ -187,12 +238,18 @@ export const ProfileView = React.createClass({
             const result = res ? res : false;
             this.setState({gamesPlayedStats: result});
         });
+
+        Meteor.call('getUserStat', this.props.userId, 'averageScore', (err, res) => {
+            if (err) return console.error(err);
+            const result = res ? res : false;
+            this.setState({averageScoreStats: result});
+        });
     },
     clickRefresh(evt) {
-        if (this.state.gamesPlayedStats === null)
+        if (this.state.gamesPlayedStats === null || this.state.averageScoreStats === null)
             return;
 
-        this.setState({gamesPlayedStats: null});
+        this.setState({gamesPlayedStats: null, averageScoreStats: null});
 
         this.refreshStats();
     },
@@ -270,8 +327,17 @@ export const ProfileView = React.createClass({
                             </h3>
                             {(() => {
                                 if (this.state.gamesPlayedStats) {
-                                    return <UserStatCharts stats={this.state.gamesPlayedStats}/>;
+                                    return <UserStatChartGamesPlayed stats={this.state.gamesPlayedStats}/>;
                                 } else if (this.state.gamesPlayedStats === false) {
+                                    return <em>No data</em>;
+                                } else {
+                                    return <div className="ui inline centered active loader"></div>;
+                                }
+                            })()}
+                            {(() => {
+                                if (this.state.averageScoreStats) {
+                                    return <UserStatChartAverageScore stats={this.state.averageScoreStats}/>;
+                                } else if (this.state.averageScoreStats === false) {
                                     return <em>No data</em>;
                                 } else {
                                     return <div className="ui inline centered active loader"></div>;
