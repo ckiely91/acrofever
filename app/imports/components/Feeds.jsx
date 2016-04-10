@@ -1,10 +1,21 @@
 import React from 'react';
+import {autolink} from 'react-autolink';
+import {emojify} from 'react-emojione';
+import EmojiPicker from 'emojione-picker';
 
 import {MomentFromNow} from './Countdown';
-import {replaceLinksAndEscape, playSound, profilePicture, displayName} from '../helpers';
+import {playSound, profilePicture, displayName} from '../helpers';
 import {GlobalFeed, LobbyFeed} from '../collections';
 
 class ChatInput extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            showEmojiPicker: false
+        };
+        this.watchForClicks = this.watchForClicks.bind(this);
+    }
+
     handleSubmit(evt) {
         evt.preventDefault();
         if (Meteor.userId()) {
@@ -31,14 +42,47 @@ class ChatInput extends React.Component {
         }
     }
 
+    watchForClicks(evt) {
+        if (!$(evt.target).closest('.emoji-dialog').length) {
+            //console.log('clicked outside!');
+            this.setState({showEmojiPicker: false});
+            $(document).unbind('click', this.watchForClicks);
+        }
+    }
+
+    toggleEmojiPicker(evt) {
+        evt.preventDefault();
+        if (this.state.showEmojiPicker) {
+            this.setState({showEmojiPicker: false});
+            $(document).unbind('click', this.watchForClicks);
+        } else {
+            this.setState({showEmojiPicker: true});
+            $(document).bind('click', this.watchForClicks);
+        }
+    }
+
+    pickEmoji(data) {
+        this.setState({showEmojiPicker: false});
+        $(document).unbind('click', this.watchForClicks);
+        //console.log('Emoji chosen', JSON.stringify(data));
+        
+        const input = $(this.inputField);
+        input.val(`${input.val().length > 0 ? input.val() + ' ' : ''}${data.shortname} `);
+        input.focus();
+    }
+
     render() {
+
         return (
-            <form id="chat-input-form" className="ui form" onSubmit={(evt) => this.handleSubmit(evt)}>
-                <div className="ui fluid action input">
-                    <input type="text" id="chat-input-box" name="message" className="ui input" placeholder="Type here to chat..." autoComplete="off" required="true" />
-                    <button className="ui button" type="submit">Send</button>
-                </div>
-            </form>
+            <div>
+                <form id="chat-input-form" className="ui form" onSubmit={(evt) => this.handleSubmit(evt)}>
+                    <div className="ui fluid icon input">
+                        <input type="text" id="chat-input-box" name="message" placeholder="Type here to chat..." autoComplete="off" required="true" ref={(ref) => this.inputField = ref}/>
+                        <i className="circular smile link icon" onClick={(evt) => this.toggleEmojiPicker(evt)}/>
+                    </div>
+                </form>
+                {this.state.showEmojiPicker ? <EmojiPicker search={true} onChange={(data) => this.pickEmoji(data)} /> : null}
+            </div>
         );
     }
 }
@@ -73,10 +117,21 @@ const SingleEvent = React.createClass({
             return <i className={(icon ? icon : 'info') + ' icon'}></i>;
         }
     },
-    detailHtml(html) {
-        return {
-            __html: replaceLinksAndEscape(html)
-        }
+    emojisAndLinks(string) {
+        let arr = autolink(string, {
+            target: '_blank',
+            rel: 'nofollow'
+        });
+
+        arr = arr.map((obj) => {
+            if (typeof obj === "string") {
+                return emojify(obj, {styles: {backgroundImage: 'url(/emojione.sprites.png)'}});
+            }
+            return obj;
+        });
+
+        //newString = emojify(newString[0]);
+        return arr;
     },
     render() {
         return (
@@ -91,7 +146,7 @@ const SingleEvent = React.createClass({
                             <MomentFromNow time={this.props.timestamp} />
                         </div>
                     </div>
-                    {this.props.detail ? <div className="detailed-content" dangerouslySetInnerHTML={this.detailHtml(this.props.detail)}></div> : null}
+                    {this.props.detail ? <div className="detailed-content">{this.emojisAndLinks(this.props.detail)}</div> : null}
                 </div>
             </div>
         );

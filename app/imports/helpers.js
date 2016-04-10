@@ -1,3 +1,4 @@
+/*
 export function replaceLinksAndEscape(input) {
     var autolinkedInput = Autolinker.link(input, {
         truncate: {
@@ -28,6 +29,7 @@ export function replaceLinksAndEscape(input) {
     }
     return $autolinkedInput.html();
 }
+*/
 
 export function notify(title, body, image) {
     if (typeof Notification === 'undefined')
