@@ -111,9 +111,9 @@ Meteor.methods({
 
                 const selector = {};
                 selector['scores.' + userId] = {$exists: true};
+                selector.gameWinner = {$exists: true};
 
                 const games = Games.find(selector, {sort: {created: 1}, fields: {created: true, gameWinner: true}}).fetch();
-                console.log(games.length);
                 
                 if (games.length === 0) {
                     return;
@@ -145,24 +145,6 @@ Meteor.methods({
                         }
                     }
                 });
-                
-                /*const firstDate = moment(games[0].created).format('YYYY-MM-DD'),
-                    lastDate = moment(games[games.length - 1].created).add(1,'d').format('YYYY-MM-DD');
-                let currentDate = firstDate;
-
-                do {
-                    stats[currentDate] = {played: 0, won: 0};
-                    currentDate = moment(currentDate).add(1,'d').format('YYYY-MM-DD');
-                } while (currentDate !== lastDate && Object.keys(stats).length < 366);
-
-                _.each(games, function(game) {
-                    const day = moment(game.created).format('YYYY-MM-DD');
-                    if (stats[day] && typeof stats[day].played === "number") {
-                        stats[day].played++;
-                        if (game.gameWinner === userId && typeof stats[day].won === "number")
-                            stats[day].won++;
-                    }
-                });*/
 
                 const formattedStats = {};
                 _.each(stats, function(value, key) {
