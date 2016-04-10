@@ -121,7 +121,7 @@ export function displayName(id, capitalise) {
     }
 
     if (user.profile && user.profile.name) {
-        var displayname = user.profile.name;
+        var displayname = user.profile.name.split(' ')[0];
     } else {
         var displayname = user.username;
     }

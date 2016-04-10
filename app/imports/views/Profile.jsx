@@ -170,7 +170,8 @@ class UserStatChartAverageScore extends React.Component {
             series: [
                 {
                     name: 'Score',
-                    type: 'spline',
+                    type: 'area',
+                    step: true,
                     data: inputData.scoresArr
                 },
                 {
