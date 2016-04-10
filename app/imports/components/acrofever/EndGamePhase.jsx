@@ -117,7 +117,7 @@ const GameResultsRow = React.createClass({
                     </div>
                 </td>
                 <td>
-                    <BestAcroCard result={this.props.result.bestAcro} />
+                    {this.props.result.bestAcro ? <BestAcroCard result={this.props.result.bestAcro} /> : null}
                 </td>
             </tr>
         );
