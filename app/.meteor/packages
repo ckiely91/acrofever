@@ -7,7 +7,6 @@
 meteor-base
 mobile-experience
 mongo
-blaze-html-templates
 session
 jquery
 tracker
@@ -42,7 +41,6 @@ email
 ongoworks:spiderable
 kadira:dochead
 okgrow:analytics
-mizzao:timesync
 mizzao:user-status
 standard-minifier-css
 standard-minifier-js
@@ -50,4 +48,4 @@ lbee:moment-helpers
 momentjs:moment
 react-meteor-data
 useraccounts:flow-routing-ck
-gwendall:blaze-to-react
+mizzao:timesync

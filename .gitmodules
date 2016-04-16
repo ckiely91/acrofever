@@ -1,0 +1,7 @@
+[submodule "app/packages/meteor-timesync"]
+	path = app/packages/meteor-timesync
+	url = https://github.com/DanielDornhardt/meteor-timesync.git
+	branch = corsCompatibilityForMeteor1.3
+[submodule "app/packages/flow-routing"]
+	path = app/packages/flow-routing
+	url = https://github.com/ckiely91/flow-routing.git

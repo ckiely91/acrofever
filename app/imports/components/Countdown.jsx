@@ -10,15 +10,15 @@ export const CountdownSpan = React.createClass({
     propTypes: {
         endTime: React.PropTypes.instanceOf(Date).isRequired
     },
-    countdown(endTime) {
-        let diff = moment(endTime).diff(this.data.now);
+    countdown(endTime, now) {
+        let diff = moment(endTime).diff(now);
         if (diff >= 0)
             return moment(diff).format('m:ss');
         else
             return '0:00';
     },
     render() {
-        return <span>{this.countdown(this.props.endTime)}</span>
+        return <span>{this.countdown(this.props.endTime, this.data.now)}</span>
     }
 });
 
