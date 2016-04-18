@@ -1,6 +1,7 @@
 import React from 'react';
 
 import {Nags} from '../collections';
+import {acrofeverAnalytics} from '../helpers';
 
 class SingleNag extends React.Component {
     closeNag(evt) {
@@ -12,10 +13,8 @@ class SingleNag extends React.Component {
             //allow it to fade out first
             Meteor.call('markNagAsClosed', self.props.nag._id);
         }, 300);
-
-        analytics.track("closeNag", {
-            id: this.props.nag._id
-        });
+        
+        acrofeverAnalytics.track('closeNag', {id: this.props.nag._id});
     }
 
     render() {

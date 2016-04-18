@@ -51,10 +51,10 @@ export function notify(title, body, image) {
         Notification.requestPermission(function(result) {
             if (result === 'granted') {
                 Meteor.call('toggleNotifications', true);
-                analytics.track("allowNotifications");
+                acrofeverAnalytics.track("allowNotifications");
             } else if (result === 'denied') {
                 Meteor.call('toggleNotifications', false);
-                analytics.track("denyNotifications");
+                acrofeverAnalytics.track("denyNotifications");
             }
         });
     }
@@ -131,3 +131,14 @@ export function displayName(id, capitalise) {
     }
     return displayname;
 }
+
+export const acrofeverAnalytics = {
+    track(event, obj) {
+        if (typeof analytics === "object")
+            analytics.track(event, obj);
+    },
+    page(page, obj) {
+        if (typeof analytics === "object")
+            analytics.page(page, obj);
+    }
+};

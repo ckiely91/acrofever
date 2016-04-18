@@ -2,7 +2,7 @@ import React from 'react';
 
 import {CountdownHeader} from '../Countdown';
 
-import {playSound} from '../../helpers';
+import {playSound, acrofeverAnalytics} from '../../helpers';
 
 const AcroVoting = React.createClass({
     propTypes: {
@@ -31,7 +31,7 @@ const AcroVoting = React.createClass({
         evt.preventDefault();
         Meteor.call('acrofeverVoteForAcro', this.props.gameId, id);
         playSound('select');
-        analytics.track('voteForAcro');
+        acrofeverAnalytics.track('voteForAcro');
     },
 
     /* HELPERS */

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {profilePicture, displayName} from '../helpers';
+import {profilePicture, displayName, acrofeverAnalytics} from '../helpers';
 
 const BrandHeader = () => <a href={FlowRouter.path('home')} id="brandHeader" className="header item">Acrofever!</a>;
 
@@ -48,19 +48,19 @@ const UserNavDropdown = React.createClass({
         evt.preventDefault();
         if (this.props.profile.soundsEnabled === false) {
             Meteor.call('toggleSounds', true);
-            analytics.track("turnOnSounds");
+            acrofeverAnalytics.track('turnOnSounds');
         } else {
             Meteor.call('toggleSounds', false);
-            analytics.track("turnOffSounds");
+            acrofeverAnalytics.track('turnOffSounds');
         }
     },
     toggleNotifications(evt) {
         evt.preventDefault();
         if (this.props.profile.notificationsEnabled) {
             Meteor.call('toggleNotifications', false);
-            analytics.track("turnOffNotifications");
+            acrofeverAnalytics.track('turnOffNotifications');
         } else {
-            analytics.track("turnOnNotifications");
+            acrofeverAnalytics.track('turnOnNotifications');
             if (Notification.permission === 'granted') {
                 Meteor.call('toggleNotifications', true);
                 return;
@@ -74,10 +74,10 @@ const UserNavDropdown = React.createClass({
             Notification.requestPermission(function(result) {
                 if (result === 'granted') {
                     Meteor.call('toggleNotifications', true);
-                    analytics.track("allowNotifications");
+                    acrofeverAnalytics.track('allowNotifications');
                 } else if (result === 'denied') {
                     Meteor.call('toggleNotifications', false);
-                    analytics.track("denyNotifications");
+                    acrofeverAnalytics.track('denyNotifications');
                 }
             });
         }
@@ -164,12 +164,12 @@ export const NavComponent = React.createClass({
             else
                 FlowRouter.go(FlowRouter.path('lobby', {lobbyId: res}));
         });
-        analytics.track("playNowButton");
+        acrofeverAnalytics.track('playNowButton');
     },
     howToPlay(evt) {
         evt.preventDefault();
         $('#howToPlayModal').modal('show');
-        analytics.page('howToPlay');
+        acrofeverAnalytics.page('/howToPlay');
     },
     blog(evt) {
         evt.preventDefault();

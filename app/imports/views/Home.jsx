@@ -4,6 +4,7 @@ import {OnlinePlayers} from '../components/OnlinePlayers';
 import {GlobalFeedComponent} from '../components/Feeds';
 import {UpcomingEvents} from '../components/Events';
 import {lobbySubs} from '../subsManagers';
+import {acrofeverAnalytics} from '../helpers';
 
 export const HomeView = React.createClass({
     componentWillMount() {
@@ -36,12 +37,12 @@ export const HomeView = React.createClass({
             else
                 FlowRouter.go(FlowRouter.path('lobby', {lobbyId: res}));
         });
-        analytics.track("playNowButton");
+        acrofeverAnalytics.track("playNowButton");
     },
     howToPlay(evt) {
         evt.preventDefault();
         $('#howToPlayModal').modal('show');
-        analytics.page('howToPlay');
+        acrofeverAnalytics.page('/howToPlay');
     },
     render() {
         const buttonStyle = {

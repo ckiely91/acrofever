@@ -4,7 +4,7 @@ import {emojify} from 'react-emojione';
 import EmojiPicker from 'emojione-picker';
 
 import {MomentFromNow} from './Countdown';
-import {playSound, profilePicture, displayName} from '../helpers';
+import {playSound, profilePicture, displayName, acrofeverAnalytics} from '../helpers';
 import {GlobalFeed, LobbyFeed} from '../collections';
 
 class ChatInput extends React.Component {
@@ -24,15 +24,10 @@ class ChatInput extends React.Component {
 
             if (this.props.lobbyId) {
                 Meteor.call('addLobbyFeedChat', this.props.lobbyId, message);
-                analytics.track("addLobbyChat", {
-                    lobbyId: this.props.lobbyId,
-                    message: message
-                });
+                acrofeverAnalytics.track('addLobbyChat');
             } else {
                 Meteor.call('addGlobalFeedChat', message);
-                analytics.track("addGlobalChat", {
-                    message: message
-                });
+                acrofeverAnalytics.track('addGlobalChat');
                 $('.feedChatDiv .feedInner').scrollTop(0);
             }
 

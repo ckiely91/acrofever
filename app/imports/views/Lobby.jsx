@@ -9,7 +9,7 @@ import {AcrofeverVotingPhase} from'../components/acrofever/VotingPhase';
 import {AcrofeverEndRoundPhase} from'../components/acrofever/EndRoundPhase';
 import {AcrofeverEndGamePhase} from'../components/acrofever/EndGamePhase';
 
-import {notify, playSound, profilePicture, displayName} from '../helpers';
+import {notify, playSound, profilePicture, displayName, acrofeverAnalytics} from '../helpers';
 import {Games, Lobbies} from '../collections';
 import {lobbySubs} from '../subsManagers';
 
@@ -354,11 +354,11 @@ export const LobbyView = React.createClass({
             if (err) console.error(err);
 
             if (isInLobby) {
-                analytics.track("leaveLobby", {
+                acrofeverAnalytics.track("leaveLobby", {
                     lobbyId: this.props.lobbyId
                 });
             } else {
-                analytics.track("joinLobby", {
+                acrofeverAnalytics.track("joinLobby", {
                     lobbyId: this.props.lobbyId
                 });
             }

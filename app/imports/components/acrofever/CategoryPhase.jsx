@@ -2,7 +2,7 @@ import React from 'react';
 
 import {CountdownHeader} from '../Countdown';
 
-import {playSound, displayName} from '../../helpers';
+import {playSound, displayName,acrofeverAnalytics} from '../../helpers';
 import {defaultCategories} from '../../statics';
 
 const ChooseCategory = React.createClass({
@@ -48,10 +48,8 @@ const ChooseCategory = React.createClass({
                 console.error(err);
                 this.setState({hasPickedCategory: false});
             }
-            analytics.track("chooseCategory", {
-                category: category,
-                custom: false
-            });
+
+            acrofeverAnalytics.track('chooseCategory', {category: category, custom: false});
         });
     },
     pickCustomCategory(evt, fields) {
@@ -65,10 +63,7 @@ const ChooseCategory = React.createClass({
                 console.error(err);
                 this.setState({hasPickedCategory: false});
             }
-            analytics.track("chooseCategory", {
-                category: customCategory,
-                custom: true
-            });
+            acrofeverAnalytics.track('chooseCategory', {category: customCategory, custom: true});
         });
     },
     render() {

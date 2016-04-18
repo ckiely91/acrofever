@@ -3,7 +3,7 @@ import React from 'react';
 import {CountdownHeader} from '../Countdown';
 import {RoundResultsTable} from './EndRoundPhase';
 
-import {profilePicture, displayName} from '../../helpers';
+import {profilePicture, displayName, acrofeverAnalytics} from '../../helpers';
 import {Lobbies} from '../../collections';
 
 const BestAcroCard = React.createClass({
@@ -33,7 +33,7 @@ const BestAcroCard = React.createClass({
 
         const gameId = Lobbies.findOne(FlowRouter.getParam('lobbyId')).currentGame;
         Meteor.call('voteForHallOfFame', gameId, this.props.result);
-        analytics.track("voteForHallOfFame");
+        acrofeverAnalytics.track('voteForHallOfFame');
     },
     render() {
         let headerContent;

@@ -2,7 +2,7 @@ import React from 'react';
 
 import {CountdownHeader} from '../Countdown';
 
-import {playSound} from '../../helpers';
+import {playSound, acrofeverAnalytics} from '../../helpers';
 
 const SubmitAcroForm = React.createClass({
     propTypes: {
@@ -105,9 +105,7 @@ const SubmitAcro = React.createClass({
                     chosenAcro: fields.acro
                 });
                 playSound('select');
-                analytics.track("submitAcro", {
-                    acroLength: fields.acro.length
-                });
+                acrofeverAnalytics.track('submitAcro', {acroLength: fields.acro.length});
             }
         });
     },
