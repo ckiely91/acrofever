@@ -2,6 +2,7 @@ import Sendgrid from 'sendgrid';
 
 import {Lobbies, Events} from '../../imports/collections';
 import {getUserEmail} from './ServerHelpers';
+import {displayName} from '../../imports/helpers';
 
 const sendgrid = Sendgrid(Meteor.settings.sendgrid.key);
 
@@ -65,5 +66,42 @@ export function SendReminderEmails() {
         }
 
         Events.update(event._id, {$set: {notificationsSent: true}});
+    });
+}
+
+export function SendInviteEmail(user, lobby, inviterId) {
+    const email = new sendgrid.Email();
+    email.subject = "You've been invited to play Acrofever";
+    email.from = "no-reply@acrofever.com";
+    email.fromname = "Acrofever";
+    email.setHtml(" ");
+    email.setText(" ");
+    email.setFilters({
+        templates: {
+            settings: {
+                enable: 1,
+                'template_id': '51ed3537-583f-4792-bec7-cec0b7ae599e'
+            }
+        }
+    });
+
+    const userEmail = getUserEmail(user),
+        lobbyName = lobby.displayName,
+        inviterUsername = displayName(inviterId),
+        link = 'https://acrofever.com/play/' + lobby._id;
+
+    if (!userEmail) {
+        console.log('No user email');
+        return;
+    }
+
+    email.addSmtpapiTo(userEmail);
+    email.addSubstitution(':link', link);
+    email.addSubstitution(':lobbyname', lobbyName);
+    email.addSubstitution(':username', inviterUsername);
+
+    sendgrid.send(email, (err, res) => {
+        if (err) return console.error(err);
+        console.log(res);
     });
 }

@@ -5,6 +5,7 @@ import {displayName} from '../../imports/helpers';
 import {Games, Lobbies, HallOfFame, Events} from '../../imports/collections';
 import {checkValidEmail} from '../../imports/validators';
 import {getUserEmail} from '../imports/ServerHelpers';
+import {SendInviteEmail} from '../imports/Emails';
 
 Meteor.methods({
     joinOrLeaveOfficialLobby(lobbyId, join) {
@@ -191,5 +192,36 @@ Meteor.methods({
             default:
                 throw new Meteor.Error('invalid-stat-type', 'Invalid stat type requested');
         }
+    },
+    inviteToPlay(userId, lobbyId) {
+        if (!this.userId)
+            throw new Meteor.Error(403, 'You must be logged in to do that');
+
+        const inviter = Meteor.users.findOne(this.userId),
+            user = Meteor.users.findOne(userId),
+            lobby = Lobbies.findOne(lobbyId);
+
+        if (!user)
+            throw new Meteor.Error('user-not-found', 'User not found');
+
+        if (!lobby)
+            throw new Meteor.Error('lobby-not-found', 'Lobby not found');
+
+        if (user.invitesSent && user.invitesSent[this.userId]) {
+            const thresh = moment().subtract(1, 'h');
+            if (moment(user.invitesSent[this.userId]).isAfter(thresh)) {
+                throw new Meteor.Error('too-many-invites', 'You\'ve already sent an invite to this user.');
+            }
+        }
+
+        // Send user an email
+        SendInviteEmail(user, lobby, this.userId);
+
+        // Update invitesSent on invited user
+        const modifier = {};
+        modifier['invitesSent.' + this.userId] = true;
+
+        Meteor.users.update(userId, {$currentDate: modifier});
+
     }
 });

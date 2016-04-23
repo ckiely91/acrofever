@@ -26,6 +26,10 @@ export const AdminEvents = React.createClass({
 
         return {pastEvents, futureEvents};
     },
+    deleteEvent(evt, event) {
+        evt.preventDefault();
+        Meteor.call('adminDeleteEvent', event._id);
+    },
     adminEventRow(event, key) {
         return (
             <tr key={key}>
@@ -36,6 +40,7 @@ export const AdminEvents = React.createClass({
                 <td>{event.description}</td>
                 <td>{event.region}<br /><i className={event.region + ' flag'} /></td>
                 <td>{event.users ? event.users.join(', ') : null}</td>
+                <td><a href="#" onClick={(evt) => this.deleteEvent(evt, event)}>Delete</a></td>
             </tr>
         );
     },

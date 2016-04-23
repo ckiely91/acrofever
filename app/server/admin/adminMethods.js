@@ -59,6 +59,12 @@ Meteor.methods({
 
         fields.creator = this.userId;
         Events.insert(fields);
+	},
+	adminDeleteEvent: function(eventId) {
+		if (!isAdminUser(this.userId))
+			throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
+
+		Events.remove(eventId);
 	}
 
 
@@ -178,12 +184,12 @@ function postToTwitter(hallOfFameId) {
 
 	const hofEntry = HallOfFame.findOne(hallOfFameId);
 
-	let charsLeft = 107;
+	let charsLeft = 127;
 
 	const acronym = hofEntry.acronym.join('');
 	charsLeft -= acronym.length;
 
-	const acro = truncateString(hofEntry.acro, 50);
+	const acro = truncateString(hofEntry.acro, 70);
 	charsLeft -= acro.len;
 
 	const category = truncateString(hofEntry.category, charsLeft);
@@ -191,12 +197,13 @@ function postToTwitter(hallOfFameId) {
 
 	let username;
 	if (charsLeft > 8) {
-		username = truncateString(displayName(hofEntry.userId), charsLeft - 3);
+		username = truncateString(displayName(hofEntry.userId), charsLeft - 5);
 	}
 
-	let tweet = `Category: "${category.str}", Acronym: ${acronym}, Acro: "${acro.str}"`;
+	// Who should be the next pres? (ACRO) - "Donal Trump Obvs", by Christian
+	let tweet = `${category.str} (${acronym}) - "${acro.str}"`;
 	if (username) {
-		tweet += ' - ' + username.str;
+		tweet += ', by ' + username.str;
 	}
 
 	console.log(tweet);

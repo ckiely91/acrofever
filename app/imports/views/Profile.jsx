@@ -335,6 +335,7 @@ export const ProfileView = React.createClass({
                                     return <div className="ui inline centered active loader"></div>;
                                 }
                             })()}
+                            <br />
                             {(() => {
                                 if (this.state.averageScoreStats) {
                                     return <UserStatChartAverageScore stats={this.state.averageScoreStats}/>;
