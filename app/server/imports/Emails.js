@@ -41,7 +41,7 @@ export function SendReminderEmails() {
             const eventName = event.name,
                 eventDescription = event.description,
                 lobbyName = Lobbies.findOne(event.lobbyId).displayName,
-                link = 'https://acrofever.com/play/' + event.lobbyId;
+                link = FlowRouter.url('lobby', {lobbyId: event.lobbyId});
 
             Meteor.users.find({_id: {$in: event.users}}).forEach((user) => {
                 const userEmail = getUserEmail(user);
@@ -88,7 +88,7 @@ export function SendInviteEmail(user, lobby, inviterId) {
     const userEmail = getUserEmail(user),
         lobbyName = lobby.displayName,
         inviterUsername = displayName(inviterId),
-        link = 'https://acrofever.com/play/' + lobby._id;
+        link = FlowRouter.url('lobby', {lobbyId: lobby._id});
 
     if (!userEmail) {
         console.log('No user email');

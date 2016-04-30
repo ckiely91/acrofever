@@ -9,6 +9,7 @@ import {PlayView} from '../imports/views/Play';
 import {LobbyView} from '../imports/views/Lobby';
 import {HallOfFameView} from '../imports/views/HallOfFame';
 import {ProfileView} from '../imports/views/Profile';
+import {FriendsView} from '../imports/views/Friends';
 import {PageNotFound} from '../imports/views/PageNotFound';
 import {AdminMain, AdminHome, AdminHallOfFame, AdminNags, AdminEvents} from '../imports/views/Admin';
 
@@ -59,6 +60,16 @@ FlowRouter.route('/profile/:userId', {
     action: function(params) {
         mount(Layout, {
             content: () => (<ProfileView userId={params.userId}/>)
+        });
+    }
+});
+
+FlowRouter.route('/friends', {
+    name: 'friends',
+    triggersEnter: [AccountsTemplates.ensureSignedIn],
+    action: function() {
+        mount(Layout, {
+            content: () => (<FriendsView />)
         });
     }
 });

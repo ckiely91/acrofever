@@ -41,7 +41,7 @@ const AcroVoting = React.createClass({
     votedForThisAcro(id) {
         return (this.props.round.players[Meteor.userId()].vote === id);
     },
-    renderItem(acro, index, disabled) {
+    renderItem(acro, index) {
         const votedForThis = this.votedForThisAcro(acro.id);
         let className = 'item';
 
@@ -49,9 +49,11 @@ const AcroVoting = React.createClass({
             className = 'active item';
 
         return (
-            <a key={index} href="#" className={className} onClick={(evt) => this.handleVote(evt, acro.id)}>
-                {acro.acro} {votedForThis ? <i className="check icon"></i> : null}
-            </a>
+            <div key={index} className={className} onClick={(evt) => this.handleVote(evt, acro.id)}>
+                <div className="content">
+                    {acro.acro} {votedForThis ? <i className="check icon" /> : null}
+                </div>
+            </div>
         )
     },
     renderDisabledItem(acro, index) {
@@ -60,17 +62,20 @@ const AcroVoting = React.createClass({
 
     render() {
         let acroList;
+        const selectionList = {
+            textAlign: 'center'
+        };
 
         if (this.isInRound()) {
             acroList = (
-                <div className="ui fluid relaxed vertical text menu">
-                    {this.state.roundAcros.map((acro, index) => this.renderItem(acro, index))}
+                <div style={selectionList} className="ui middle aligned selection list">
+                    {this.state.roundAcros.map(this.renderItem)}
                 </div>
             );
         } else {
             acroList = (
                 <div className="ui relaxed list">
-                    {this.state.roundAcros.map((acro, index) => this.renderDisabledItem(acro, index))}
+                    {this.state.roundAcros.map(this.renderDisabledItem)}
                 </div>
             );
         }

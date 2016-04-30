@@ -29,7 +29,7 @@ export const PlayerLabel = React.createClass({
     render() {
         if (this.data.ready) {
             return (
-                <a href={FlowRouter.path('profile', {userId: this.props.id})} className={`ui image label userProfilePicture`} ref={(ref) => this.label = ref}>
+                <a href={FlowRouter.path('profile', {userId: this.props.id})} className={this.props.isFriend ? 'ui green image label userProfilePicture' : 'ui image label userProfilePicture'} ref={(ref) => this.label = ref}>
                     <img src={this.data.profilePicture} />
                     {this.data.displayName}
                 </a>
@@ -47,19 +47,23 @@ export const OnlinePlayers = React.createClass({
 
        var data = {
            ready: handle.ready(),
-           onlinePlayers: Meteor.users.find({'status.online':true}).fetch()
+           onlinePlayers: Meteor.users.find({'status.online':true}).fetch(),
+           thisUser: Meteor.user()
        };
 
        data.playerCount = data.onlinePlayers.length;
 
        return data;
    },
+   isFriend(id) {
+       return (this.data.thisUser && this.data.thisUser.profile && this.data.thisUser.profile.friends.indexOf(id) > -1);
+   },
    render() {
        if (this.data.ready) {
            return (
                <div>
                    <h3 className="ui header">{this.data.playerCount + ((this.data.playerCount === 1) ? ' player ' : ' players ') + ' online'}</h3>
-                   {this.data.onlinePlayers.map((player, index) => <PlayerLabel key={index} id={player._id} />)}
+                   {this.data.onlinePlayers.map((player, index) => <PlayerLabel key={index} id={player._id} isFriend={this.isFriend(player._id)} />)}
                </div>
            )
        } else {

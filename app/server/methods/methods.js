@@ -9,6 +9,10 @@ import {SendInviteEmail} from '../imports/Emails';
 
 Meteor.methods({
     joinOrLeaveOfficialLobby(lobbyId, join) {
+        check(lobbyId, String);
+        if (typeof join !== "undefined")
+            check(join, Boolean);
+
         var userId = Meteor.userId();
         if (!userId)
             throw new Meteor.Error('403', 'You must be logged in to do that');
@@ -44,6 +48,7 @@ Meteor.methods({
         }
     },
     hallOfFameAcroCount(userId) {
+        check(userId, String);
         if (userId) {
             return HallOfFame.find({userId: userId, active: true}).count();
         } else {
@@ -77,6 +82,10 @@ Meteor.methods({
         }
     },
     registerForReminder(eventId, deregister) {
+        check(eventId, String);
+        if (typeof deregister !== "undefined")
+            check(deregister, Boolean);
+
         if (!this.userId)
             throw new Meteor.Error(403, 'You don\'t have permission to do that.');
 
@@ -105,6 +114,8 @@ Meteor.methods({
         return (getUserEmail(user) ? true : false);
     },
     getUserStat(userId, statType) {
+        check(userId, String);
+        check(statType, String);
 
         switch(statType) {
             case 'gamesPlayed':
@@ -194,8 +205,13 @@ Meteor.methods({
         }
     },
     inviteToPlay(userId, lobbyId) {
+        check(userId, String);
+        check(lobbyId, String);
         if (!this.userId)
             throw new Meteor.Error(403, 'You must be logged in to do that');
+
+        if (userId === this.userId)
+            throw new Meteor.Error('cant-invite-self', 'You can\'t invite yourself');
 
         const inviter = Meteor.users.findOne(this.userId),
             user = Meteor.users.findOne(userId),
@@ -223,5 +239,45 @@ Meteor.methods({
 
         Meteor.users.update(userId, {$currentDate: modifier});
 
+    },
+    changeUsername(username) {
+        check(username, String);
+        if (!this.userId)
+            throw new Meteor.Error(403, 'You must be logged in to do that');
+
+        if (username.length > 20)
+            throw new Meteor.Error('username-too-long', 'Username cannot be longer than 20 characters');
+
+        username = username.trim();
+
+        if (Meteor.users.find({_id: {$ne: this.userId}, username: username}).count() > 0)
+            throw new Meteor.Error('username-taken', 'Username is already taken');
+
+        Meteor.users.update(this.userId, {$set: {username: username}});
+    },
+    addFriend(userId) {
+        check(userId, String);
+        if (!this.userId)
+            throw new Meteor.Error(403, 'You must be logged in to do that');
+        
+        if (userId === this.userId)
+            throw new Meteor.Error('cannot-add-self', 'You can\'t be friends with yourself');
+
+        if (Meteor.users.find({_id: userId}).count() === 0)
+            throw new Meteor.Error('user-doesnt-exist', 'User doesn\'t exist');
+
+        Meteor.users.update(this.userId, {$addToSet: {'profile.friends': userId}});
+    },
+    removeFriend(userId) {
+        check(userId, String);
+        if (!this.userId)
+            throw new Meteor.Error(403, 'You must be logged in to do that');
+
+        const thisUser = Meteor.users.findOne(this.userId, {fields: {'profile.friends': true}});
+
+        if (thisUser.profile && thisUser.profile.friends && thisUser.profile.friends.indexOf(userId) === -1)
+            throw new Meteor.Error('not-friends', 'Not friends with that user');
+
+        Meteor.users.update(this.userId, {$pull: {'profile.friends': userId}});
     }
 });

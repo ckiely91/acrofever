@@ -3,6 +3,8 @@ import Highchart from 'react-highcharts';
 
 import {HallOfFameAcros} from './HallOfFame';
 import {profilePicture, displayName} from '../helpers';
+import {lobbySubs} from '../subsManagers';
+import {Lobbies} from '../collections';
 
 class UserStats extends React.Component {
     constructor(props) {
@@ -190,6 +192,182 @@ class UserStatChartAverageScore extends React.Component {
     }
 }
 
+class EditProfileModal extends React.Component {
+    constructor(props) {
+        super(props);
+        this.openModal = this.openModal.bind(this);
+        this.changePassword = this.changePassword.bind(this);
+    }
+
+    componentDidMount() {
+        const $modal = $(this.modal),
+            $form = $(this.form),
+            $submitBtn = $(this.submitBtn);
+
+        $modal.modal({
+            detachable: false,
+            observeChanges: true,
+            onApprove: () => {
+                $form.form('submit');
+                return false;
+            }
+        });
+
+        $form.form({
+            fields: {
+                username: ['maxLength[20]', 'empty']
+            },
+            onSuccess: (evt, fields) => {
+                evt.preventDefault();
+                $submitBtn.addClass('loading');
+                Meteor.call('changeUsername', fields.username, (err) => {
+                    $submitBtn.removeClass('loading');
+                    if (err) {
+                        $form.form('add errors', [err.reason]);
+                    } else {
+                        $form.trigger('reset');
+                        $modal.modal('hide');
+                    }
+                });
+            }
+        });
+    }
+
+    openModal(evt) {
+        evt.preventDefault();
+        $(this.modal).modal('show');
+    }
+
+    changePassword(evt) {
+        evt.preventDefault();
+        $(this.modal).modal('hide');
+        FlowRouter.go('/change-password');
+    }
+
+    render() {
+        return (
+            <div className="ui modal" ref={(ref) => this.modal = ref}>
+                <div className="header">
+                    Edit profile
+                </div>
+                <div className="image content">
+                    <div className="ui medium image">
+                        <img src={this.props.profilePicture} />
+                    </div>
+                    <div className="description">
+                        <div className="ui header">Edit username</div>
+                        <div className="ui message">You'll need to log in with this username in future if you're not a Facebook, Twitter or Google user.</div>
+                        <div className="ui form" ref={(ref) => this.form = ref}>
+                            <div className="field">
+                                <input type="text" name="username" placeholder="New username" defaultValue={this.props.displayName}/>
+                            </div>
+                            <div className="ui error message"></div>
+                        </div>
+                    </div>
+                </div>
+                <div className="actions">
+                    <div className="ui left floated button" onClick={(evt) => this.changePassword(evt)}>Change password</div>
+                    <div className="ui deny button">Cancel</div>
+                    <div className="ui positive icon labeled button" ref={(ref) => this.submitBtn = ref}>
+                        <i className="check icon" />
+                        Save changes
+                    </div>
+                </div>
+            </div>
+        )
+    }
+}
+
+const InviteModal = React.createClass({
+    mixins: [ReactMeteorData],
+    propTypes: {
+        displayName: React.PropTypes.string.isRequired,
+        userId: React.PropTypes.string.isRequired
+    },
+    getInitialState() {
+        return {
+            hasInvited: false
+        };
+    },
+    getMeteorData() {
+        lobbySubs.subscribe('lobbies');
+        const lobbies = Lobbies.find().fetch(),
+            ready = lobbySubs.ready();
+
+        return {lobbies, ready};
+    },
+    componentDidMount() {
+        $(this.modal).modal({
+            detachable: false,
+            observeChanges: true
+        });
+    },
+    openModal(evt) {
+        evt.preventDefault();
+        if (Meteor.userId()) {
+            $(this.modal).modal('show');
+        } else {
+            FlowRouter.go('/sign-in');
+        }
+    },
+    closeModal() {
+        $(this.modal).modal('hide');
+    },
+    renderLobbyItem(lobby, index) {
+        return (
+            <div key={index} className="item" onClick={(evt) => this.inviteToPlay(evt, lobby._id)}>
+                <div className="content">{lobby.displayName}</div>
+            </div>
+        );
+    },
+    inviteToPlay(evt, lobbyId) {
+        evt.preventDefault();
+        this.setState({hasInvited: true});
+        Meteor.call('inviteToPlay', this.props.userId, lobbyId, (err) => {
+            if (err)
+                alert(err.reason);
+            else
+                alert("Invite sent");
+
+            this.closeModal();
+            Meteor.setTimeout(() => {
+                this.setState({hasInvited: false});
+            }, 500);
+        });
+    },
+    render() {
+        const styles = {
+            list: {
+                textAlign: 'center'
+            }
+        };
+
+        return (
+            <div className="ui small basic modal" ref={(ref) => this.modal = ref}>
+                <div className="ui icon header">
+                    <i className="mail outline icon" />
+                    Invite {this.props.displayName} to play
+                    <div className="sub header">Pick a lobby</div>
+                </div>
+                <div className="content">
+                    <h3 className="ui centered inverted header">Pick a lobby</h3>
+                    {(() => {
+                        if (this.data.ready && !this.state.hasInvited) {
+                            return (
+                                <div style={styles.list} className="ui middle aligned inverted selection list">
+                                    {this.data.lobbies.map(this.renderLobbyItem)}
+                                </div>
+                            );
+                        } else {
+                            return <div className="ui active inline centered inverted loader"></div>;
+                        }
+                    })()}
+                </div>
+            </div>
+        )
+    }
+});
+
 export const ProfileView = React.createClass({
     mixins: [ReactMeteorData],
     propTypes: {
@@ -199,7 +377,8 @@ export const ProfileView = React.createClass({
         let numberOfHallOfFame = new ReactiveVar();
         let gamesPlayedStats = null;
         let averageScoreStats = null;
-        return {numberOfHallOfFame, gamesPlayedStats, averageScoreStats};
+        const isOwnProfile = (this.props.userId === Meteor.userId());
+        return {numberOfHallOfFame, gamesPlayedStats, averageScoreStats, isOwnProfile};
     },
     getMeteorData() {
         var data = {
@@ -212,6 +391,7 @@ export const ProfileView = React.createClass({
         data.user = Meteor.users.findOne(this.props.userId);
         data.profilePicture = profilePicture(this.props.userId, 250);
         data.displayName = displayName(this.props.userId);
+        data.thisUser = Meteor.user();
 
         Meteor.call('hallOfFameAcroCount', this.props.userId, (err, res) => {
             if (err) return console.error(err);
@@ -222,16 +402,6 @@ export const ProfileView = React.createClass({
     },
     componentWillMount() {
         this.refreshStats();
-    },
-    componentDidMount() {
-        var interval = setInterval(() => {
-            if (this.comingSoonDiv) {
-                $(this.comingSoonDiv).popup({
-                    content: 'Coming soon'
-                });
-                clearInterval(interval);
-            }
-        }, 100);
     },
     refreshStats() {
         Meteor.call('getUserStat', this.props.userId, 'gamesPlayed', (err, res) => {
@@ -247,12 +417,33 @@ export const ProfileView = React.createClass({
         });
     },
     clickRefresh(evt) {
+        evt.preventDefault();
         if (this.state.gamesPlayedStats === null || this.state.averageScoreStats === null)
             return;
 
         this.setState({gamesPlayedStats: null, averageScoreStats: null});
 
         this.refreshStats();
+    },
+    addFriend(evt) {
+        evt.preventDefault();
+        const $btn = $(evt.currentTarget);
+        $btn.addClass('loading');
+        Meteor.call('addFriend', this.props.userId, (err) => {
+            $btn.removeClass('loading');
+            if (err)
+                console.error(err);
+        });
+    },
+    removeFriend(evt) {
+        evt.preventDefault();
+        const $btn = $(evt.currentTarget);
+        $btn.addClass('loading');
+        Meteor.call('removeFriend', this.props.userId, (err) => {
+            $btn.removeClass('loading');
+            if (err)
+                console.error(err);
+        });
     },
     lastStat() {
         const keys = Object.keys(this.state.gamesPlayedStats);
@@ -264,6 +455,21 @@ export const ProfileView = React.createClass({
                 won: 0,
                 winRate: 0
             };
+        }
+    },
+    onlineLabel(online) {
+        if (online) {
+            return <div className="ui small basic green label">Online</div>;
+        } else {
+            return <div className="ui small basic red label">Offline</div>;
+        }
+    },
+    isFriend() {
+        console.log(this.data.thisUser);
+        if (this.data.thisUser.profile && this.data.thisUser.profile.friends) {
+            return (this.data.thisUser.profile.friends.indexOf(this.props.userId) > -1);
+        } else {
+            return false;
         }
     },
     render() {
@@ -282,6 +488,10 @@ export const ProfileView = React.createClass({
                 float: 'right',
                 fontSize: '16px',
                 cursor: 'pointer'
+            },
+            inviteBtn: {
+                marginBottom: '10px',
+                marginRight: '10px'
             }
         };
 
@@ -292,17 +502,42 @@ export const ProfileView = React.createClass({
                         <div className="eight wide column" style={styles.noBottom}>
                             <h1 className="ui header">
                                 {this.data.displayName}
+                                {(this.data.user.status && this.data.user.status.online) ? this.onlineLabel(true) : this.onlineLabel(false)}
                                 <div className="sub header">Member since {moment(this.data.user.createdAt).calendar()}</div>
                             </h1>
                         </div>
                         <div className="eight wide column" style={_.extend(styles.noBottom, styles.top)}>
-                            <div id="comingSoonDiv" ref={(ref) => this.comingSoonDiv = ref}>
-                                <button className="ui primary icon labeled disabled button">
-                                    <i className="lightning icon" />
-                                    Invite to play
-                                </button>
-                                <button className="ui disabled button">Add as friend</button>
-                            </div>
+                            {(() => {
+                                if (this.state.isOwnProfile) {
+                                    return (
+                                        <button className="ui icon labeled right floated button" onClick={(evt) => this.editProfileModal.openModal(evt)}>
+                                            <i className="edit icon" />
+                                            Edit
+                                        </button>
+                                    );
+                                } else {
+                                    return (
+                                        <div>
+                                            <button style={styles.inviteBtn} className="ui primary icon labeled button" onClick={(evt) => this.inviteModal.openModal(evt)}>
+                                                <i className="mail outline icon" />
+                                                Invite to play
+                                            </button>
+                                            {(() => {
+                                                if (!this.isFriend()) {
+                                                    return <button className="ui button" onClick={(evt) => this.addFriend(evt)}>Add as friend</button>;
+                                                } else {
+                                                    return (
+                                                        <button className="ui positive icon labeled button" onClick={(evt) => this.removeFriend(evt)}>
+                                                            <i className="check icon" />
+                                                            Friends
+                                                        </button>
+                                                    );
+                                                }
+                                            })()}
+                                        </div>
+                                    )
+                                }
+                            })()}
                         </div>
                         <div className="sixteen wide column" style={styles.noTop}>
                             <div className="ui divider"></div>
@@ -351,6 +586,26 @@ export const ProfileView = React.createClass({
                             <h3 className="ui dividing header">{this.data.displayName} in the Hall of Fame</h3>
                             <HallOfFameAcros userId={this.props.userId} limit={4}/>
                         </div>
+                        {(() => {
+                            if (this.state.isOwnProfile) {
+                                return (
+                                    <EditProfileModal
+                                        userId={this.props.userId}
+                                        profilePicture={this.data.profilePicture}
+                                        displayName={this.data.displayName}
+                                        ref={(ref) => this.editProfileModal = ref}
+                                    />
+                                );
+                            } else {
+                                return (
+                                    <InviteModal
+                                        userId={this.props.userId}
+                                        displayName={this.data.displayName}
+                                        ref={(ref) => this.inviteModal = ref}
+                                    />
+                                );
+                            }
+                        })()}
                     </div>
                 );
             } else {

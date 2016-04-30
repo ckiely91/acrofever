@@ -115,6 +115,7 @@ const UserNavDropdown = React.createClass({
                         </a>
                         {this.notificationsSupported() ? notificationsItem(true) : null}
                         <a href={FlowRouter.path('profile', {userId: this.props._id})} className="item">View profile</a>
+                        <a href={FlowRouter.path('friends')} className="item">Friends</a>
                         <a href="/change-password" className="item">Change password</a>
                         <a className="item" onClick={(evt) => this.logout(evt)}>Sign out</a>
                     </div>

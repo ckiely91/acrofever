@@ -1,41 +1,8 @@
-/*
-export function replaceLinksAndEscape(input) {
-    var autolinkedInput = Autolinker.link(input, {
-        truncate: {
-            length: 32,
-            location: 'smart'
-        },
-        replaceFn(autolinker, match) {
-            switch(match.getType()) {
-                case 'url':
-                    var tag = autolinker.getTagBuilder().build(match);
-                    tag.setAttr( 'rel', 'nofollow' );
-                    tag.addClass( 'external-link' );
-                    return tag;
-                default:
-                    return true;
-            }
-        }
-    });
-
-    //escape except allowed tags
-    autolinkedInput = '<div>' + autolinkedInput + '</div>';
-
-    $autolinkedInput = $(autolinkedInput);
-    var $elements = $autolinkedInput.find("*").not("a,img,br");
-    for (var i = $elements.length - 1; i >= 0; i--) {
-        var e = $elements[i];
-        $(e).replaceWith(e.innerHTML);
-    }
-    return $autolinkedInput.html();
-}
-*/
-
 export function notify(title, body, image) {
     if (typeof Notification === 'undefined')
         return;
 
-    var user = Meteor.user();
+    const user = Meteor.user();
     if (user.profile.notificationsEnabled === false)
         return;
 
@@ -64,7 +31,7 @@ export function playSound(filename, hiddenOnly) {
     if ((hiddenOnly && !document.hidden) || Meteor.user().profile.soundsEnabled === false)
         return;
 
-    var sound = new buzz.sound('/sounds/' + filename, {
+    const sound = new buzz.sound('/sounds/' + filename, {
         formats: ['ogg', 'mp3'],
         volume: 50
     });
@@ -79,11 +46,11 @@ export function profilePicture(id, size) {
         return '/images/no-profile-pic.png';
 
     if (!size)
-        var size = 100;
+        size = 100;
 
-    var type = user.profile.profilePicture.type,
-        url = user.profile.profilePicture.url,
-        newUrl;
+    const type = user.profile.profilePicture.type,
+        url = user.profile.profilePicture.url;
+    let newUrl;
 
     switch (type) {
         case 'gravatar':
@@ -115,15 +82,21 @@ export function profilePicture(id, size) {
 }
 
 export function displayName(id, capitalise) {
-    var user = Meteor.users.findOne(id);
+    const user = Meteor.users.findOne(id);
     if (!user) {
         return;
     }
 
-    if (user.profile && user.profile.name) {
-        var displayname = user.profile.name.split(' ')[0];
+    let displayname;
+
+    if (user.username) {
+        displayname = user.username;
+    } else if (user.profile && user.profile.name) {
+        //just show first name for privacy reasons
+        displayname = user.profile.name.split(' ')[0];
     } else {
-        var displayname = user.username;
+        // shouldn't happen
+        displayname = 'Anonymous';
     }
 
     if (capitalise == true) {
