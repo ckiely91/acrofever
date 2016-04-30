@@ -427,6 +427,10 @@ export const ProfileView = React.createClass({
     },
     addFriend(evt) {
         evt.preventDefault();
+        if (!Meteor.userId()) {
+            FlowRouter.go('/sign-in');
+            return;
+        }
         const $btn = $(evt.currentTarget);
         $btn.addClass('loading');
         Meteor.call('addFriend', this.props.userId, (err) => {

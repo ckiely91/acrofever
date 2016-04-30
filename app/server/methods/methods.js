@@ -48,8 +48,8 @@ Meteor.methods({
         }
     },
     hallOfFameAcroCount(userId) {
-        check(userId, String);
         if (userId) {
+            check(userId, String);
             return HallOfFame.find({userId: userId, active: true}).count();
         } else {
             return HallOfFame.find({active: true}).count();   
