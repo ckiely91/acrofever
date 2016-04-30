@@ -465,8 +465,7 @@ export const ProfileView = React.createClass({
         }
     },
     isFriend() {
-        console.log(this.data.thisUser);
-        if (this.data.thisUser.profile && this.data.thisUser.profile.friends) {
+        if (this.data.thisUser && this.data.thisUser.profile && this.data.thisUser.profile.friends) {
             return (this.data.thisUser.profile.friends.indexOf(this.props.userId) > -1);
         } else {
             return false;

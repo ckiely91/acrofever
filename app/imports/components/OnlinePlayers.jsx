@@ -56,7 +56,11 @@ export const OnlinePlayers = React.createClass({
        return data;
    },
    isFriend(id) {
-       return (this.data.thisUser && this.data.thisUser.profile && this.data.thisUser.profile.friends.indexOf(id) > -1);
+       if (this.data.thisUser && this.data.thisUser.profile && this.data.thisUser.profile.friends) {
+           return (this.data.thisUser.profile.friends.indexOf(id) > -1);
+       } else {
+           return false;
+       }
    },
    render() {
        if (this.data.ready) {
