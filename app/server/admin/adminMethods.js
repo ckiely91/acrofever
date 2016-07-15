@@ -3,10 +3,10 @@ import {displayName} from '../../imports/helpers';
 import Twitter from 'twitter';
 
 Meteor.methods({
-	isAdminUser: function() {
+	isAdminUser() {
 		return isAdminUser(this.userId);
 	},
-	adminEditHallOfFameEntry: function(id, options) {
+	adminEditHallOfFameEntry(id, options) {
 		if (!isAdminUser(this.userId))
 			throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
 
@@ -21,13 +21,13 @@ Meteor.methods({
 			postToTwitter(id);
 		}
 	},
-	adminAddNag: function(fields) {
+	adminAddNag(fields) {
 		if (!isAdminUser(this.userId))
 			throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
 
 		var nag = {
 			timestamp: new Date()
-		}
+		};
 
 		if (fields.title.length > 0) nag.title = fields.title; 
 		if (fields.message.length > 0) nag.message = fields.message; 
@@ -37,7 +37,7 @@ Meteor.methods({
 
 		Nags.insert(nag); 
 	},
-	adminEditNag: function(id, action) {
+	adminEditNag(id, action) {
 		if (!isAdminUser(this.userId))
 			throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
 
@@ -53,126 +53,31 @@ Meteor.methods({
 				break;
 		}
 	},
-	adminAddEvent: function(fields) {
+	adminAddEvent(fields) {
         if (!isAdminUser(this.userId))
             throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
 
         fields.creator = this.userId;
         Events.insert(fields);
 	},
-	adminDeleteEvent: function(eventId) {
+	adminDeleteEvent(eventId) {
 		if (!isAdminUser(this.userId))
 			throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
 
 		Events.remove(eventId);
-	}
-
-
-	//Migrations
-	//Commenting out these methods once they have been run on production
-	/*migrateUserBase: function() {
-		if (!isAdminUser(this.userId))
-			throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
-
-		// this should only need to be run ONCE
-		Meteor.users.find().forEach(function(user) {
-			if (!user.profile || !user.profile.profilePicture) {
-				var email,
-					profilePicture = {};
-
-				if (user.services.password && user.emails) {
-					// see if they have a gravatar
-					email = user.emails[0].address;
-					profilePicture.type = 'gravatar';
-					profilePicture.url = Gravatar.imageUrl(email, {secure: true, default: 'mm'});
-				} else if (user.services.facebook) {
-					email = user.services.facebook.email;
-					profilePicture.type = 'facebook';
-					profilePicture.url = 'https://graph.facebook.com/v2.3/' + user.services.facebook.id + '/picture';
-				} else if (user.services.google) {
-					email = user.services.google.email;
-					profilePicture.type = 'google';
-					profilePicture.url = user.services.google.picture;
-				} else if (user.services.twitter) {
-					profilePicture.type = 'twitter';
-					profilePicture.url = user.services.twitter.profile_image_url_https;
-				}
-
-				Meteor.users.update(user._id, {$set: {'profile.profilePicture': profilePicture}});
-				console.log('Fetched profile picture for ' + email + ' (' + user._id + ')');
-			}
-		});
 	},
-	migrateHallOfFame: function(array) {
+	adminAddSpecialTag(userId, specialTag) {
 		if (!isAdminUser(this.userId))
 			throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
 
-		_.each(array, function(item) {
-			var obj = {
-				userId: item.id,
-				acro: item.acro,
-				acronym: item.acronym,
-				category: item.category,
-				active: false,
-				votes: [],
-				created: new Date(item.date)
-			};
-			HallOfFame.insert(obj);
-			console.log('inserted ' + item.acro);
+		check(userId, String);
+		check(specialTag, {
+			tag: String,
+			color: String
 		});
+
+		Meteor.users.update(userId, {$addToSet: {'profile.specialTags': specialTag}});
 	}
-	migrateUserStats: function() {
-		if (!isAdminUser(this.userId))
-			throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
-
-		var gamesPlayed = {},
-			gamesWon = {};
-
-		var games = Games.find({gameWinner: {$exists: true}});
-		console.log(games.count() + ' total games');
-
-		games.forEach(function(game) {
-			_.each(game.scores, function(score, player) {
-				if (!gamesPlayed[player])
-					gamesPlayed[player] = 0;
-
-				gamesPlayed[player] = gamesPlayed[player] + 1;
-			});
-
-			if (!gamesWon[game.gameWinner])
-				gamesWon[game.gameWinner] = 0;
-
-			gamesWon[game.gameWinner] = gamesWon[game.gameWinner] + 1;
-		});
-		console.log(gamesPlayed);
-		console.log('----------------------------');
-		console.log(gamesWon);
-
-		Meteor.users.find({}).forEach(function(user) {
-			var totalGamesPlayed = gamesPlayed[user._id] || 0;
-			var totalGamesWon = gamesWon[user._id] || 0;
-			if (user.profile && user.profile.stats) {
-				if (_.isObject(user.profile.stats.gamesPlayed)) {
-					winner = 0;
-					_.each(user.profile.stats.gamesPlayed, function(game) {
-						if (game.winner) winner ++;
-					});
-					totalGamesPlayed += user.profile.stats.gamesPlayed.length;
-					totalGamesWon += winner;
-				}
-			}
-
-			Meteor.users.update(user._id, {$set: {'profile.stats': {
-				gamesPlayed: totalGamesPlayed,
-				gamesWon: totalGamesWon
-			}}});
-		});
-
-		return {
-			gamesPlayed: gamesPlayed,
-			gamesWon: gamesWon
-		};
-	}*/
 });
 
 function isAdminUser(userId) {

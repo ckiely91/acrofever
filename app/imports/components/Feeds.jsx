@@ -4,7 +4,7 @@ import {emojify} from 'react-emojione';
 import EmojiPicker from 'emojione-picker';
 
 import {MomentFromNow} from './Countdown';
-import {playSound, profilePicture, displayName, acrofeverAnalytics} from '../helpers';
+import {playSound, profilePicture, displayName, specialTags, acrofeverAnalytics} from '../helpers';
 import {GlobalFeed, LobbyFeed} from '../collections';
 
 class ChatInput extends React.Component {
@@ -86,6 +86,13 @@ ChatInput.propTypes = {
     lobbyId: React.PropTypes.string
 };
 
+const UserSpecialTag = (props) => {
+    const style = {marginLeft: '5px'},
+        className = `ui mini ${props.color ? props.color : 'red'} horizontal basic label`;
+
+    return <div className={className} style={style}>{props.tag}</div>;
+};
+
 const SingleEvent = React.createClass({
     mixins: [ReactMeteorData],
     propTypes: {
@@ -98,6 +105,7 @@ const SingleEvent = React.createClass({
     getMeteorData() {
         return {
             username: displayName(this.props.user, true),
+            specialTags: specialTags(this.props.user),
             profileImgSrc: profilePicture(this.props.user, 35)
         }
     },
@@ -110,6 +118,22 @@ const SingleEvent = React.createClass({
             )
         } else {
             return <i className={(icon ? icon : 'info') + ' icon'}></i>;
+        }
+    },
+    renderUsername(user, summary) {
+        if (user) {
+            return (
+                <span>
+                    <a href={FlowRouter.path('profile', {userId: user})}
+                       target="_blank"
+                       className="userProfilePicture">
+                        {this.data.username}
+                    </a>
+                    {this.data.specialTags ? this.data.specialTags.map((tag, index) => <UserSpecialTag key={index} tag={tag.tag} color={tag.color}/>) : null }
+                </span>
+            )
+        } else {
+            return <span>{summary}</span>;
         }
     },
     emojisAndLinks(string) {
@@ -136,7 +160,7 @@ const SingleEvent = React.createClass({
                 </div>
                 <div className={"content " + (this.props.user ? "userProfilePicture" : "")}>
                     <div className="summary">
-                        {this.props.user ? <a href={FlowRouter.path('profile', {userId: this.props.user})} target="_blank"  className="userProfilePicture">{this.data.username}</a> : this.props.summary}
+                        {this.renderUsername(this.props.user, this.props.summary)}
                         <div className="date">
                             <MomentFromNow time={this.props.timestamp} />
                         </div>

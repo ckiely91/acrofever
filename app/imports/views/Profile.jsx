@@ -2,7 +2,7 @@ import React from 'react';
 import Highchart from 'react-highcharts';
 
 import {HallOfFameAcros} from './HallOfFame';
-import {profilePicture, displayName} from '../helpers';
+import {profilePicture, displayName, specialTags} from '../helpers';
 import {lobbySubs} from '../subsManagers';
 import {Lobbies} from '../collections';
 
@@ -377,8 +377,7 @@ export const ProfileView = React.createClass({
         let numberOfHallOfFame = new ReactiveVar();
         let gamesPlayedStats = null;
         let averageScoreStats = null;
-        const isOwnProfile = (this.props.userId === Meteor.userId());
-        return {numberOfHallOfFame, gamesPlayedStats, averageScoreStats, isOwnProfile};
+        return {numberOfHallOfFame, gamesPlayedStats, averageScoreStats};
     },
     getMeteorData() {
         var data = {
@@ -391,6 +390,8 @@ export const ProfileView = React.createClass({
         data.user = Meteor.users.findOne(this.props.userId);
         data.profilePicture = profilePicture(this.props.userId, 250);
         data.displayName = displayName(this.props.userId);
+        data.specialTags = specialTags(this.props.userId);
+        data.isOwnProfile = (this.props.userId === Meteor.userId());
         data.thisUser = Meteor.user();
 
         Meteor.call('hallOfFameAcroCount', this.props.userId, (err, res) => {
@@ -461,12 +462,16 @@ export const ProfileView = React.createClass({
             };
         }
     },
-    onlineLabel(online) {
-        if (online) {
-            return <div className="ui small basic green label">Online</div>;
+    onlineLabel() {
+        if (this.data.user.status && this.data.user.status.online) {
+            return <div className="ui green right ribbon label">ONLINE</div>;
         } else {
-            return <div className="ui small basic red label">Offline</div>;
+            return <div className="ui red basic right ribbon label">OFFLINE</div>;
         }
+    },
+    specialTagLabel(specialTag, index) {
+        const className = `ui small basic ${specialTag.color ? specialTag.color : 'red'} label`;
+        return <div className={className} key={index}>{specialTag.tag}</div>;
     },
     isFriend() {
         if (this.data.thisUser && this.data.thisUser.profile && this.data.thisUser.profile.friends) {
@@ -505,13 +510,13 @@ export const ProfileView = React.createClass({
                         <div className="eight wide column" style={styles.noBottom}>
                             <h1 className="ui header">
                                 {this.data.displayName}
-                                {(this.data.user.status && this.data.user.status.online) ? this.onlineLabel(true) : this.onlineLabel(false)}
+                                {this.data.specialTags ? this.data.specialTags.map(this.specialTagLabel) : null}
                                 <div className="sub header">Member since {moment(this.data.user.createdAt).calendar()}</div>
                             </h1>
                         </div>
                         <div className="eight wide column" style={_.extend(styles.noBottom, styles.top)}>
                             {(() => {
-                                if (this.state.isOwnProfile) {
+                                if (this.data.isOwnProfile) {
                                     return (
                                         <button className="ui icon labeled right floated button" onClick={(evt) => this.editProfileModal.openModal(evt)}>
                                             <i className="edit icon" />
@@ -546,7 +551,10 @@ export const ProfileView = React.createClass({
                             <div className="ui divider"></div>
                         </div>
                         <div className="five wide column">
-                            <img className="ui circular fluid image" src={this.data.profilePicture}/>
+                            <div className="ui fluid image">
+                                {this.onlineLabel()}
+                                <img src={this.data.profilePicture} />
+                            </div>
                         </div>
                         <div className="eleven wide column">
                             {(() => {
@@ -590,7 +598,7 @@ export const ProfileView = React.createClass({
                             <HallOfFameAcros userId={this.props.userId} limit={4}/>
                         </div>
                         {(() => {
-                            if (this.state.isOwnProfile) {
+                            if (this.data.isOwnProfile) {
                                 return (
                                     <EditProfileModal
                                         userId={this.props.userId}

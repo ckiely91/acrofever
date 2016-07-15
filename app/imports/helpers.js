@@ -105,6 +105,13 @@ export function displayName(id, capitalise) {
     return displayname;
 }
 
+export function specialTags(id) {
+    const user = Meteor.users.findOne(id);
+    if (user && user.profile && user.profile.specialTags) {
+        return user.profile.specialTags;
+    }
+}
+
 export const acrofeverAnalytics = {
     track(event, obj) {
         if (typeof analytics === "object")
