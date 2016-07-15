@@ -166,8 +166,6 @@ const GameManager = {
             } else {
                 setObj['rounds.' + (game.currentRound - 1)] = round;
                 newRound = game.currentRound;
-                console.log('setObj');
-                console.log(setObj);
                 Games.update(lobby.currentGame, {$set: setObj, $currentDate: {lastUpdated: true}});
             }
 

@@ -106,12 +106,18 @@ export const AcrofeverCategoryPhase = React.createClass({
     propTypes: {
         round: React.PropTypes.object.isRequired,
         endTime: React.PropTypes.instanceOf(Date).isRequired,
-        gameId: React.PropTypes.string.isRequired
+        gameId: React.PropTypes.string.isRequired,
+        config: React.PropTypes.object
     },
     getMeteorData() {
         return {
             categoryChooserDisplayName: displayName(this.props.round.categoryChooser)
         };
+    },
+    getInitialState() {
+        return {
+            showAcro: !(this.props.config && this.props.config.hideAcroInCategoryPhase)
+        }
     },
     currentAcro() {
         var acro = this.props.round.acronym;
@@ -122,7 +128,7 @@ export const AcrofeverCategoryPhase = React.createClass({
         return (
             <div>
                 <div>
-                    <CountdownHeader endTime={this.props.endTime} header={this.currentAcro()} />
+                    <CountdownHeader endTime={this.props.endTime} header={this.state.showAcro ? this.currentAcro() : 'Acro hidden'} />
                 </div>
                 <div className="ui divider" style={dividerStyle}></div>
                 <div>

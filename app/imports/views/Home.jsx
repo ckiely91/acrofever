@@ -6,6 +6,33 @@ import {UpcomingEvents} from '../components/Events';
 import {lobbySubs} from '../subsManagers';
 import {acrofeverAnalytics} from '../helpers';
 
+class GoogleAd extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    componentWillMount() {
+        DocHead.loadScript('//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js');
+    }
+
+    componentDidMount() {
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    }
+
+    render() {
+        return (
+            <div className="ui centered leaderboard ad">
+                <ins className="adsbygoogle"
+                     style={{display:'block'}}
+                     data-ad-client="ca-pub-2611027061957213"
+                     data-ad-slot="6413070082"
+                     data-ad-format="auto">
+                </ins>
+            </div>
+        )
+    }
+}
+
 export const HomeView = React.createClass({
     componentWillMount() {
         lobbySubs.subscribe('lobbies');
@@ -89,6 +116,9 @@ export const HomeView = React.createClass({
                 </div>
                 <div className="eight wide column">
                     <GlobalFeedComponent />
+                </div>
+                <div className="sixteen wide column">
+                    <GoogleAd />
                 </div>
                 <div className="sixteen wide column">
                     <div className="ui divider"></div>

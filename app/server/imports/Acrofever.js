@@ -321,15 +321,30 @@ const Acrofever = {
         }
     },
 
+    calculateRemainingTime(base, multiplier, num, max) {
+        const val = base + (multiplier * num);
+        return (max && val > max) ? max : val;
+    },
+
     /* MAIN GAME PHASES */
     goToAcroPhase(gameId, category) {
         const game = ensureCorrectPhase(gameId, 'category');
 
         if (!game) return;
 
-        const lobby = Lobbies.findOne(game.lobbyId),
-            roundIndex = game.currentRound - 1,
+        const lobby = Lobbies.findOne(game.lobbyId, {fields: { config: true }}),
+            roundIndex = game.currentRound - 1;
+
+        let acroTimeout;
+
+        if (lobby.config.timeouts) {
+            const timeouts = lobby.config.timeouts,
+                currentAcroLength = game.rounds[roundIndex].acronym.length;
+
+            acroTimeout = this.calculateRemainingTime(timeouts.acroBase, timeouts.acroMultiplier, currentAcroLength);
+        } else {
             acroTimeout = lobby.config.acronymTimeout;
+        }
 
         if (!category)
             category = Random.choice(defaultCategories);
@@ -365,8 +380,16 @@ const Acrofever = {
             return;
         }
 
-        const lobby = Lobbies.findOne(game.lobbyId),
+        const lobby = Lobbies.findOne(game.lobbyId, {fields: { config: true }});
+
+        let votingTimeout;
+
+        if (lobby.config.timeouts) {
+            const timeouts = lobby.config.timeouts;
+            votingTimeout = this.calculateRemainingTime(timeouts.votingBase, timeouts.votingMultiplier, submissions, 60000);
+        } else {
             votingTimeout = lobby.config.votingTimeout;
+        }
 
         //shuffle the players array
         const players = _.shuffle(game.players);

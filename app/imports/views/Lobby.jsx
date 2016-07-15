@@ -74,6 +74,7 @@ class GameWindowInner extends React.Component {
                                 round={this.props.game.rounds[this.props.game.currentRound -1]}
                                 endTime={this.props.endTime}
                                 gameId={this.props.game._id}
+                                config={this.props.config}
                             />
                         );
 
@@ -121,7 +122,8 @@ class GameWindowInner extends React.Component {
 
 GameWindowInner.propTypes = {
     game: React.PropTypes.object.isRequired,
-    endTime: React.PropTypes.instanceOf(Date)
+    endTime: React.PropTypes.instanceOf(Date),
+    config: React.PropTypes.object
 };
 
 
@@ -161,11 +163,12 @@ const GameWindow = React.createClass({
         newGameStarting: React.PropTypes.bool,
         players: React.PropTypes.array,
         endTime: React.PropTypes.instanceOf(Date),
-        lobbyEndTime: React.PropTypes.instanceOf(Date)
+        lobbyEndTime: React.PropTypes.instanceOf(Date),
+        config: React.PropTypes.object
     },
     render() {
         if (this.props.game.active) {
-            return <GameWindowInner game={this.props.game} endTime={this.props.endTime}/>;
+            return <GameWindowInner game={this.props.game} endTime={this.props.endTime} config={this.props.config}/>;
         } else {
             let headerText;
             if (this.props.newGameStarting) {
@@ -264,7 +267,7 @@ const Beggar = () => {
     const style = {
         maxWidth: '300px',
         width: '100%',
-        border: '0'
+        border: 'none'
     };
 
     return (
@@ -274,6 +277,71 @@ const Beggar = () => {
             <input type="image" src="/images/donate-mediumrect.jpg" style={style} name="submit" alt="PayPal — The safer, easier way to pay online." />
         </form>
     )
+};
+
+const LobbySettings = (props) => {
+    return (
+        <div className="ui relaxed divided list">
+            <div className="item">
+                <div className="content">
+                    <div className="header">Acro phase time</div>
+                    <div className="description">
+                        {(() => {
+                            if (props.timeouts) {
+                                return `${moment(props.timeouts.acroBase).format('m:ss')} + (${moment(props.timeouts.acroMultiplier).format('m:ss')} × letters)`;
+                            } else {
+                                return moment(props.acronymTimeout).format('m:ss');
+                            }
+                        })()}
+                    </div>
+                </div>
+            </div>
+            <div className="item">
+                <div className="content">
+                    <div className="header">Voting phase time</div>
+                    <div className="description">
+                        {(() => {
+                            if (props.timeouts) {
+                                return `${moment(props.timeouts.votingBase).format('m:ss')} + (${moment(props.timeouts.votingMultiplier).format('m:ss')} × entries)`;
+                            } else {
+                                return moment(props.acronymTimeout).format('m:ss');
+                            }
+                        })()}
+                    </div>
+                </div>
+            </div>
+            <div className="item">
+                <div className="content">
+                    <div className="header">Points for round winner</div>
+                    <div className="description">{props.winnerPoints}</div>
+                </div>
+            </div>
+            <div className="item">
+                <div className="content">
+                    <div className="header">Points for each vote received</div>
+                    <div className="description">{props.votedPoints}</div>
+                </div>
+            </div>
+            <div className="item">
+                <div className="content">
+                    <div className="header">Points for voting for winning Acro</div>
+                    <div className="description">{props.votedForWinnerPoints}</div>
+                </div>
+            </div>
+            <div className="item">
+                <div className="content">
+                    <div className="header">Penalty for submitting without voting</div>
+                    <div className="description">-{props.notVotedNegativePoints}</div>
+                </div>
+            </div>
+            <div className="item">
+                <div className="content">
+                    <div className="header">Points needed to win game</div>
+                    <div className="description">{props.endGamePoints}</div>
+                </div>
+            </div>
+        </div>
+    );
 };
 
 export const LobbyView = React.createClass({
@@ -370,7 +438,7 @@ export const LobbyView = React.createClass({
             return (
                 <div className="ui stackable grid">
                     <div className="five wide column">
-                        <h2 className="ui header"><span className="gameTypeHeader">{this.data.lobby.type} :: </span> {this.data.lobby.displayName}</h2>
+                        <h2 className="ui header">{this.data.lobby.displayName}</h2>
                         <div className="ui raised segments">
                             <div className="ui segment">
                                 <button className={this.isInLobby() ? 'ui fluid button' : 'ui primary fluid button'} onClick={this.joinOrLeaveLobby}>{this.isInLobby() ? 'Leave' : 'Join'} lobby</button>
@@ -386,38 +454,7 @@ export const LobbyView = React.createClass({
                             </div>
                             <div className="ui segment hiddenOnMobile">
                                 <h3 className="ui header">Lobby settings</h3>
-                                <table className="ui very basic unstackable table">
-                                    <tbody>
-                                    <tr>
-                                        <td>Acro phase time</td>
-                                        <td>{moment(this.data.lobby.config.acronymTimeout).format('m:ss')}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Voting phase time</td>
-                                        <td>{moment(this.data.lobby.config.votingTimeout).format('m:ss')}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Points for round winner</td>
-                                        <td>{this.data.lobby.config.winnerPoints}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Points for each vote received</td>
-                                        <td>{this.data.lobby.config.votedPoints}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Points for voting for winning Acro</td>
-                                        <td>{this.data.lobby.config.votedForWinnerPoints}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Points lost for submitting an Acro but not voting</td>
-                                        <td>-{this.data.lobby.config.notVotedNegativePoints}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Points needed to win</td>
-                                        <td>{this.data.lobby.config.endGamePoints}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                                <LobbySettings {...this.data.lobby.config} />
                             </div>
                         </div>
                         <div className="ui segment hiddenOnMobile">
@@ -432,6 +469,7 @@ export const LobbyView = React.createClass({
                                 players = {this.data.lobby.players}
                                 endTime = {this.data.game.endTime}
                                 lobbyEndTime = {this.data.lobby.endTime}
+                                config = {this.data.lobby.config}
                             />
                         </div>
                         <div className="ui hidden divider"></div>
