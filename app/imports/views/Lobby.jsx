@@ -166,6 +166,11 @@ const GameWindow = React.createClass({
         lobbyEndTime: React.PropTypes.instanceOf(Date),
         config: React.PropTypes.object
     },
+    componentDidMount() {
+        if (!this.props.game.active && Meteor.isCordova && AdMob) {
+            AdMob.showInterstitial();
+        }
+    },
     render() {
         if (this.props.game.active) {
             return <GameWindowInner game={this.props.game} endTime={this.props.endTime} config={this.props.config}/>;
@@ -404,6 +409,15 @@ export const LobbyView = React.createClass({
     },
     componentWillUnmount() {
         this.notifications.stop();
+    },
+
+    componentDidMount() {
+        if (Meteor.isCordova && AdMob) {
+            AdMob.prepareInterstitial({
+                adId: 'ca-app-pub-2611027061957213/9957453687',
+                autoShow: false
+            });
+        }
     },
 
     /* HELPERS */

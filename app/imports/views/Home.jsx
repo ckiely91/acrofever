@@ -117,9 +117,15 @@ export const HomeView = React.createClass({
                 <div className="eight wide column">
                     <GlobalFeedComponent />
                 </div>
-                <div className="sixteen wide column">
-                    <GoogleAd />
-                </div>
+                {(() => {
+                    if (!Meteor.isCordova) {
+                        return (
+                            <div className="sixteen wide column">
+                                <GoogleAd />
+                            </div>
+                        );
+                    }
+                })()}
                 <div className="sixteen wide column">
                     <div className="ui divider"></div>
                 </div>
