@@ -113,7 +113,7 @@ underscore@1.0.9
 underscorestring:underscore.string@3.3.4
 url@1.0.10
 useraccounts:core@1.14.2
-useraccounts:flow-routing-ck@1.13.1
+useraccounts:flow-routing-ck@1.14.2
 useraccounts:semantic-ui@1.14.2
 webapp@1.2.10
 webapp-hashing@1.0.9

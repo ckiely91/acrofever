@@ -309,7 +309,7 @@ const LobbySettings = (props) => {
                             if (props.timeouts) {
                                 return `${moment(props.timeouts.votingBase).format('m:ss')} + (${moment(props.timeouts.votingMultiplier).format('m:ss')} × entries)`;
                             } else {
-                                return moment(props.acronymTimeout).format('m:ss');
+                                return moment(props.votingTimeout).format('m:ss');
                             }
                         })()}
                     </div>
@@ -458,7 +458,7 @@ export const LobbyView = React.createClass({
                                 <button className={this.isInLobby() ? 'ui fluid button' : 'ui primary fluid button'} onClick={this.joinOrLeaveLobby}>{this.isInLobby() ? 'Leave' : 'Join'} lobby</button>
                             </div>
                             <div className="ui segment">
-                                <h3 className="ui header">Current round: <span className="normalWeight">{this.data.lobby.currentRound}</span></h3>
+                                <h3 className="ui header">Current round: <span className="normalWeight">{this.data.game.currentRound}</span></h3>
                             </div>
                             <div className="ui segment">
                                 <h3 className="ui header">Scores</h3>
