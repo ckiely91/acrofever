@@ -411,15 +411,6 @@ export const LobbyView = React.createClass({
         this.notifications.stop();
     },
 
-    componentDidMount() {
-        if (Meteor.isCordova && AdMob) {
-            AdMob.prepareInterstitial({
-                adId: 'ca-app-pub-2611027061957213/9957453687',
-                autoShow: false
-            });
-        }
-    },
-
     /* HELPERS */
     isInLobby() {
         return (this.data.lobby.players && this.data.lobby.players.indexOf(Meteor.userId()) > -1);

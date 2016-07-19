@@ -10,28 +10,18 @@ Meteor.startup(() => {
 		Session.set('minuteUpdater', Date.now());
 	}, 60000);
 
-	if (Meteor.isCordova) {
-		if (AdMob) {
-			AdMob.createBanner( {
-				adId: 'ca-app-pub-2611027061957213/5527254088',
-				position: AdMob.AD_POSITION.BOTTOM_CENTER,
-				isTesting: true,
-				autoShow: true
-			});
-		} else {
-		console.log("No Admob");
-		}
-	} else {
-	  console.log("No Cordova ");
-	}
-});
+	if (Meteor.isCordova && AdMob) {
+	  	AdMob.createBanner({
+			adId: 'ca-app-pub-2611027061957213/5527254088',
+			position: AdMob.AD_POSITION.BOTTOM_CENTER,
+			autoShow: true,
+			isTesting: false
+	  	});
 
-Meteor.startup(function () {
-  if (Meteor.isCordova && AdMob) {
-  	AdMob.createBanner({
-		adId: 'ca-app-pub-2611027061957213/5527254088',
-		position: AdMob.AD_POSITION.BOTTOM_CENTER,
-		autoShow: true
-  	});
-  }
+	  	AdMob.prepareInterstitial({
+	        adId: 'ca-app-pub-2611027061957213/9957453687',
+	        autoShow: false,
+	        isTesting: false
+	    });
+	}
 });
