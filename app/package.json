@@ -10,6 +10,7 @@
     "emojione-picker": "^0.3.5",
     "highcharts": "^4.2.3",
     "load-script": "^1.0.0",
+    "prerender-node": "^2.3.0",
     "react": "^15.0.1",
     "react-addons-pure-render-mixin": "^15.0.1",
     "react-autolink": "^0.2.1",

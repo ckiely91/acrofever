@@ -1,4 +1,5 @@
 import {CronJob} from 'cron';
+import prerenderio from 'prerender-node';
 
 import GameManager from './imports/GameManager';
 import LobbyManager from './imports/LobbyManager';
@@ -18,6 +19,15 @@ Meteor.startup(function() {
 		},
 		json: true
 	});
+
+	//Prerender initialisation
+	const prerenderSettings = Meteor.settings.prerenderio;
+	if (prerenderSettings && prerenderSettings.token && prerenderSettings.host) {
+		prerenderio.set('prerenderToken', prerenderSettings.token);
+		prerenderio.set('host', prerenderSettings.host);
+		prerenderio.set('protocol', 'https');
+		WebApp.rawConnectHandlers.use(prerenderio);
+	}
 	
 	_.each(DefaultLobbies, function(lobby) {
 		Lobbies.upsert({name: lobby.name}, {$setOnInsert: lobby});
