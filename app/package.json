@@ -1,6 +1,6 @@
 {
   "name": "acrofever",
-  "version": "2.4",
+  "version": "2.4.0",
   "description": "Acrofever",
   "repository": "bitbucket:acrofever/acrofever-new",
   "author": "Christian Kiely",
@@ -16,7 +16,7 @@
     "react-autolink": "^0.2.1",
     "react-dom": "^15.0.1",
     "react-emojione": "^1.1.1",
-    "react-highcharts": "^8.1.1",
+    "react-highcharts": "^9.0.0",
     "react-mounter": "^1.1.0",
     "sendgrid": "^2.0.0",
     "twitter": "^1.2.5",

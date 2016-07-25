@@ -104,7 +104,7 @@ const SingleEvent = React.createClass({
     },
     getMeteorData() {
         return {
-            username: displayName(this.props.user, true),
+            username: displayName(this.props.user),
             specialTags: specialTags(this.props.user),
             profileImgSrc: profilePicture(this.props.user, 35)
         }

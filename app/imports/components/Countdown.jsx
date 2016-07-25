@@ -3,22 +3,64 @@ import React from 'react';
 export const CountdownSpan = React.createClass({
     mixins: [ReactMeteorData],
     getMeteorData() {
-        return {
-            now: TimeSync.serverTime(null, 500) || mo.now.get()
-        }
+        const now = TimeSync.serverTime(null, 500) || mo.now.get();
+        let diff = moment(this.props.endTime).diff(now);
+        if (diff < 0) diff = 0;
+
+        return { diff };
     },
     propTypes: {
         endTime: React.PropTypes.instanceOf(Date).isRequired
     },
-    countdown(endTime, now) {
-        let diff = moment(endTime).diff(now);
-        if (diff >= 0)
-            return moment(diff).format('m:ss');
-        else
-            return '0:00';
+    countdown(diff) {
+        return moment(diff).format('m:ss');
     },
     render() {
-        return <span>{this.countdown(this.props.endTime, this.data.now)}</span>
+        return <span>{this.countdown(this.data.diff)}</span>;
+    }
+});
+
+const CountdownIconHeader = React.createClass({
+    mixins: [ReactMeteorData],
+    getMeteorData() {
+        const now = TimeSync.serverTime(null, 500) || mo.now.get();
+        let diff = moment(this.props.endTime).diff(now);
+        if (diff < 0) diff = 0;
+
+        return { diff };
+    },
+    propTypes: {
+        endTime: React.PropTypes.instanceOf(Date).isRequired
+    },
+    getInitialState() {
+        return {isPulsing: false};
+    },
+    countdown(diff) {
+        return moment(diff).format('m:ss');
+    },
+    componentDidUpdate() {
+        if (this.data.diff <= 10000 && !this.state.isPulsing) {
+            this.setState({isPulsing: true});
+            this.startPulsing();
+        }
+    },
+    startPulsing() {
+        if (this.mainElement) {
+            const $main = $(this.mainElement);
+            $main.animate({
+                color: '#dc3522'
+            }, 7000);
+
+            $main.find('i').transition('set looping').transition('pulse', '1s');
+        }
+    },
+    render() {
+        return (
+            <h3 className="ui center aligned icon header" ref={(ref) => this.mainElement = ref}>
+                <i className="clock icon"></i>
+                {this.countdown(this.data.diff)}
+            </h3>
+        );
     }
 });
 
@@ -32,10 +74,7 @@ export const CountdownHeader = React.createClass({
         return (
             <div className="ui stackable grid">
                 <div className="four wide column">
-                    <h3 className="ui center aligned icon header">
-                        <i className="clock icon"></i>
-                        <CountdownSpan endTime={this.props.endTime} />
-                    </h3>
+                    <CountdownIconHeader endTime={this.props.endTime} />
                 </div>
                 <div className="twelve wide column">
                     <h1 className="ui center aligned header phaseHeader">{this.props.header}</h1>

@@ -76,12 +76,13 @@ mongo@1.1.9_1
 mongo-id@1.0.5
 mongo-livedata@1.0.12
 npm-bcrypt@0.8.6_3
+mrt:jquery-color-animation@1.6.0
 npm-mongo@1.4.45
 oauth@1.1.11
 oauth1@1.1.10
 oauth2@1.1.10
 observe-sequence@1.0.12
-okgrow:analytics@1.0.9
+okgrow:analytics@2.0.0
 olragon:uri-js@1.13.1
 ordered-dict@1.0.8
 promise@0.7.3
