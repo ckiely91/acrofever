@@ -1,6 +1,5 @@
 import {HallOfFame, Nags, Events} from '../../imports/collections';
 import {displayName} from '../../imports/helpers';
-import Twitter from 'twitter';
 
 Meteor.methods({
 	isAdminUser() {
@@ -12,13 +11,10 @@ Meteor.methods({
 
 		if (options.deactivate) {
 			HallOfFame.update(id, {$set: {active: false}});
-		}
-		else if (options.delete) {
+		} else if (options.delete) {
 			HallOfFame.remove(id);
-		}
-		else if (options.activate) {
+		} else if (options.activate) {
 			HallOfFame.update(id, {$set: {active: true}});
-			postToTwitter(id);
 		}
 	},
 	adminAddNag(fields) {
@@ -82,55 +78,4 @@ Meteor.methods({
 
 function isAdminUser(userId) {
 	return (Meteor.settings.adminUsers.indexOf(userId) > -1);
-}
-
-function postToTwitter(hallOfFameId) {
-	// construct a tweet with efficient use of characters
-
-	const hofEntry = HallOfFame.findOne(hallOfFameId);
-
-	let charsLeft = 127;
-
-	const acronym = hofEntry.acronym.join('');
-	charsLeft -= acronym.length;
-
-	const acro = truncateString(hofEntry.acro, 70);
-	charsLeft -= acro.len;
-
-	const category = truncateString(hofEntry.category, charsLeft);
-	charsLeft -= category.len;
-
-	let username;
-	if (charsLeft > 8) {
-		username = truncateString(displayName(hofEntry.userId), charsLeft - 5);
-	}
-
-	// Who should be the next pres? (ACRO) - "Donal Trump Obvs", by Christian
-	let tweet = `${category.str} (${acronym}) - "${acro.str}"`;
-	if (username) {
-		tweet += ', by ' + username.str;
-	}
-
-	console.log(tweet);
-
-	const client = new Twitter({
-		consumer_key: Meteor.settings.twitterPoster.consumerKey,
-		consumer_secret: Meteor.settings.twitterPoster.consumerSecret,
-		access_token_key: Meteor.settings.twitterPoster.accessTokenKey,
-		access_token_secret: Meteor.settings.twitterPoster.accessTokenSecret
-	});
-
-	client.post('statuses/update', {status: tweet}, function(err, twt, res) {
-		if (err)
-			return console.error('Error posting to twitter', err);
-
-		console.log('Posted tweet');
-	});
-
-	function truncateString(str, len) {
-		if (str.length <= len)
-			return {str, len: str.length};
-
-		return {str: str.substring(0, len - 1) + '…', len: len};
-	}
 }

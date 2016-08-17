@@ -5,6 +5,7 @@ import GameManager from './imports/GameManager';
 import LobbyManager from './imports/LobbyManager';
 import {SendReminderEmails} from './imports/Emails';
 import {UpdateRecurringEvents} from './imports/Events';
+import PostToTwitter from './imports/PostToTwitter';
 
 import {Games, Lobbies, Events} from '../imports/collections';
 
@@ -71,4 +72,11 @@ const updateRecurringEventsJob = new CronJob({
     cronTime: '1,16,31,46 * * * *', // one minute past every 15 min interval
     onTick: Meteor.bindEnvironment(UpdateRecurringEvents),
     start: true
+});
+
+const postToTwitterJob = new CronJob({
+	cronTime: "0 */3 * * *", // every 3 hours
+	onTick: Meteor.bindEnvironment(PostToTwitter),
+	start: true,
+	runOnInit: true
 });
