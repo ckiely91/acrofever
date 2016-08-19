@@ -13,15 +13,15 @@ export default function() {
     const hofEntry = _.sample(entries.fetch());
     console.log(`Posting ${hofEntry._id} to twitter`);
 
-    postToTwitter(hofEntry, (err) => {
+    postToTwitter(hofEntry, Meteor.bindEnvironment((err) => {
         if (err) {
             console.error("Error posting to twitter:");
             console.error(err);
-        } else {
-            // Update entry to mark it as posted
-            HallOfFame.update(hofEntry._id, {$set: {postedToTwitter: true}});
         }
-    });
+
+        // Update entry to mark it as posted
+        HallOfFame.update(hofEntry._id, {$set: {postedToTwitter: true}});
+    }));
 }
 
 
