@@ -1,0 +1,72 @@
+{
+  "development": false,
+  "gameActiveTimeout": 1200000,
+  "adminUsers": [],
+  "kadira": {
+    "appId": "",
+    "appSecret": ""
+  },
+  "loggly": {
+    "token": "",
+    "subdomain": "",
+    "username": "",
+    "password": ""
+  },
+  "mailchimp": {
+    "username":"",
+    "listId":"",
+    "apiKey":"",
+    "dataCenter":""
+  },
+  "facebook": {
+    "appId": "",
+    "appSecret": ""
+  },
+  "twitter": {
+    "consumerKey": "",
+    "secret": ""
+  },
+  "twitterPoster": {
+    "consumerKey": "",
+    "consumerSecret": "",
+    "accessTokenKey": "",
+    "accessTokenSecret": ""
+  },
+  "google": {
+    "clientId": "",
+    "secret": ""
+  },
+  "sendgrid": {
+    "key": ""
+  },
+  "prerenderio": {
+    "host": "",
+    "token": ""
+  },
+  "acrofever": {
+    "minimumPlayers": 3,
+    "newGameDelay": 60000,
+    "acronyms": {
+      "letters": "AAAAAAAAAABBBBBCCCCDDDEEFFFFGGHHHHHHHIIIIIIJJKKLLLMMMMNNOOOOOOPPPQRRSSSSSSSSTTTTTTTTTTTTUUVVWWWWWWWXXYYZZ",
+      "weighting": [
+        {"letters": 3, "weight": 32},
+        {"letters": 4, "weight": 32},
+        {"letters": 5, "weight": 21},
+        {"letters": 6, "weight": 10},
+        {"letters": 7, "weight": 5}
+      ]
+    }
+  },
+  "public": {
+    "analyticsSettings": {
+      "Google Analytics": {
+        "trackingId": ""
+      },
+      "Mixpanel": {
+        "token": "",
+        "people": true
+      }
+    },
+    "adsEnabled": false
+  }
+}
