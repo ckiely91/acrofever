@@ -293,7 +293,8 @@ const LobbySettings = (props) => {
                     <div className="description">
                         {(() => {
                             if (props.timeouts) {
-                                return `${moment(props.timeouts.acroBase).format('m:ss')} + (${moment(props.timeouts.acroMultiplier).format('m:ss')} × letters)`;
+                                return "Auto";
+                                //return `${moment(props.timeouts.acroBase).format('m:ss')} + (${moment(props.timeouts.acroMultiplier).format('m:ss')} × letters)`;
                             } else {
                                 return moment(props.acronymTimeout).format('m:ss');
                             }
@@ -307,7 +308,8 @@ const LobbySettings = (props) => {
                     <div className="description">
                         {(() => {
                             if (props.timeouts) {
-                                return `${moment(props.timeouts.votingBase).format('m:ss')} + (${moment(props.timeouts.votingMultiplier).format('m:ss')} × entries)`;
+                                return "Auto";
+                                //return `${moment(props.timeouts.votingBase).format('m:ss')} + (${moment(props.timeouts.votingMultiplier).format('m:ss')} × entries)`;
                             } else {
                                 return moment(props.votingTimeout).format('m:ss');
                             }

@@ -386,7 +386,10 @@ const Acrofever = {
 
         if (lobby.config.timeouts) {
             const timeouts = lobby.config.timeouts;
-            votingTimeout = this.calculateRemainingTime(timeouts.votingBase, timeouts.votingMultiplier, submissions, 60000);
+            const numLetters = game.rounds[game.currentRound - 1].acronym.length;
+            const numLettersOver4 = numLetters > 4 ? numLetters - 4 : 0;
+
+            votingTimeout = this.calculateRemainingTime(timeouts.votingBase, timeouts.votingMultiplier + numLettersOver4, submissions, 60000);
         } else {
             votingTimeout = lobby.config.votingTimeout;
         }
