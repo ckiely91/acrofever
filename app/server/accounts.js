@@ -43,7 +43,12 @@ Accounts.onCreateUser(function(options, user) {
 	else
 		user.profile = {};
 
-	var userDetails = getUserDetails(user);
+	console.log("OPTIONS:");
+	console.dir(options, {depth: null});
+    console.log("USER:");
+    console.dir(user, {depth: null});
+
+	const userDetails = getUserDetails(user);
 	user.profile.profilePicture = userDetails.profilePicture;
 
 	//if they have an email address, add user to MailChimp list

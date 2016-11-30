@@ -4,6 +4,7 @@ import LobbyManager from '../imports/LobbyManager';
 import {displayName} from '../../imports/helpers';
 import {Games, Lobbies, HallOfFame, Events} from '../../imports/collections';
 import {checkValidEmail} from '../../imports/validators';
+import {countryTags} from '../../imports/statics';
 import {getUserEmail} from '../imports/ServerHelpers';
 import {SendInviteEmail} from '../imports/Emails';
 
@@ -254,6 +255,23 @@ Meteor.methods({
             throw new Meteor.Error('username-taken', 'Username is already taken');
 
         Meteor.users.update(this.userId, {$set: {username: username}});
+    },
+    changeCountry(country) {
+        check(country, String);
+        if (!this.userId)
+            throw new Meteor.Error(403, 'You must be logged in to do that');
+
+        if (country === "") {
+            // Remove user's country
+            Meteor.users.update(this.userId, {$unset: {'profile.country': ""}});
+        } else {
+            // Check if it's in the list of countries
+            if (countryTags.filter(c => c.code === country).length > 0) {
+                Meteor.users.update(this.userId, {$set: {'profile.country': country}});
+            } else {
+                throw new Meteor.Error('invalid-data', 'Invalid country');
+            }
+        }
     },
     addFriend(userId) {
         check(userId, String);

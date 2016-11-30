@@ -5,6 +5,7 @@ import {HallOfFameAcros} from './HallOfFame';
 import {profilePicture, displayName, specialTags} from '../helpers';
 import {lobbySubs} from '../subsManagers';
 import {Lobbies} from '../collections';
+import {countryTags} from '../statics';
 
 class UserStats extends React.Component {
     constructor(props) {
@@ -201,36 +202,58 @@ class EditProfileModal extends React.Component {
 
     componentDidMount() {
         const $modal = $(this.modal),
-            $form = $(this.form),
-            $submitBtn = $(this.submitBtn);
+            $usernameForm = $(this.usernameForm),
+            $countryForm = $(this.countryForm),
+            $countrySelect = $(this.countrySelect);
 
         $modal.modal({
             detachable: false,
-            observeChanges: true,
-            onApprove: () => {
-                $form.form('submit');
-                return false;
-            }
+            observeChanges: true
         });
 
-        $form.form({
+        $usernameForm.form({
             fields: {
                 username: ['maxLength[20]', 'empty']
             },
             onSuccess: (evt, fields) => {
                 evt.preventDefault();
+                const $submitBtn = $usernameForm.find('button');
                 $submitBtn.addClass('loading');
                 Meteor.call('changeUsername', fields.username, (err) => {
                     $submitBtn.removeClass('loading');
                     if (err) {
-                        $form.form('add errors', [err.reason]);
+                        $usernameForm.form('add errors', [err.reason]);
                     } else {
-                        $form.trigger('reset');
+                        $usernameForm.trigger('reset');
                         $modal.modal('hide');
                     }
                 });
             }
         });
+
+        $countrySelect.dropdown();
+
+        if (this.props.user && this.props.user.profile && this.props.user.profile.country) {
+            $countrySelect.dropdown('set selected', this.props.user.profile.country);
+        }
+
+        $countryForm.form({
+            onSuccess: (evt, fields) => {
+                evt.preventDefault();
+                console.log(fields);
+                const $submitBtn = $countryForm.find('button');
+                $submitBtn.addClass('loading');
+                Meteor.call('changeCountry', fields.country, (err) => {
+                    $submitBtn.removeClass('loading');
+                    if (err) {
+                        $countryForm.form('add errors', [err.reason]);
+                    } else {
+                        $modal.modal('hide');
+                    }
+                })
+            }
+        });
+
     }
 
     openModal(evt) {
@@ -257,21 +280,40 @@ class EditProfileModal extends React.Component {
                     <div className="description">
                         <div className="ui header">Edit username</div>
                         <div className="ui message">You'll need to log in with this username in future if you're not a Facebook, Twitter or Google user.</div>
-                        <div className="ui form" ref={(ref) => this.form = ref}>
+                        <form className="ui form" ref={(ref) => this.usernameForm = ref}>
                             <div className="field">
                                 <input type="text" name="username" placeholder="New username" defaultValue={this.props.displayName}/>
                             </div>
+                            <button className="ui positive button" type="submit">Save username</button>
                             <div className="ui error message"></div>
-                        </div>
+                        </form>
+                        <div className="ui divider"></div>
+                        <div className="ui header">Edit country</div>
+                        <form className="ui form" ref={(ref) => this.countryForm = ref}>
+                            <div className="field">
+                                <div className="ui fluid search selection dropdown" ref={(ref) => this.countrySelect = ref}>
+                                    <input type="hidden" name="country" />
+                                    <i className="dropdown icon"></i>
+                                    <div className="default text">Select country</div>
+                                    <div className="menu">
+                                        <div className="item" data-value="">No country</div>
+                                        {countryTags.map((c, index) => {
+                                            return <div className="item" data-value={c.code} key={index}>
+                                                <i className={c.code + " flag"}></i>
+                                                {c.name}
+                                            </div>
+                                        })}
+                                    </div>
+                                </div>
+                            </div>
+                            <button className="ui positive button" type="submit">Save country</button>
+                            <div className="ui error message"></div>
+                        </form>
                     </div>
                 </div>
                 <div className="actions">
                     <div className="ui left floated button" onClick={(evt) => this.changePassword(evt)}>Change password</div>
-                    <div className="ui deny button">Cancel</div>
-                    <div className="ui positive icon labeled button" ref={(ref) => this.submitBtn = ref}>
-                        <i className="check icon" />
-                        Save changes
-                    </div>
+                    <div className="ui cancel button">Close</div>
                 </div>
             </div>
         )
@@ -473,6 +515,11 @@ export const ProfileView = React.createClass({
         const className = `ui small basic ${specialTag.color ? specialTag.color : 'red'} label`;
         return <div className={className} key={index}>{specialTag.tag}</div>;
     },
+    countryLabel() {
+        if (this.data.user && this.data.user.profile && this.data.user.profile.country) {
+            return <i className={this.data.user.profile.country + " flag"}></i>;
+        }
+    },
     isFriend() {
         if (this.data.thisUser && this.data.thisUser.profile && this.data.thisUser.profile.friends) {
             return (this.data.thisUser.profile.friends.indexOf(this.props.userId) > -1);
@@ -511,7 +558,10 @@ export const ProfileView = React.createClass({
                             <h1 className="ui header">
                                 {this.data.displayName}
                                 {this.data.specialTags ? this.data.specialTags.map(this.specialTagLabel) : null}
-                                <div className="sub header">Member since {moment(this.data.user.createdAt).calendar()}</div>
+                                <div className="sub header">
+                                    {this.countryLabel()}
+                                    Member since {moment(this.data.user.createdAt).calendar()}
+                                </div>
                             </h1>
                         </div>
                         <div className="eight wide column" style={_.extend(styles.noBottom, styles.top)}>
@@ -602,6 +652,7 @@ export const ProfileView = React.createClass({
                                 return (
                                     <EditProfileModal
                                         userId={this.props.userId}
+                                        user={this.data.user}
                                         profilePicture={this.data.profilePicture}
                                         displayName={this.data.displayName}
                                         ref={(ref) => this.editProfileModal = ref}

@@ -19,6 +19,7 @@ export const PlayerLabel = React.createClass({
         if (user) {
             data.ready = true;
             data.online = user.status ? user.status.online : false;
+            data.profile = user.profile;
         } else {
             Meteor.subscribe('otherPlayers', [this.props.id]);
             data.ready = false;
@@ -26,12 +27,18 @@ export const PlayerLabel = React.createClass({
 
         return data;
     },
+    userFlag() {
+        if (this.data.profile && this.data.profile.country) {
+            return <i className={this.data.profile.country + ' flag'}></i>;
+        }
+    },
     render() {
         if (this.data.ready) {
             return (
                 <a href={FlowRouter.path('profile', {userId: this.props.id})} className={this.props.isFriend ? 'ui green image label userProfilePicture' : 'ui image label userProfilePicture'} ref={(ref) => this.label = ref}>
                     <img src={this.data.profilePicture} />
-                    {this.data.displayName}
+                    {this.data.displayName}&nbsp;
+                    {this.userFlag()}
                 </a>
             );
         } else {

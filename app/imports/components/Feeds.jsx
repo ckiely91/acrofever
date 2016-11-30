@@ -103,10 +103,13 @@ const SingleEvent = React.createClass({
         detail: React.PropTypes.string
     },
     getMeteorData() {
+        const user = Meteor.users.findOne(this.props.user);
+
         return {
             username: displayName(this.props.user),
             specialTags: specialTags(this.props.user),
-            profileImgSrc: profilePicture(this.props.user, 35)
+            profileImgSrc: profilePicture(this.props.user, 35),
+            profile: user ? user.profile : null
         }
     },
     renderProfilePicOrIcon(user, icon) {
@@ -122,12 +125,14 @@ const SingleEvent = React.createClass({
     },
     renderUsername(user, summary) {
         if (user) {
+            const flag = this.data.profile && this.data.profile.country ? <i className={this.data.profile.country + " flag"}></i> : null;
             return (
                 <span>
                     <a href={FlowRouter.path('profile', {userId: user})}
                        target="_blank"
                        className="userProfilePicture">
-                        {this.data.username}
+                        {this.data.username}&nbsp;
+                        {flag}
                     </a>
                     {this.data.specialTags ? this.data.specialTags.map((tag, index) => <UserSpecialTag key={index} tag={tag.tag} color={tag.color}/>) : null }
                 </span>
