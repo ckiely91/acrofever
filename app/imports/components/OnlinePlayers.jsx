@@ -2,10 +2,58 @@ import React from 'react';
 
 import {profilePicture, displayName} from '../helpers';
 
+export const PlayerUsername = React.createClass({
+    mixins: [ReactMeteorData],
+    propTypes: {
+        id: React.PropTypes.string.isRequired,
+        beforeText: React.PropTypes.string,
+        afterText: React.PropTypes.string,
+        linkToProfile: React.PropTypes.bool
+    },
+    getMeteorData() {
+        const data = {
+            displayName: displayName(this.props.id)
+        };
+
+        return data;
+    },
+    render() {
+        if (!this.data.displayName) {
+            return false;
+        } else {
+            return <span>
+                {this.props.beforeText}
+                <a href={FlowRouter.path('profile', {userId: this.props.id})}>{this.data.displayName}</a>
+                {this.props.afterText}
+            </span>
+        }
+    }
+});
+
+export const PlayerImage = React.createClass({
+    mixins: [ReactMeteorData],
+    propTypes: {
+        id: React.PropTypes.string.isRequired,
+        size: React.PropTypes.number
+    },
+    getMeteorData() {
+        const data = {
+            profilePicture: profilePicture(this.props.id, this.props.size || 50)
+        };
+
+        return data;
+    },
+    render() {
+        return <img src={this.data.profilePicture} />
+    }
+});
+
 export const PlayerLabel = React.createClass({
     mixins: [ReactMeteorData],
     propTypes: {
-        id: React.PropTypes.string.isRequired
+        id: React.PropTypes.string.isRequired,
+        size: React.PropTypes.string,
+        hideCountry: React.PropTypes.bool
     },
     getMeteorData() {
         const data = {
@@ -34,11 +82,13 @@ export const PlayerLabel = React.createClass({
     },
     render() {
         if (this.data.ready) {
+            const labelClass = `ui ${this.props.isFriend ? "green" : ""} ${this.props.size ? this.props.size : ""} image label userProfilePicture`;
+
             return (
-                <a href={FlowRouter.path('profile', {userId: this.props.id})} className={this.props.isFriend ? 'ui green image label userProfilePicture' : 'ui image label userProfilePicture'} ref={(ref) => this.label = ref}>
+                <a href={FlowRouter.path('profile', {userId: this.props.id})} className={labelClass} ref={(ref) => this.label = ref}>
                     <img src={this.data.profilePicture} />
                     {this.data.displayName}&nbsp;
-                    {this.userFlag()}
+                    {this.props.hideCountry ? null : this.userFlag()}
                 </a>
             );
         } else {

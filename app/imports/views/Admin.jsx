@@ -175,11 +175,13 @@ class AdminNagRow extends React.Component {
             );
         }
 
+        const nagHtml = {__html: this.props.message};
+
         return (
             <tr>
                 <td>{moment(this.props.timestamp).calendar()}<br />{this.props._id}</td>
                 <td>{this.props.title}</td>
-                <td dangerouslySetInnerHTML={() => {__html: this.props.message}} />
+                <td dangerouslySetInnerHTML={nagHtml} />
                 <td>{this.props.icon}</td>
                 <td>{this.props.colour}</td>
                 <td>

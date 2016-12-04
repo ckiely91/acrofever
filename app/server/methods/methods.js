@@ -297,5 +297,15 @@ Meteor.methods({
             throw new Meteor.Error('not-friends', 'Not friends with that user');
 
         Meteor.users.update(this.userId, {$pull: {'profile.friends': userId}});
+    },
+    getSampleHofEntries(size) {
+        if (!size || size > 5)
+            size = 5;
+
+        // Get a sample of 5 HOF entries
+        return HallOfFame.aggregate([
+            {$match: {active: true}},
+            {$sample: {size}}
+        ]);
     }
 });

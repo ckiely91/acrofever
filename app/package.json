@@ -19,6 +19,7 @@
     "react-emojione": "^1.1.1",
     "react-highcharts": "^9.0.0",
     "react-mounter": "^1.1.0",
+    "react-slick": "^0.14.5",
     "sendgrid": "^2.0.0",
     "twitter": "^1.2.5",
     "underscore": "^1.8.3"

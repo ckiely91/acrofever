@@ -18,6 +18,8 @@ class SingleNag extends React.Component {
     }
 
     render() {
+        const nagHtml = {__html: this.props.nag.message};
+
         return (
             <div className="sixteen-wide-tablet ten-wide-computer column">
                 <div className={"ui " + (this.props.nag.icon ? 'icon' : '') + ' ' + (this.props.nag.colour ? this.props.nag.colour : '') + ' message'}>
@@ -25,7 +27,7 @@ class SingleNag extends React.Component {
                     {this.props.nag.icon ? <i className={this.props.nag.icon + ' icon'}></i> : null}
                     <div className="content">
                         {this.props.nag.title ? <div className="header">{this.props.nag.title}</div> : null}
-                        <p>{this.props.nag.message}</p>
+                        <p dangerouslySetInnerHTML={nagHtml}></p>
                     </div>
                 </div>
             </div>

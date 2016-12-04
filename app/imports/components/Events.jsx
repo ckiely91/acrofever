@@ -1,6 +1,8 @@
 import React from 'react';
+import Slider from 'react-slick';
 
 import {Lobbies, Events} from '../collections';
+import {PlayerUsername, PlayerImage} from './OnlinePlayers';
 import {CountdownSpan} from './Countdown';
 
 const SetEmailModal = React.createClass({
@@ -231,8 +233,81 @@ export const UpcomingEvents = React.createClass({
     }
 });
 
+const slickSettings = {
+    dots: false,
+    arrows: true,
+    autoplay: false,
+    autoplaySpeed: 8000,
+    pauseOnHover: true
+};
+
+class HofBanner extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {loading: true};
+    }
+
+    componentWillMount() {
+        // Grab a sample of 5 random HOFs
+        Meteor.call('getSampleHofEntries', 5, (err, res) => {
+            console.log(res);
+            if (err) {
+                console.error("Error retrieving HOF entries: " + err.message);
+                this.setState({loading: false, error: true});
+            } else {
+                Meteor.subscribe('otherPlayers', res.map(item => item.userId));
+                this.setState({loading: false, hofItems: res});
+            }
+        });
+    }
+
+    renderSlide(hofItem, index) {
+        return (
+            <div key={index}>
+                <div className="ui comments">
+                <div className="comment">
+                    <a className="avatar" href={FlowRouter.path('profile', {userId: hofItem.userId})}>
+                        <PlayerImage id={hofItem.userId} size={70} />
+                    </a>
+                    <div className="content">
+                        <div className="author">{hofItem.category} ({hofItem.acronym.join('.')})</div>
+                        <div className="metadata">
+                            <PlayerUsername id={hofItem.userId} linkToProfile={true} beforeText="By " afterText=", " />
+                            <span>{moment(hofItem.created).calendar()}</span>
+                        </div>
+                        <div className="text">
+                            &quot;{hofItem.acro}&quot;
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        );
+    }
+
+    render() {
+        if (this.state.loading || this.state.error) {
+            return false;
+        }
+
+        return (
+            <div id="eventBanner" className="hofBanner hiddenOnMobile">
+                <div className="ui container">
+                    <Slider {...slickSettings}>
+                        {this.state.hofItems.map(this.renderSlide)}
+                    </Slider>
+                </div>
+            </div>
+        )
+    }
+}
+
+
 export const EventBanner = React.createClass({
     mixins: [ReactMeteorData],
+    getInitialState() {
+        return {show: true};
+    },
     getMeteorData() {
         Meteor.subscribe('events');
         const events = Events.find().fetch(),
@@ -264,29 +339,45 @@ export const EventBanner = React.createClass({
         const lobbyId = this.data.currentEvent ? this.data.currentEvent.lobbyId : this.data.futureEvent.lobbyId;
         FlowRouter.go(FlowRouter.path('lobby', {lobbyId: lobbyId}));
     },
+    hideBanner(evt) {
+        evt.preventDefault();
+        this.setState({show: false});
+    },
     render() {
-        if (this.data.currentRoute !== 'lobby' && this.data.currentEvent || this.data.futureEvent) {
-            let region;
-
-            if (this.data.currentEvent && this.data.currentEvent.region) {
-                region = <i className={`${this.data.currentEvent.region} flag`} />;
-            } else if (this.data.futureEvent && this.data.futureEvent.region) {
-                region = <i className={`${this.data.futureEvent.region} flag`} />;
-            }
-
-
-            return (
-                <div id="eventBanner" className={this.data.currentEvent ? 'red' : ''}>
-                    <div className="ui container">
-                        <strong>{this.data.currentEvent ? 'Event happening now' : <span>Event starting in <CountdownSpan endTime={this.data.futureEvent.date} /></span>} </strong>
-                        {region}
-                        <span className="marginned">{this.data.currentEvent ? this.data.currentEvent.name : this.data.futureEvent.name}</span>
-                        <a href="#" className="ui secondary tiny button" onClick={(evt) => this.joinEvent(evt)}>Join event</a>
-                    </div>
-                </div>
-            );
-        } else {
+        if (!this.state.show || this.data.currentRoute === 'lobby')
             return false;
-        }
+
+        const outerDivStyle = {position: 'relative'};
+
+        return (
+            <div style={outerDivStyle}>
+                {(() => {
+                    if (this.data.currentEvent || this.data.futureEvent) {
+                        let region;
+
+                        if (this.data.currentEvent && this.data.currentEvent.region) {
+                            region = <i className={`${this.data.currentEvent.region} flag`} />;
+                        } else if (this.data.futureEvent && this.data.futureEvent.region) {
+                            region = <i className={`${this.data.futureEvent.region} flag`} />;
+                        }
+
+
+                        return (
+                            <div id="eventBanner" className={this.data.currentEvent ? 'red' : ''}>
+                                <div className="ui container">
+                                    <strong>{this.data.currentEvent ? 'Event happening now' : <span>Event starting in <CountdownSpan endTime={this.data.futureEvent.date} /></span>} </strong>
+                                    {region}
+                                    <span className="marginned">{this.data.currentEvent ? this.data.currentEvent.name : this.data.futureEvent.name}</span>
+                                    <a href="#" className="ui secondary tiny button" onClick={(evt) => this.joinEvent(evt)}>Join event</a>
+                                </div>
+                            </div>
+                        );
+                    } else {
+                        return <HofBanner />;
+                    }
+                })()}
+                <a id="hideEventBanner" href="#" onClick={this.hideBanner} className="hiddenOnMobile"></a>
+            </div>
+        );
     }
 });
