@@ -7,7 +7,8 @@ import {SendReminderEmails} from './imports/Emails';
 import {UpdateRecurringEvents} from './imports/Events';
 import PostToTwitter from './imports/PostToTwitter';
 
-import {Games, Lobbies, Events} from '../imports/collections';
+import {Games, Lobbies, Categories} from '../imports/collections';
+import {defaultCategories} from '../imports/statics';
 
 Meteor.startup(function() {
 	//Loggly initialisation
@@ -30,14 +31,14 @@ Meteor.startup(function() {
 		WebApp.rawConnectHandlers.use(prerenderio);
 	}
 	
-	_.each(DefaultLobbies, function(lobby) {
+	_.each(DefaultLobbies, lobby => {
 		Lobbies.upsert({name: lobby.name}, {$setOnInsert: lobby});
 		
-		var insertedLobby = Lobbies.findOne({name: lobby.name});
+		const insertedLobby = Lobbies.findOne({name: lobby.name});
 		
 		if (!insertedLobby.currentGame) {
 			//insert first game
-			var gameId = Games.insert({
+			const gameId = Games.insert({
 				type: 'acrofever',
 			    lobbyId: insertedLobby._id,
 			    active: false,
@@ -49,7 +50,7 @@ Meteor.startup(function() {
 		} else {
 			//game may be in progress, we should end it so timeouts will work properly
 
-			var active = Games.findOne(insertedLobby.currentGame, {fields: {active: true}}).active;
+			const active = Games.findOne(insertedLobby.currentGame, {fields: {active: true}}).active;
 			if (active) {
 				Lobbies.update(insertedLobby._id, {$set: {players: []}});
                 LobbyManager.addSystemMessage(insertedLobby._id, 'Sorry, the current game was cancelled because of a server restart.', 'warning', 'Please rejoin the lobby to start a new game.');
@@ -57,6 +58,21 @@ Meteor.startup(function() {
 			}
 		}
 	});
+
+	// Insert all default categories if they don't exist
+    const currentDate = new Date();
+	_.each(defaultCategories, category => {
+	     Categories.upsert({
+	         category
+         }, {
+	         $setOnInsert: {
+	             category,
+                 custom: false,
+                 active: true,
+                 createdAt: currentDate
+             }
+         });
+    });
 });
 
 //start cron jobs

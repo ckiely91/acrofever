@@ -1,7 +1,7 @@
 import React from 'react';
 
-import {displayName} from '../helpers';
-import {HallOfFame, Nags, Events} from '../collections';
+import {HallOfFame, Nags, Events, Categories} from '../collections';
+import {PlayerLabel} from '../components/OnlinePlayers';
 
 export const AdminEvents = React.createClass({
     mixins: [ReactMeteorData],
@@ -281,13 +281,6 @@ export const AdminNags = React.createClass({
 });
 
 const AdminHallOfFameRow = React.createClass({
-    mixins: [ReactMeteorData],
-    getMeteorData() {
-        return {
-            username: displayName(this.props.userId)
-        }
-    },
-
     getInitialState() {
         return {
             loading: false
@@ -332,7 +325,7 @@ const AdminHallOfFameRow = React.createClass({
         return (
             <tr>
                 <td>{moment(this.props.created).format('MMMM Do YYYY, h:mm:ss a')}</td>
-                <td>{this.data.username}</td>
+                <td><PlayerLabel id={this.props.userId} hideCountry={true} size="mini" /></td>
                 <td>{this.props.acronym.join('. ')}</td>
                 <td>{this.props.category}</td>
                 <td>{this.props.acro}</td>
@@ -352,10 +345,7 @@ export const AdminHallOfFame = React.createClass({
             hallOfFame: HallOfFame.find({}, {sort: {created: -1}}).fetch()
         };
 
-        let userIds = [];
-        _.each(data.hallOfFame, (item) => {
-            userIds.push(item.userId);
-        });
+        const userIds = _.uniq(data.hallOfFame.map(h => h.userId));
 
         Meteor.subscribe('otherPlayers', userIds);
 
@@ -387,11 +377,103 @@ export const AdminHallOfFame = React.createClass({
     }
 });
 
+const AdminCategoryRow = React.createClass({
+    getInitialState() {
+        return {
+            loading: false
+        };
+    },
+
+    editEntry(evt, action) {
+        evt.preventDefault();
+        this.setState({loading: true});
+        let opts = {};
+
+        opts[action] = true;
+
+        Meteor.call('adminEditCategory', this.props._id, opts, (err) => {
+            this.setState({loading: false});
+            if (err) {
+                alert(err.reason);
+                console.error(err);
+            }
+        });
+    },
+
+    render() {
+        let button;
+
+        if (this.props.active) {
+            button = (
+                <div>
+                    <i className="check icon"></i>
+                    <a href="#" onClick={(evt) => this.editEntry(evt, 'deactivate')}>Deactivate</a>
+                </div>
+            );
+        } else {
+            button = (
+                <div>
+                    <a href="#" onClick={(evt) => this.editEntry(evt, 'activate')}>Activate</a><br /><br />
+                    <a href="#" onClick={(evt) => this.editEntry(evt, 'delete')}>Delete</a>
+                </div>
+            )
+        }
+
+        return (
+            <tr>
+                <td>{moment(this.props.created).format('MMMM Do YYYY, h:mm:ss a')}</td>
+                <td><PlayerLabel id={this.props.userId} hideCountry={true} size="mini" /></td>
+                <td>{this.props.category}</td>
+                <td>{this.state.loading ? <div className="ui inline active loader"></div> : button}</td>
+            </tr>
+        )
+    }
+});
+
+export const AdminCategories = React.createClass({
+    mixins: [ReactMeteorData],
+    getMeteorData() {
+        Meteor.subscribe('adminCategories');
+
+        let data = {
+            categories: Categories.find({custom: true}, {sort: {createdAt: -1}}).fetch()
+        };
+
+        let userIds = _.uniq(data.categories.map(c => c.userId));
+
+        Meteor.subscribe('otherPlayers', userIds);
+
+        return data;
+    },
+    render() {
+        return (
+            <div>
+                <a href={FlowRouter.path('adminHome')} className="ui labeled icon button"><i className="arrow left icon"></i> Back</a>
+                <h2 className="ui header">Approve Categories</h2>
+                <table className="ui table">
+                    <thead>
+                    <tr>
+                        <th>Created</th>
+                        <th>User</th>
+                        <th>Category</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {this.data.categories.map((item, index) => <AdminCategoryRow key={index} {...item} />)}
+                    </tbody>
+                </table>
+            </div>
+        );
+    }
+});
+
 export const AdminHome = () => (
     <div>
         <a href={FlowRouter.path('adminHallOfFame')} className="ui button">Approve Hall of Fame</a>
         <a href={FlowRouter.path('adminNags')} className="ui button">Manage nags</a>
         <a href={FlowRouter.path('adminEvents')} className="ui button">Manage events</a>
+        <a href={FlowRouter.path('adminCategories')} className="ui button">Manage categories</a>
     </div>
 );
 

@@ -2,8 +2,7 @@ import GameManager from './GameManager';
 import LobbyManager from './LobbyManager';
 
 import {displayName} from '../../imports/helpers';
-import {defaultCategories} from '../../imports/statics';
-import {Games, Lobbies} from '../../imports/collections';
+import {Games, Lobbies, Categories} from '../../imports/collections';
 
 function ensureCorrectPhase(gameId, phase) {
     /*	This returns the game object only if it is in the correct phase
@@ -134,9 +133,6 @@ function getWinnerAndAwardPoints(game) {
     setObj.scores = game.scores;
     setObj.currentPhase = 'endround';
     setObj.endTime = moment().add(lobby.config.endOfRoundTimeout, 'milliseconds').toDate();
-
-    console.log("Round winner:");
-    console.log(round.players[round.winner]);
 
     let winnerAcro = {
         round: game.currentRound,
@@ -346,8 +342,13 @@ const Acrofever = {
             acroTimeout = lobby.config.acronymTimeout;
         }
 
-        if (!category)
-            category = Random.choice(defaultCategories);
+        if (!category) {
+            // Get a category at random
+            category = Categories.aggregate([
+                {$match: {active: true}},
+                {$sample: {size: 1}}
+            ])[0].category;
+        }
 
         let setObj = {};
         setObj['rounds.' + roundIndex + '.category'] = category;

@@ -1,21 +1,46 @@
 import GameManager from '../imports/GameManager';
-import {Games, Lobbies, HallOfFame} from '../../imports/collections';
+import {Games, Lobbies, HallOfFame, Categories} from '../../imports/collections';
 
 Meteor.methods({
+	getRandomCategories(num) {
+		if (!num || num > 10)
+			num = 4;
+
+		return Categories.aggregate([
+			{$match: {active: true}},
+			{$project: {category: true, custom: true, userId: true}},
+			{$sample: {size: num}}
+		]);
+	},
 	acrofeverChooseCategory(gameId, category) {
 		check(gameId, String);
 		check(category, String);
 
-		var userId = this.userId;
-		var game = standardAcrofeverMethodChecks(gameId, userId, 'category', true, category);
+		const game = standardAcrofeverMethodChecks(gameId, this.userId, 'category', true, category);
 
-		var currentRound = game.rounds[game.currentRound - 1];
+		const currentRound = game.rounds[game.currentRound - 1];
 
-		if (currentRound.categoryChooser !== userId)
+		if (currentRound.categoryChooser !== this.userId)
 			throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
 
 		//set the category and advance game round
 		GameManager.advancePhase(gameId, 'acrofever', 'category', game.currentRound, category);
+
+		// If this is a custom category, save it, otherwise increment the chosen amount
+		Categories.upsert(
+			{category},
+			{
+				$setOnInsert: {
+					custom: true,
+					active: false,
+					userId: this.userId,
+					createdAt: new Date()
+				},
+				$inc: {
+					timesChosen: 1
+				}
+			}
+		);
 	},
 	acrofeverSubmitAcro(gameId, acro) {
 		check(gameId, String);

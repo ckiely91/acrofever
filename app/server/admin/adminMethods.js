@@ -1,5 +1,4 @@
-import {HallOfFame, Nags, Events} from '../../imports/collections';
-import {displayName} from '../../imports/helpers';
+import {HallOfFame, Nags, Events, Categories} from '../../imports/collections';
 
 Meteor.methods({
 	isAdminUser() {
@@ -17,6 +16,18 @@ Meteor.methods({
 			HallOfFame.update(id, {$set: {active: true}});
 		}
 	},
+    adminEditCategory(id, options) {
+        if (!isAdminUser(this.userId))
+            throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
+
+        if (options.deactivate) {
+            Categories.update(id, {$set: {active: false}});
+        } else if (options.delete) {
+            Categories.remove(id);
+        } else if (options.activate) {
+            Categories.update(id, {$set: {active: true}});
+        }
+    },
 	adminAddNag(fields) {
 		if (!isAdminUser(this.userId))
 			throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');

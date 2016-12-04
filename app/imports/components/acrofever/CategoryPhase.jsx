@@ -3,16 +3,26 @@ import React from 'react';
 import {CountdownHeader} from '../Countdown';
 
 import {playSound, displayName,acrofeverAnalytics} from '../../helpers';
-import {defaultCategories} from '../../statics';
 
 const ChooseCategory = React.createClass({
     propTypes: {
         gameId: React.PropTypes.string.isRequired
     },
     getInitialState() {
-        let hasPickedCategory = false;
-        const randomCategories = _.sample(defaultCategories, 4);
-        return {hasPickedCategory, randomCategories};
+        return {
+            hasPickedCategory: false,
+            randomCategories: null
+        };
+    },
+    componentWillMount() {
+        Meteor.call('getRandomCategories', 4, (err, res) => {
+            if (err) {
+                console.error(err);
+                this.setState({randomCategories: []});
+            } else {
+                this.setState({randomCategories: res});
+            }
+        });
     },
     componentDidMount() {
         const form = $(this.form);
@@ -34,13 +44,12 @@ const ChooseCategory = React.createClass({
                 }
             },
             onSuccess: (evt, fields) => {
-                this.pickCustomCategory(evt, fields);
+                this.pickCategory(evt, fields.customCategory, true);
             }
         });
     },
-    pickCategory(evt) {
+    pickCategory(evt, category, isCustom) {
         evt.preventDefault();
-        const category = $(evt.currentTarget).html();
         this.setState({hasPickedCategory: true});
         playSound('select');
         Meteor.call('acrofeverChooseCategory', this.props.gameId, category, (err) => {
@@ -49,41 +58,35 @@ const ChooseCategory = React.createClass({
                 this.setState({hasPickedCategory: false});
             }
 
-            acrofeverAnalytics.track('chooseCategory', {category: category, custom: false});
-        });
-    },
-    pickCustomCategory(evt, fields) {
-        evt.preventDefault();
-        const customCategory = fields.customCategory;
-
-        this.setState({hasPickedCategory: true});
-        playSound('select');
-        Meteor.call('acrofeverChooseCategory', this.props.gameId, customCategory, (err) => {
-            if (err) {
-                console.error(err);
-                this.setState({hasPickedCategory: false});
-            }
-            acrofeverAnalytics.track('chooseCategory', {category: customCategory, custom: true});
+            acrofeverAnalytics.track('chooseCategory', {category: category, custom: isCustom});
         });
     },
     render() {
+        const gridStyle = {position: 'relative'};
         if (this.state.hasPickedCategory) {
             return <div className="ui active centered inline loader"></div>;
         } else {
-            var gridStyle = {position: 'relative'};
             return (
                 <div>
                     <h3 className="ui center aligned header">You're picking the category!</h3>
                     <div className="ui basic segment">
                         <div className="ui stackable two column very relaxed grid" style={gridStyle}>
                             <div className="column">
-                                <div className="ui relaxed celled list">
-                                    {this.state.randomCategories.map((cat, index) => <a key={index} href="#" className="item categoryListItem" onClick={this.pickCategory}>{cat}</a>)}
-                                </div>
+                                {(() => {
+                                    if (this.state.randomCategories) {
+                                        return <div className="ui relaxed celled list">
+                                            {this.state.randomCategories.map((cat, index) => <a key={index} href="#" className="item categoryListItem" onClick={(evt) => this.pickCategory(evt, cat.category, false)}>{cat.category}</a>)}
+                                        </div>;
+                                    } else {
+                                        return <div className="ui active centered inline loader"></div>
+                                    }
+                                })()}
                             </div>
-                            <div className="ui vertical divider">
-                                OR
-                            </div>
+                            {/* //Taking this out until Chrome bug that makes this look bad is fixed
+                                 <div className="ui vertical divider">
+                                    OR
+                                 </div>
+                             */}
                             <div className="column">
                                 <form className="ui form" ref={(ref) => this.form = ref}>
                                     <div className="ui fluid action input">

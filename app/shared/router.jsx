@@ -11,7 +11,7 @@ import {HallOfFameView} from '../imports/views/HallOfFame';
 import {ProfileView} from '../imports/views/Profile';
 import {FriendsView} from '../imports/views/Friends';
 import {PageNotFound} from '../imports/views/PageNotFound';
-import {AdminMain, AdminHome, AdminHallOfFame, AdminNags, AdminEvents} from '../imports/views/Admin';
+import {AdminMain, AdminHome, AdminHallOfFame, AdminNags, AdminEvents, AdminCategories} from '../imports/views/Admin';
 
 FlowRouter.route('/', {
     name: 'home',
@@ -127,6 +127,16 @@ adminRoutes.route('/events', {
         mount(Layout, {
             content: () => (<AdminMain subContent={subContent} />)
         });
+    }
+});
+
+adminRoutes.route('/categories', {
+    name: 'adminCategories',
+    action: function() {
+        const subContent = <AdminCategories />;
+        mount(Layout, {
+            content: () => (<AdminMain subContent={subContent} />)
+        })
     }
 });
 
