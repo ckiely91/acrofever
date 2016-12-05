@@ -120,6 +120,7 @@ function getWinnerAndAwardPoints(game) {
         let newScore = game.scores[playerId];
         if (newScore >= endGamePoints) {
             if (newScore > ultimateHighScore) {
+                ultimateHighScore = newScore;
                 ultimateWinners = [{id: playerId, score: newScore}];
             } else if (newScore === ultimateHighScore) {
                 ultimateWinners.push({id: playerId, score: newScore});
