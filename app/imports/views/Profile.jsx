@@ -34,7 +34,7 @@ class UserStats extends React.Component {
     }
 
     render() {
-        var stats = [
+        const stats = [
             {
                 label: 'Games played',
                 value: this.gamesPlayed()
@@ -153,7 +153,7 @@ class UserStatChartAverageScore extends React.Component {
                 zoomType: 'x'
             },
             title: {
-                text: 'Scores'
+                text: 'Scores / Player Rating'
             },
             xAxis: {
                 type: 'datetime',
@@ -163,7 +163,7 @@ class UserStatChartAverageScore extends React.Component {
             },
             yAxis: {
                 title: {
-                    text: 'Score'
+                    text: 'Score / Rating'
                 },
                 min: 0
             },
@@ -181,6 +181,11 @@ class UserStatChartAverageScore extends React.Component {
                     name: 'Rolling average',
                     type: 'spline',
                     data: inputData.averageArr
+                },
+                {
+                    name: 'Player rating',
+                    type: 'spline',
+                    data: inputData.ratingArr
                 }
             ]
         };
@@ -453,10 +458,15 @@ export const ProfileView = React.createClass({
             this.setState({gamesPlayedStats: result});
         });
 
-        Meteor.call('getUserStat', this.props.userId, 'averageScore', (err, res) => {
+        Meteor.call('getUserStat', this.props.userId, 'averageScoreAndRating', (err, res) => {
             if (err) return console.error(err);
             const result = res ? res : false;
             this.setState({averageScoreStats: result});
+        });
+
+        Meteor.call('getUserStat', this.props.userId, 'ranking', (err, res) => {
+            if (err) return console.error(err);
+            this.setState({ranking: res});
         });
     },
     clickRefresh(evt) {
@@ -560,7 +570,8 @@ export const ProfileView = React.createClass({
                                 {this.data.specialTags ? this.data.specialTags.map(this.specialTagLabel) : null}
                                 <div className="sub header">
                                     {this.countryLabel()}
-                                    Member since {moment(this.data.user.createdAt).calendar()}
+                                    Member since {moment(this.data.user.createdAt).calendar()}<br />
+                                    {this.state.ranking ? `Ranked #${this.state.ranking.rank} of ${this.state.ranking.total}` : "Not ranked"}
                                 </div>
                             </h1>
                         </div>

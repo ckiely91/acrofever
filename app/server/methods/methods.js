@@ -1,4 +1,4 @@
-import GameManager from '../imports/GameManager';
+import GameManager from '../imports/AcrofeverGameManager';
 import LobbyManager from '../imports/LobbyManager';
 
 import {displayName} from '../../imports/helpers';
@@ -172,7 +172,7 @@ Meteor.methods({
                 });
 
                 return formattedStats;
-            case 'averageScore':
+            case 'averageScoreAndRating':
                 var scoresArr = [],
                     averageArr = [];
 
@@ -199,8 +199,30 @@ Meteor.methods({
                     averageArr.push([time, avg]);
                 });
 
-                return {scoresArr, averageArr};
+                const user = Meteor.users.findOne(userId, {fields: {trueskillHistory: true}});
 
+                return {scoresArr, averageArr, ratingArr: user.trueskillHistory};
+            case 'ranking':
+                const cursor = Meteor.users.find({
+                    'profile.trueskill': {$exists: true},
+                    'profile.stats.gamesPlayed': {$gte: Meteor.settings.public.leaderboardMinimumGamesToBeVisible}
+                }, {
+                    sort: {'profile.trueskill.skillEstimate': -1},
+                    fields: {
+                        _id: true
+                    }
+                });
+                const total = cursor.count();
+
+                const users = cursor.fetch();
+
+                let i = 0;
+                for (; i < total; i++) {
+                    if (users[i]._id === userId)
+                        return {total, rank: i + 1};
+                }
+
+                return false;
             default:
                 throw new Meteor.Error('invalid-stat-type', 'Invalid stat type requested');
         }

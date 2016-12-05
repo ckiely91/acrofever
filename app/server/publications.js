@@ -1,14 +1,14 @@
 import {Games, Lobbies, GlobalFeed, LobbyFeed, HallOfFame, Nags, Events} from '../imports/collections';
 
 Meteor.publish('globalFeed', function(limit) {
-	var maxFeedResults = 200;
+	const maxFeedResults = 200;
 	if (limit > maxFeedResults)
 		limit = maxFeedResults;
 	return GlobalFeed.find({}, {sort: {timestamp: -1}, limit: limit});
 });
 
 Meteor.publish('lobbyFeed', function(lobbyId, limit) {
-	var maxFeedResults = 200;
+	const maxFeedResults = 200;
 
 	if (!this.userId)
 		return [];
@@ -67,6 +67,25 @@ Meteor.publish('hallOfFame', function(limit, userId) {
 		selector.userId = userId;
 	
 	return HallOfFame.find(selector, { sort: { created: -1 }, limit: limit });
+});
+
+Meteor.publish('playerRankings', function(limit) {
+    if (limit > 250)
+        limit = 250;
+
+	return Meteor.users.find({
+		'profile.trueskill': {$exists: true},
+		'profile.stats.gamesPlayed': {$gte: Meteor.settings.public.leaderboardMinimumGamesToBeVisible}
+	}, {
+		sort: {'profile.trueskill.skillEstimate': -1},
+		limit: limit || 50,
+		fields: {
+			username: true,
+			createdAt: true,
+			profile: true,
+			'status.online': true
+		}
+	});
 });
 
 Meteor.publish('nags', function(closedNags) {

@@ -191,6 +191,7 @@ export const NavComponent = React.createClass({
                         <HeaderItem href="#" icon="lightning" onClick={(evt) => this.playNow(evt)}>Play now</HeaderItem>
                         <HeaderItem path="play" icon="search">Find a lobby</HeaderItem>
                         <HeaderItem path="halloffame" icon="trophy">Hall of Fame</HeaderItem>
+                        <HeaderItem path="leaderboard" icon="star">Leaderboard</HeaderItem>
                         <HeaderItem href="#" icon="question" onClick={(evt) => this.howToPlay(evt)}>How to Play</HeaderItem>
                         <HeaderItem href="/blog" icon="rss" onClick={(evt) => this.blog(evt)}>Blog</HeaderItem>
                         <UserNavWrapper desktop={true} />
@@ -211,6 +212,7 @@ export const NavComponent = React.createClass({
                             <HeaderItem href="#" icon="lightning" onClick={(evt) => this.playNow(evt)}>Play now</HeaderItem>
                             <HeaderItem path="play" icon="search">Find a lobby</HeaderItem>
                             <HeaderItem path="halloffame" icon="trophy">Hall of Fame</HeaderItem>
+                            <HeaderItem path="leaderboard" icon="star">Leaderboard</HeaderItem>
                             <HeaderItem href="#" icon="question" onClick={(evt) => this.howToPlay(evt)}>How to Play</HeaderItem>
                             <HeaderItem href="/blog" icon="rss" onClick={(evt) => location.assign('/blog')}>Blog</HeaderItem>
                             <UserNavWrapper desktop={false}/>

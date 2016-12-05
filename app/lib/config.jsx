@@ -2,6 +2,7 @@ import React from 'react';
 
 import {Layout} from '../imports/views/Layout';
 import {countryTags} from '../imports/statics';
+import {emailAddressRegex} from '../imports/validators';
 
 AccountsTemplates.configure({
     defaultLayoutType: 'blaze-to-react',
@@ -32,7 +33,7 @@ if (Meteor.isClient && navigator.userAgent.match('CriOS')) {
     AccountsTemplates.configure({socialLoginStyle: 'redirect'});
 }
 
-var pwd = AccountsTemplates.removeField('password');
+const pwd = AccountsTemplates.removeField('password');
 AccountsTemplates.removeField('email');
 AccountsTemplates.addFields([
     {
@@ -47,7 +48,7 @@ AccountsTemplates.addFields([
         type: 'email',
         required: true,
         displayName: "email",
-        re: /.+@(.+){2,}\.(.+){2,}/,
+        re: emailAddressRegex,
         errStr: 'Invalid email'
     },
     {

@@ -1,8 +1,9 @@
-import GameManager from './GameManager';
+import AcrofeverGameManager from './AcrofeverGameManager';
 import LobbyManager from './LobbyManager';
 
 import {displayName} from '../../imports/helpers';
 import {Games, Lobbies, Categories} from '../../imports/collections';
+import {RecalculateRankingForGame} from './Rankings';
 
 function ensureCorrectPhase(gameId, phase) {
     /*	This returns the game object only if it is in the correct phase
@@ -86,7 +87,7 @@ function getWinnerAndAwardPoints(game) {
         // no one voted? fuck it all
         Lobbies.update(game.lobbyId, {$set: {players: []}});
         LobbyManager.addSystemMessage(game.lobbyId, 'No one voted!', 'warning', 'All players have been removed from the lobby.');
-        GameManager.makeGameInactive(game._id);
+        AcrofeverGameManager.makeGameInactive(game._id);
         return;
     }
 
@@ -153,9 +154,9 @@ function getWinnerAndAwardPoints(game) {
             //refresh the lobby
             lobby = Lobbies.findOne(game.lobbyId);
             if (lobby.players.length < Meteor.settings.acrofever.minimumPlayers) {
-                GameManager.makeGameInactive(game._id);
+                AcrofeverGameManager.makeGameInactive(game._id);
             } else {
-                GameManager.startNewRound(game.lobbyId);
+                AcrofeverGameManager.startNewRound(game.lobbyId);
             }
         }, lobby.config.endOfRoundTimeout);
     }
@@ -262,9 +263,9 @@ function goToEndGame(gameId, winners) {
     Meteor.setTimeout(function() {
         lobby = Lobbies.findOne(game.lobbyId);
         if (lobby.players.length < Meteor.settings.acrofever.minimumPlayers) {
-            GameManager.makeGameInactive(gameId);
+            AcrofeverGameManager.makeGameInactive(gameId);
         } else {
-            GameManager.startNewGame(game.lobbyId);
+            AcrofeverGameManager.startNewGame(game.lobbyId);
         }
     }, lobby.config.hallOfFameTimeout);
 
@@ -276,6 +277,9 @@ function goToEndGame(gameId, winners) {
     });
     Meteor.users.update({_id: {$in: thoseWhoPlayed}}, {$inc: {'profile.stats.gamesPlayed': 1}}, {multi: true});
     Meteor.users.update(winner, {$inc: {'profile.stats.gamesWon': 1}});
+
+    // Update rankings!
+    RecalculateRankingForGame(game.scores);
 }
 
 
@@ -358,7 +362,7 @@ const Acrofever = {
         Games.update(gameId, {$set: setObj, $currentDate: {lastUpdated: true}});
 
         Meteor.setTimeout(function() {
-            GameManager.advancePhase(gameId, 'acrofever', 'acro', game.currentRound);
+            AcrofeverGameManager.advancePhase(gameId, 'acro', game.currentRound);
         }, acroTimeout);
     },
     goToVotingPhase(gameId) {
@@ -377,7 +381,7 @@ const Acrofever = {
             // remove all players from lobby and set game inactive
             Lobbies.update(game.lobbyId, {$set: {players: []}});
             LobbyManager.addSystemMessage(game.lobbyId, 'No one submitted an Acro!', 'warning', 'All players have been removed from the lobby.');
-            GameManager.makeGameInactive(gameId);
+            AcrofeverGameManager.makeGameInactive(gameId);
             return;
         }
 
@@ -405,7 +409,7 @@ const Acrofever = {
         }});
 
         Meteor.setTimeout(function() {
-            GameManager.advancePhase(gameId, 'acrofever', 'voting', game.currentRound);
+            AcrofeverGameManager.advancePhase(gameId, 'voting', game.currentRound);
         }, votingTimeout);
     },
     goToEndRoundPhase(gameId) {

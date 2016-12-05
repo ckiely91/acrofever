@@ -1,4 +1,5 @@
 import {HallOfFame, Nags, Events, Categories} from '../../imports/collections';
+import * as Rankings from '../imports/Rankings';
 
 Meteor.methods({
 	isAdminUser() {
@@ -84,7 +85,20 @@ Meteor.methods({
 		});
 
 		Meteor.users.update(userId, {$addToSet: {'profile.specialTags': specialTag}});
-	}
+	},
+    adminClearAllRankings() {
+        if (!isAdminUser(this.userId))
+            throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
+
+        Rankings.ClearAllRankings();
+    },
+    adminRecalculateAllRankings() {
+        if (!isAdminUser(this.userId))
+            throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
+
+	    Rankings.RecalculateAllRankings();
+    },
+
 });
 
 function isAdminUser(userId) {

@@ -43,11 +43,6 @@ Accounts.onCreateUser(function(options, user) {
 	else
 		user.profile = {};
 
-	console.log("OPTIONS:");
-	console.dir(options, {depth: null});
-    console.log("USER:");
-    console.dir(user, {depth: null});
-
 	const userDetails = getUserDetails(user);
 	user.profile.profilePicture = userDetails.profilePicture;
 
@@ -78,13 +73,13 @@ Accounts.onCreateUser(function(options, user) {
 
 Accounts.onLogin(function(details) {
 	if (!details.user.profile || !details.user.profile.profilePicture) {
-		var userDetails = getUserDetails(details.user);
+		const userDetails = getUserDetails(details.user);
 		Meteor.users.update(details.user._id, {$set: {'profile.profilePicture': userDetails.profilePicture}})
 	}
 });
 
 function getUserDetails(user) {
-	var obj = {
+	const obj = {
 		email: null,
 		firstName: null,
 		lastName: null,

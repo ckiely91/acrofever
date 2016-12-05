@@ -1,7 +1,7 @@
 import {CronJob} from 'cron';
 import prerenderio from 'prerender-node';
 
-import GameManager from './imports/GameManager';
+import GameManager from './imports/AcrofeverGameManager';
 import LobbyManager from './imports/LobbyManager';
 import {SendReminderEmails} from './imports/Emails';
 import {UpdateRecurringEvents} from './imports/Events';
