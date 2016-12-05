@@ -1,7 +1,7 @@
 import {CronJob} from 'cron';
 import prerenderio from 'prerender-node';
 
-import GameManager from './imports/AcrofeverGameManager';
+import AcrofeverGameManager from './imports/AcrofeverGameManager';
 import LobbyManager from './imports/LobbyManager';
 import {SendReminderEmails} from './imports/Emails';
 import {UpdateRecurringEvents} from './imports/Events';
@@ -54,7 +54,7 @@ Meteor.startup(function() {
 			if (active) {
 				Lobbies.update(insertedLobby._id, {$set: {players: []}});
                 LobbyManager.addSystemMessage(insertedLobby._id, 'Sorry, the current game was cancelled because of a server restart.', 'warning', 'Please rejoin the lobby to start a new game.');
-				GameManager.makeGameInactive(insertedLobby.currentGame);
+				AcrofeverGameManager.makeGameInactive(insertedLobby.currentGame);
 			}
 		}
 	});
