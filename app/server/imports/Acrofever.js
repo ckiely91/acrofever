@@ -209,14 +209,12 @@ function goToEndGame(gameId, winners) {
             _.each(newWinners, function(id) {
                 let timeLefts = [];
                 _.each(game.rounds, function(round) {
-                    timeLefts.push(round.players[id].submission.timeLeft);
+                    if (round.players[id] && round.players[id].submission) {
+                        timeLefts.push(round.players[id].submission.timeLeft);
+                    }
                 });
 
-                let averageTime = 0;
-                _.each(timeLefts, function(timeLeft) {
-                    averageTime += timeLeft;
-                });
-                averageTime = averageTime / timeLefts.length;
+                const averageTime = timeLefts.reduce((sum, time) => sum + time, 0) / timeLefts.length;
 
                 if (averageTime <= lowestTime) {
                     newNewWinners.push(id);
