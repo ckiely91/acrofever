@@ -50,8 +50,8 @@ Meteor.startup(function() {
 		} else {
 			//game may be in progress, we should end it so timeouts will work properly
 
-			const active = Games.findOne(insertedLobby.currentGame, {fields: {active: true}}).active;
-			if (active) {
+			const active = Games.findOne(insertedLobby.currentGame, {fields: {active: true}});
+			if (active && active.active) {
 				Lobbies.update(insertedLobby._id, {$set: {players: []}});
                 LobbyManager.addSystemMessage(insertedLobby._id, 'Sorry, the current game was cancelled because of a server restart.', 'warning', 'Please rejoin the lobby to start a new game.');
 				AcrofeverGameManager.makeGameInactive(insertedLobby.currentGame);

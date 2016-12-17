@@ -505,6 +505,7 @@ export const ProfileView = React.createClass({
     lastStat() {
         const keys = Object.keys(this.state.gamesPlayedStats);
         if (keys.length > 0) {
+            console.log(this.state.gamesPlayedStats[keys[keys.length - 1]]);
             return this.state.gamesPlayedStats[keys[keys.length - 1]];
         } else {
             return {

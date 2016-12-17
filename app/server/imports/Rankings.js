@@ -2,7 +2,7 @@ import trueskill from 'trueskill';
 
 import {Games} from '../../imports/collections';
 
-const skillEstimateMultiplier = 4;
+const skillEstimateMultiplier = 5;
 
 export const RecalculateRankingForGame = (scores, date) => {
     if (!date)
