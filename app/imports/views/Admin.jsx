@@ -338,8 +338,11 @@ const AdminHallOfFameRow = React.createClass({
 
 export const AdminHallOfFame = React.createClass({
     mixins: [ReactMeteorData],
+    getInitialState() {
+        return {limit: 50};
+    },
     getMeteorData() {
-        Meteor.subscribe('adminHallOfFame');
+        Meteor.subscribe('adminHallOfFame', this.state.limit);
 
         let data = {
             hallOfFame: HallOfFame.find({}, {sort: {created: -1}}).fetch()
@@ -350,6 +353,11 @@ export const AdminHallOfFame = React.createClass({
         Meteor.subscribe('otherPlayers', userIds);
 
         return data;
+    },
+    getMore() {
+        this.setState({
+            limit: this.state.limit + 50
+        });
     },
     render() {
         return (
@@ -372,6 +380,7 @@ export const AdminHallOfFame = React.createClass({
                     {this.data.hallOfFame.map((item, index) => <AdminHallOfFameRow key={index} {...item} />)}
                     </tbody>
                 </table>
+                <button className="ui button" onClick={this.getMore}>Get more</button>
             </div>
         );
     }
@@ -432,8 +441,11 @@ const AdminCategoryRow = React.createClass({
 
 export const AdminCategories = React.createClass({
     mixins: [ReactMeteorData],
+    getInitialState() {
+        return {limit: 50}
+    },
     getMeteorData() {
-        Meteor.subscribe('adminCategories');
+        Meteor.subscribe('adminCategories', this.state.limit);
 
         let data = {
             categories: Categories.find({custom: true}, {sort: {createdAt: -1}}).fetch()
@@ -444,6 +456,11 @@ export const AdminCategories = React.createClass({
         Meteor.subscribe('otherPlayers', userIds);
 
         return data;
+    },
+    getMore() {
+        this.setState({
+           limit: this.state.limit + 50
+        });
     },
     render() {
         return (
@@ -463,6 +480,7 @@ export const AdminCategories = React.createClass({
                     {this.data.categories.map((item, index) => <AdminCategoryRow key={index} {...item} />)}
                     </tbody>
                 </table>
+                <button className="ui button" onClick={this.getMore}>Get more</button>
             </div>
         );
     }

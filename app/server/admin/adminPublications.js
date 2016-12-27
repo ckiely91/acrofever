@@ -1,9 +1,13 @@
 import {HallOfFame, Nags, Events, Categories} from '../../imports/collections';
 
-Meteor.publish('adminHallOfFame', function() {
+Meteor.publish('adminHallOfFame', function(limit) {
 	if (!isAdminUser(this.userId))
 		return [];
-	return HallOfFame.find();
+
+	return HallOfFame.find({}, {
+	    sort: {created: -1},
+        limit: limit || 0
+    });
 });
 
 Meteor.publish('adminNags', function() {
@@ -22,11 +26,14 @@ Meteor.publish('adminEvents', function() {
 	return Events.find({date: {$gte: date}});
 });
 
-Meteor.publish('adminCategories', function() {
+Meteor.publish('adminCategories', function(limit) {
 	if (!isAdminUser(this.userId))
 		return [];
 
-	return Categories.find({custom: true});
+	return Categories.find({custom: true}, {
+	    sort: {createdAt: -1},
+        limit: limit || 0
+    });
 });
 
 function isAdminUser(userId) {
