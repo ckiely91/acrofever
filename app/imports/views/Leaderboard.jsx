@@ -92,9 +92,9 @@ class LeaderboardInfoModal extends React.Component {
                 <div className="content">
                     <p>Acrofever uses Microsoft's <a href="https://www.microsoft.com/en-us/research/project/trueskill-ranking-system/" target="_blank" rel="noopener noreferrer">TrueSkill</a> algorithm
                         to rank players after every completed game. Players are ranked according to their position in the scores,
-                        and the previous rankings & skill levels of the other players in the game.</p>
-                    <p>To appear on the leaderboard and get a ranking, you need to have played at least {Meteor.settings.public.leaderboardMinimumGamesToBeVisible} ranked games. A ranked game is considered any game where you participated in over 40% of the rounds.</p>
-                    <p>If you're a techy and want to see how this is implemented, feel free to peruse the <a href="https://github.com/ckiely91/acrofever/blob/master/app/server/imports/Rankings.js" target="_blank" rel="noopener noreferrer">source code</a> for Acrofever's rankings!</p>
+                        along with the previous rankings & skill levels of the other players in the game.</p>
+                    <p>To appear on the leaderboard and get a ranking, you need to have played at least {Meteor.settings.public.leaderboardMinimumGamesToBeVisible} ranked games. A ranked game is considered to be any game where you participated in over 40% of the rounds.</p>
+                    <p>If you're a techie and want to see how this is implemented, feel free to peruse the <a href="https://github.com/ckiely91/acrofever/blob/master/app/server/imports/Rankings.js" target="_blank" rel="noopener noreferrer">source code</a> for Acrofever's rankings!</p>
                 </div>
                 <div className="actions">
                     <button className="ui cancel button">Close</button>

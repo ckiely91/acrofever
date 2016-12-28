@@ -74,8 +74,7 @@ Meteor.publish('playerRankings', function(limit) {
         limit = 250;
 
 	return Meteor.users.find({
-		'profile.trueskill': {$exists: true},
-		'profile.stats.gamesPlayed': {$gte: Meteor.settings.public.leaderboardMinimumGamesToBeVisible}
+		'profile.stats.rankedGames': {$gte: Meteor.settings.public.leaderboardMinimumGamesToBeVisible}
 	}, {
 		sort: {'profile.trueskill.skillEstimate': -1},
 		limit: limit || 50,
