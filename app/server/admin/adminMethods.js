@@ -27,7 +27,9 @@ Meteor.methods({
             Categories.remove(id);
         } else if (options.activate) {
             Categories.update(id, {$set: {active: true}});
-        }
+        } else if (options.edit) {
+        	Categories.update(id, {$set: {category: options.category}});
+		}
     },
 	adminAddNag(fields) {
 		if (!isAdminUser(this.userId))

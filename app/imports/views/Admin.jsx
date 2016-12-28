@@ -409,6 +409,18 @@ const AdminCategoryRow = React.createClass({
         });
     },
 
+    editCategory(evt) {
+        evt.preventDefault();
+        const $btn = $(evt.currentTarget);
+        $btn.addClass('loading');
+        const category = $(this.categoryInput).val();
+        console.log(this.props._id, category);
+        Meteor.call('adminEditCategory', this.props._id, {edit: true, category}, (err) => {
+            $btn.removeClass('loading');
+            if (err) alert(err);
+        });
+    },
+
     render() {
         let button;
 
@@ -432,7 +444,12 @@ const AdminCategoryRow = React.createClass({
             <tr>
                 <td>{moment(this.props.created).format('MMMM Do YYYY, h:mm:ss a')}</td>
                 <td><PlayerLabel id={this.props.userId} hideCountry={true} size="mini" /></td>
-                <td>{this.props.category}</td>
+                <td>
+                    <div className="ui fluid action input">
+                        <input type="text" defaultValue={this.props.category} ref={ref => this.categoryInput = ref} />
+                        <button className="ui icon button" onClick={this.editCategory}><i className="edit icon"></i></button>
+                    </div>
+                </td>
                 <td>{this.state.loading ? <div className="ui inline active loader"></div> : button}</td>
             </tr>
         )
@@ -470,10 +487,10 @@ export const AdminCategories = React.createClass({
                 <table className="ui table">
                     <thead>
                     <tr>
-                        <th>Created</th>
-                        <th>User</th>
-                        <th>Category</th>
-                        <th></th>
+                        <th className="two wide">Created</th>
+                        <th className="two wide">User</th>
+                        <th className="six wide">Category</th>
+                        <th className="two wide"></th>
                     </tr>
                     </thead>
                     <tbody>
