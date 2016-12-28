@@ -5,6 +5,7 @@ import AcrofeverGameManager from './imports/AcrofeverGameManager';
 import LobbyManager from './imports/LobbyManager';
 import {SendReminderEmails} from './imports/Emails';
 import {UpdateRecurringEvents} from './imports/Events';
+import {DecayUserSigmaForMonth} from './imports/Rankings';
 import PostToTwitter from './imports/PostToTwitter';
 
 import {Games, Lobbies, Categories} from '../imports/collections';
@@ -95,4 +96,10 @@ const postToTwitterJob = new CronJob({
 	onTick: Meteor.bindEnvironment(PostToTwitter),
 	start: true,
 	runOnInit: true
+});
+
+const decayRankingsJob = new CronJob({
+	cronTime: '0 3 1 * *', // 3am, 1st of every month
+	onTick: Meteor.bindEnvironment(DecayUserSigmaForMonth),
+	start: true
 });

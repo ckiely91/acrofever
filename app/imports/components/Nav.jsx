@@ -6,7 +6,12 @@ const BrandHeader = () => <a href={FlowRouter.path('home')} id="brandHeader" cla
 
 const HeaderItem = (props) => {
     return (
-        <a href={props.href || FlowRouter.path(props.path)} className={'item ' + ((props.path && FlowRouter.getRouteName() === props.path) ? 'active': '')} onClick={props.onClick}>
+        <a href={props.href || FlowRouter.path(props.path)}
+           className={'item ' + ((props.path && FlowRouter.getRouteName() === props.path) ? 'active': '')}
+           onClick={props.onClick}
+           title={props.children}
+           data-variation="inverted"
+        >
             <i className={props.icon + ' icon'} />
             <span className="hiddenOnTablet">{props.children}</span>
         </a>
@@ -149,6 +154,13 @@ export const NavComponent = React.createClass({
             if ($slideMenu.css('display') === 'block')
                 $slideMenu.transition('slide down');
         });
+
+        $('#desktopNav a').popup({
+            onShow() {
+                const screenWidth = $(window).width();
+                return (screenWidth >= 768 && screenWidth < 1200);
+            }
+        });
     },
     playNow(evt) {
         evt.preventDefault();
@@ -215,7 +227,7 @@ export const NavComponent = React.createClass({
                             <HeaderItem path="leaderboard" icon="star">Leaderboard</HeaderItem>
                             <HeaderItem href="#" icon="question" onClick={(evt) => this.howToPlay(evt)}>How to Play</HeaderItem>
                             <HeaderItem href="/blog" icon="rss" onClick={(evt) => location.assign('/blog')}>Blog</HeaderItem>
-                            <UserNavWrapper desktop={false}/>
+                            <UserNavWrapper desktop={false} />
                         </div>
                     </div>
                 </div>

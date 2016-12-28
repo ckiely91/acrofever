@@ -24,6 +24,11 @@ class UserStats extends React.Component {
         return this.props.stats.winRate;
     }
 
+    skill() {
+        console.log(this.props.user);
+        return _.has(this.props.user, 'profile.trueskill.skillEstimate') ? Math.floor(this.props.user.profile.trueskill.skillEstimate * 100) / 100 : "N/A";
+    }
+
     renderStatistic(stat, index) {
         return (
             <div key={index} className="statistic">
@@ -36,7 +41,7 @@ class UserStats extends React.Component {
     render() {
         const stats = [
             {
-                label: 'Games played',
+                label: 'Ranked games',
                 value: this.gamesPlayed()
             },
             {
@@ -44,8 +49,8 @@ class UserStats extends React.Component {
                 value: this.gamesWon()
             },
             {
-                label: 'Win rate',
-                value: this.winRate() + '%'
+                label: 'Skill',
+                value: this.skill()
             },
             {
                 label: 'HOF Entries',
@@ -153,7 +158,7 @@ class UserStatChartAverageScore extends React.Component {
                 zoomType: 'x'
             },
             title: {
-                text: 'Scores / Player Rating'
+                text: 'Scores / Player Skill'
             },
             xAxis: {
                 type: 'datetime',
@@ -163,7 +168,7 @@ class UserStatChartAverageScore extends React.Component {
             },
             yAxis: {
                 title: {
-                    text: 'Score / Rating'
+                    text: 'Score / Skill'
                 },
                 min: 0
             },
@@ -178,12 +183,12 @@ class UserStatChartAverageScore extends React.Component {
                     data: inputData.scoresArr
                 },
                 {
-                    name: 'Rolling average',
+                    name: 'Average score',
                     type: 'spline',
                     data: inputData.averageArr
                 },
                 {
-                    name: 'Player rating',
+                    name: 'Skill',
                     type: 'spline',
                     data: inputData.ratingArr
                 }
@@ -621,7 +626,7 @@ export const ProfileView = React.createClass({
                         <div className="eleven wide column">
                             {(() => {
                                 if (this.state.gamesPlayedStats !== null && _.isNumber(this.data.numberOfHallOfFame)) {
-                                    return <UserStats halloffame={this.data.numberOfHallOfFame} stats={this.lastStat()} />;
+                                    return <UserStats halloffame={this.data.numberOfHallOfFame} user={this.data.user} stats={this.lastStat()} />;
                                 } else {
                                     return <div className="ui inline centered active loader"></div>;
                                 }

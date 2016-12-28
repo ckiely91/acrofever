@@ -7,6 +7,7 @@ import {checkValidEmail} from '../../imports/validators';
 import {countryTags} from '../../imports/statics';
 import {getUserEmail} from '../imports/ServerHelpers';
 import {SendInviteEmail} from '../imports/Emails';
+import {IsRankedGame} from '../imports/Rankings';
 
 Meteor.methods({
     joinOrLeaveOfficialLobby(lobbyId, join) {
@@ -112,7 +113,7 @@ Meteor.methods({
 
         const user = Meteor.users.findOne(this.userId);
 
-        return (getUserEmail(user) ? true : false);
+        return !!getUserEmail(user);
     },
     getUserStat(userId, statType) {
         check(userId, String);
@@ -126,14 +127,23 @@ Meteor.methods({
                 selector['scores.' + userId] = {$exists: true};
                 selector.gameWinner = {$exists: true};
 
-                var games = Games.find(selector, {sort: {created: 1}, fields: {created: true, gameWinner: true}}).fetch();
+                var games = Games.find(selector, {
+                    sort: {created: 1},
+                    fields: {
+                        created: true,
+                        gameWinner: true,
+                        rounds: true
+                    }}).fetch();
                 
                 if (games.length === 0) {
                     return;
                 }
 
-                _.each(games, (game) => {
-                    var day = moment(game.created).format('YYYY-MM-DD');
+                _.each(games, game => {
+                    // Determine if a ranked game
+                    if (!IsRankedGame(game.rounds, userId)) return;
+
+                    const day = moment(game.created).format('YYYY-MM-DD');
 
                     if (stats[day]) {
                         stats[day].played++;
@@ -159,7 +169,7 @@ Meteor.methods({
                     }
                 });
 
-                var formattedStats = {};
+                const formattedStats = {};
                 _.each(stats, function(value, key) {
                     const newKey = moment(key, 'YYYY-MM-DD').valueOf();
                     if (value.won > 0) {
@@ -173,7 +183,7 @@ Meteor.methods({
 
                 return formattedStats;
             case 'averageScoreAndRating':
-                var scoresArr = [],
+                const scoresArr = [],
                     averageArr = [];
 
                 var selector = {};
@@ -204,8 +214,7 @@ Meteor.methods({
                 return {scoresArr, averageArr, ratingArr: user.trueskillHistory};
             case 'ranking':
                 const cursor = Meteor.users.find({
-                    'profile.trueskill': {$exists: true},
-                    'profile.stats.gamesPlayed': {$gte: Meteor.settings.public.leaderboardMinimumGamesToBeVisible}
+                    'profile.trueskill.rankedGames': {$gte: Meteor.settings.public.leaderboardMinimumGamesToBeVisible}
                 }, {
                     sort: {'profile.trueskill.skillEstimate': -1},
                     fields: {
@@ -329,5 +338,10 @@ Meteor.methods({
             {$match: {active: true}},
             {$sample: {size}}
         ]);
+    },
+    getTotalRankedCount() {
+        return Meteor.users.find({
+            'profile.trueskill.rankedGames': {$gte: Meteor.settings.public.leaderboardMinimumGamesToBeVisible}
+        }).count();
     }
 });

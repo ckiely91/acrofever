@@ -150,7 +150,7 @@ const goToEndGame = (game, winners) => {
     Meteor.users.update(winner, {$inc: {'profile.stats.gamesWon': 1}});
 
     // Update rankings!
-    RecalculateRankingForGame(game.scores);
+    RecalculateRankingForGame(game);
 
 };
 
