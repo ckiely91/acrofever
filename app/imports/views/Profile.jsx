@@ -24,6 +24,11 @@ class UserStats extends React.Component {
         return this.props.stats.winRate;
     }
 
+    skill() {
+        console.log(this.props.user);
+        return _.has(this.props.user, 'profile.trueskill.skillEstimate') ? Math.floor(this.props.user.profile.trueskill.skillEstimate * 100) / 100 : "N/A";
+    }
+
     renderStatistic(stat, index) {
         return (
             <div key={index} className="statistic">
@@ -34,9 +39,9 @@ class UserStats extends React.Component {
     }
 
     render() {
-        var stats = [
+        const stats = [
             {
-                label: 'Games played',
+                label: 'Ranked games',
                 value: this.gamesPlayed()
             },
             {
@@ -44,8 +49,8 @@ class UserStats extends React.Component {
                 value: this.gamesWon()
             },
             {
-                label: 'Win rate',
-                value: this.winRate() + '%'
+                label: 'Skill',
+                value: this.skill()
             },
             {
                 label: 'HOF Entries',
@@ -153,7 +158,7 @@ class UserStatChartAverageScore extends React.Component {
                 zoomType: 'x'
             },
             title: {
-                text: 'Scores'
+                text: 'Scores / Player Skill'
             },
             xAxis: {
                 type: 'datetime',
@@ -163,7 +168,7 @@ class UserStatChartAverageScore extends React.Component {
             },
             yAxis: {
                 title: {
-                    text: 'Score'
+                    text: 'Score / Skill'
                 },
                 min: 0
             },
@@ -178,9 +183,14 @@ class UserStatChartAverageScore extends React.Component {
                     data: inputData.scoresArr
                 },
                 {
-                    name: 'Rolling average',
+                    name: 'Average score',
                     type: 'spline',
                     data: inputData.averageArr
+                },
+                {
+                    name: 'Skill',
+                    type: 'spline',
+                    data: inputData.ratingArr
                 }
             ]
         };
@@ -453,10 +463,15 @@ export const ProfileView = React.createClass({
             this.setState({gamesPlayedStats: result});
         });
 
-        Meteor.call('getUserStat', this.props.userId, 'averageScore', (err, res) => {
+        Meteor.call('getUserStat', this.props.userId, 'averageScoreAndRating', (err, res) => {
             if (err) return console.error(err);
             const result = res ? res : false;
             this.setState({averageScoreStats: result});
+        });
+
+        Meteor.call('getUserStat', this.props.userId, 'ranking', (err, res) => {
+            if (err) return console.error(err);
+            this.setState({ranking: res});
         });
     },
     clickRefresh(evt) {
@@ -495,6 +510,7 @@ export const ProfileView = React.createClass({
     lastStat() {
         const keys = Object.keys(this.state.gamesPlayedStats);
         if (keys.length > 0) {
+            console.log(this.state.gamesPlayedStats[keys[keys.length - 1]]);
             return this.state.gamesPlayedStats[keys[keys.length - 1]];
         } else {
             return {
@@ -560,7 +576,8 @@ export const ProfileView = React.createClass({
                                 {this.data.specialTags ? this.data.specialTags.map(this.specialTagLabel) : null}
                                 <div className="sub header">
                                     {this.countryLabel()}
-                                    Member since {moment(this.data.user.createdAt).calendar()}
+                                    Member since {moment(this.data.user.createdAt).calendar()}<br />
+                                    {this.state.ranking ? `Ranked #${this.state.ranking.rank} of ${this.state.ranking.total}` : "Not ranked"}
                                 </div>
                             </h1>
                         </div>
@@ -609,7 +626,7 @@ export const ProfileView = React.createClass({
                         <div className="eleven wide column">
                             {(() => {
                                 if (this.state.gamesPlayedStats !== null && _.isNumber(this.data.numberOfHallOfFame)) {
-                                    return <UserStats halloffame={this.data.numberOfHallOfFame} stats={this.lastStat()} />;
+                                    return <UserStats halloffame={this.data.numberOfHallOfFame} user={this.data.user} stats={this.lastStat()} />;
                                 } else {
                                     return <div className="ui inline centered active loader"></div>;
                                 }

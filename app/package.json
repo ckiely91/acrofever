@@ -1,6 +1,6 @@
 {
   "name": "acrofever",
-  "version": "2.4.4",
+  "version": "2.5.0",
   "description": "Acrofever",
   "repository": "github:ckiely91/acrofever",
   "author": "Christian Kiely",
@@ -11,6 +11,7 @@
     "emojione-picker": "^0.3.5",
     "highcharts": "^4.2.3",
     "load-script": "^1.0.0",
+    "lodash": "^4.17.3",
     "prerender-node": "^2.3.0",
     "react": "^15.0.1",
     "react-addons-pure-render-mixin": "^15.0.1",
@@ -21,6 +22,7 @@
     "react-mounter": "^1.1.0",
     "react-slick": "^0.14.5",
     "sendgrid": "^2.0.0",
+    "trueskill": "0.0.2",
     "twitter": "^1.2.5",
     "underscore": "^1.8.3"
   }

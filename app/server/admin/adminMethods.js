@@ -1,4 +1,5 @@
-import {HallOfFame, Nags, Events, Categories} from '../../imports/collections';
+import {HallOfFame, Nags, Events, Categories, Games} from '../../imports/collections';
+import * as Rankings from '../imports/Rankings';
 
 Meteor.methods({
 	isAdminUser() {
@@ -84,6 +85,38 @@ Meteor.methods({
 		});
 
 		Meteor.users.update(userId, {$addToSet: {'profile.specialTags': specialTag}});
+	},
+    adminClearAllRankings() {
+        if (!isAdminUser(this.userId))
+            throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
+
+        Rankings.ClearAllRankings();
+    },
+    adminRecalculateAllRankings() {
+        if (!isAdminUser(this.userId))
+            throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
+
+	    Rankings.RecalculateAllRankings();
+    },
+	adminRecalculateUserStats() {
+        if (!isAdminUser(this.userId))
+            throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
+
+        const curs = Meteor.users.find({});
+        const total = curs.count();
+
+        let curUser= 0;
+        curs.forEach(user => {
+        	const selector = {gameWinner: {$exists: true}};
+        	selector['scores.' + user._id] = {$exists: true};
+        	const playedGames = Games.find(selector).count();
+        	const wonGames = Games.find({gameWinner: user._id}).count();
+
+        	Meteor.users.update(user._id, {$set: {'profile.stats': {gamesPlayed: playedGames, gamesWon: wonGames}}});
+
+        	curUser++;
+        	console.log("recalculated for user " + curUser + " of " + total);
+		});
 	}
 });
 

@@ -7,7 +7,7 @@ export function notify(title, body, image) {
         return;
 
     if (document.hidden && Notification.permission === "granted") {
-        var n = new Notification(title, {
+        const n = new Notification(title, {
             icon: image || 'https://acrofever.com/apple-icon-180x180.png',
             body: body,
             lang: 'en-US'
@@ -39,8 +39,8 @@ export function playSound(filename, hiddenOnly) {
     sound.play();
 }
 
-export function profilePicture(id, size) {
-    var user = Meteor.users.findOne(id);
+export function profilePicture(idOrUser, size) {
+    const user = _.isString(idOrUser) ? Meteor.users.findOne(idOrUser) : idOrUser;
 
     if (!user || !user.profile || !user.profile.profilePicture)
         return '/images/no-profile-pic.png';
@@ -81,8 +81,9 @@ export function profilePicture(id, size) {
     return newUrl;
 }
 
-export function displayName(id, capitalise) {
-    const user = Meteor.users.findOne(id);
+export function displayName(idOrUser, capitalise) {
+    const user = _.isString(idOrUser) ? Meteor.users.findOne(idOrUser) : idOrUser;
+
     if (!user) {
         return;
     }

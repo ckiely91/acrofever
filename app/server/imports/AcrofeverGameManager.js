@@ -3,7 +3,7 @@ import LobbyManager from './LobbyManager';
 
 import {Games, Lobbies} from '../../imports/collections';
 
-const GameManager = {
+const AcrofeverGameManager = {
     makeGameActive(gameId) {
         //this function assumes that checks have already been made to ensure this game SHOULD go active
         const game = Games.findOne(gameId);
@@ -11,8 +11,8 @@ const GameManager = {
         console.log('Making game ' + gameId + ' active');
 
         if (!game || game.active) {
-            Logger.warn('GameManager.makeGameActive was called on a nonexistent or already active game', {gameId: gameId});
-            console.error('GameManager.makeGameActive was called on a nonexistent or already active game: ' + gameId);
+            Logger.warn('AcrofeverGameManager.makeGameActive was called on a nonexistent or already active game', {gameId: gameId});
+            console.error('AcrofeverGameManager.makeGameActive was called on a nonexistent or already active game: ' + gameId);
             return;
         }
 
@@ -28,13 +28,13 @@ const GameManager = {
             Meteor.setTimeout(function() {
                 const lobby = Lobbies.findOne(game.lobbyId, {fields: {players: true}});
                 if (lobby.players.length >= Meteor.settings.acrofever.minimumPlayers)
-                    GameManager.startNewGame(game.lobbyId);
+                    AcrofeverGameManager.startNewGame(game.lobbyId);
                 else
                     Lobbies.update(game.lobbyId, {$set: {newGameStarting: false}, $currentDate: {lastUpdated: true}});
             }, delay);
         } else {
             //reactivate this game in a new round
-            GameManager.startNewRound(game.lobbyId, true);
+            AcrofeverGameManager.startNewRound(game.lobbyId, true);
         }
     },
     makeGameInactive(gameId) {
@@ -43,8 +43,8 @@ const GameManager = {
         console.log('Making game' + gameId + 'inactive');
 
         if (!game || !game.active) {
-            Logger.warn('GameManager.makeGameInactive was called on a nonexistent or already inactive game', {gameId: gameId});
-            console.log('GameManager.makeGameInactive was called on a nonexistent or already inactive game: ' + gameId);
+            Logger.warn('AcrofeverGameManager.makeGameInactive was called on a nonexistent or already inactive game', {gameId: gameId});
+            console.log('AcrofeverGameManager.makeGameInactive was called on a nonexistent or already inactive game: ' + gameId);
             return;
         }
 
@@ -85,7 +85,7 @@ const GameManager = {
             Lobbies.update(lobbyId, {$push: {games: gameId}, $set: {currentGame: gameId, newGameStarting: false}, $currentDate: {lastUpdated: true}});
             LobbyManager.addSystemMessage(lobbyId, 'New game started.');
 
-            GameManager.startNewRound(lobbyId);
+            AcrofeverGameManager.startNewRound(lobbyId);
 
         } catch(err) {
             console.error(err);
@@ -173,7 +173,7 @@ const GameManager = {
 
             Meteor.setTimeout(function() {
                 // Advance to acro phase
-                GameManager.advancePhase(lobby.currentGame, 'acrofever', 'category', newRound);
+                AcrofeverGameManager.advancePhase(lobby.currentGame, 'category', newRound);
             }, categoryTimeout);
 
         } catch(err) {
@@ -185,7 +185,7 @@ const GameManager = {
             });
         }
     },
-    advancePhase(gameId, type, currentPhase, currentRound, category) {
+    advancePhase(gameId, currentPhase, currentRound, category) {
         const game = Games.findOne(gameId, {fields: {
             lobbyId: true,
             currentPhase: true,
@@ -197,34 +197,26 @@ const GameManager = {
 
         Logger.info('Advancing game phase', {
             gameId: gameId,
-            type: type,
             currentPhase: currentPhase
         });
         console.log('Advancing game phase for ' + gameId);
 
-        switch (type) {
-            case 'acrofever':
-                switch (currentPhase) {
-                    case 'category':
-                        Acrofever.goToAcroPhase(gameId, category);
-                        break;
-                    case 'acro':
-                        Acrofever.goToVotingPhase(gameId);
-                        break;
-                    case 'voting':
-                        Acrofever.goToEndRoundPhase(gameId);
-                        break;
-                    default:
-                        console.error('Unknown phase ' + currentPhase);
-                }
+        switch (currentPhase) {
+            case 'category':
+                Acrofever.goToAcroPhase(gameId, category);
+                break;
+            case 'acro':
+                Acrofever.goToVotingPhase(gameId);
+                break;
+            case 'voting':
+                Acrofever.goToEndRoundPhase(gameId);
                 break;
             default:
-                //Future game types
-                console.error('Only acrofever game type is implemented yet');
+                console.error('Unknown phase ' + currentPhase);
         }
 
         Lobbies.update(game.lobbyId, {$currentDate: {lastUpdated: true}});
     }
 };
 
-export default GameManager;
+export default AcrofeverGameManager;

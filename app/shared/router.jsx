@@ -8,6 +8,7 @@ import {HomeView} from '../imports/views/Home';
 import {PlayView} from '../imports/views/Play';
 import {LobbyView} from '../imports/views/Lobby';
 import {HallOfFameView} from '../imports/views/HallOfFame';
+import {LeaderboardView} from '../imports/views/Leaderboard';
 import {ProfileView} from '../imports/views/Profile';
 import {FriendsView} from '../imports/views/Friends';
 import {PageNotFound} from '../imports/views/PageNotFound';
@@ -51,6 +52,15 @@ FlowRouter.route('/halloffame', {
     action: function() {
         mount(Layout, {
             content: () => (<HallOfFameView />)
+        });
+    }
+});
+
+FlowRouter.route('/leaderboard', {
+    name: 'leaderboard',
+    action: function() {
+        mount(Layout, {
+            content: () => (<LeaderboardView />)
         });
     }
 });
