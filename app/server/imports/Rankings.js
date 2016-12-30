@@ -5,7 +5,7 @@ import {Games} from '../../imports/collections';
 const baseRanking = 25.0,
     skillEstimateMultiplier = 5;
 
-export const IsRankedGame = (rounds, playerId) => {
+export const IsRankedGameForUser = (rounds, playerId) => {
     const playedRounds = rounds.reduce((prev, round) => {
         return round.players[playerId] && (round.players[playerId].submission || round.players[playerId].vote) ? prev + 1 : prev;
     }, 0);
@@ -61,6 +61,11 @@ const initialSigma = baseRanking / skillEstimateMultiplier,
 trueskill.SetParameters(trueskillBeta, trueskillEpsilon, null, trueskillGamma);
 
 export const RecalculateRankingForGame = (game, date) => {
+    if (game.unranked === true) {
+        console.log(`Game ${game._id} is unranked!`);
+        return;
+    }
+
     if (!date)
         date = new Date();
 
@@ -68,7 +73,7 @@ export const RecalculateRankingForGame = (game, date) => {
 
     const players = [];
     _.each(game.scores, (score, playerId) => {
-        if (!IsRankedGame(game.rounds, playerId)) return;
+        if (!IsRankedGameForUser(game.rounds, playerId)) return;
 
         let skill;
         const user = Meteor.users.findOne(playerId, {fields: {'profile.trueskill': true}});
@@ -167,7 +172,7 @@ export const RecalculateAllRankings = () => {
     const gamesCursor = Games.find({
         gameWinner: {$exists: true}
     }, {
-        fields: {scores: true, rounds: true, created: true},
+        fields: {scores: true, rounds: true, created: true, unranked: true},
         sort: {created: 1}
     });
 

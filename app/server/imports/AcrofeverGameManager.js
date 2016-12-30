@@ -40,7 +40,7 @@ const AcrofeverGameManager = {
     makeGameInactive(gameId) {
         const game = Games.findOne(gameId);
 
-        console.log('Making game' + gameId + 'inactive');
+        console.log('Making game' + gameId + ' inactive');
 
         if (!game || !game.active) {
             Logger.warn('AcrofeverGameManager.makeGameInactive was called on a nonexistent or already inactive game', {gameId: gameId});

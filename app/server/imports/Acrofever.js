@@ -27,12 +27,13 @@ const ensureCorrectPhase = (gameId, phase) => {
     console.log('ensureCorrectPhase failed - game should be in ' + phase + ' phase');
 };
 
-const goToEndGame = (game, winners) => {
+const goToEndGame = (gameId, winners) => {
     /*	If there is more than one overall winner, resolve the tie:
      1. Go through all the rounds and add up total votes for each user, the one with the most wins the tie
      2. If still tied, go through and find the average time they took to submit acros, fastest one wins
      3. If still tied, go home, it's all over
      */
+    const game = Games.findOne(gameId);
     let winner, tiebreakText;
 
     winners = winners.map(w => w.id);
@@ -44,21 +45,13 @@ const goToEndGame = (game, winners) => {
             highScore = 0;
 
         _.each(winners, id => {
-            const totalVotes = game.rounds.reduce((val, round) => {
-                if (round.players[id]) {
-                    return val + round.players[id].votes;
-                } else {
-                    return val;
-                }
-            }, 0);
+            const totalVotes = game.rounds.reduce((val, round) => round.players[id] ? val + round.players[id].votes : val, 0);
 
-            if (totalVotes >= highScore) {
-                newWinners.push(id);
+            if (totalVotes > highScore) {
+                newWinners = [id];
                 highScore = totalVotes;
-            } else {
-                const thisPlayerIndex = newWinners.indexOf(id);
-                if (thisPlayerIndex > -1)
-                    newWinners.splice(thisPlayerIndex, 1);
+            } else if (totalVotes === highScore) {
+                newWinners.push(id);
             }
         });
 
@@ -81,13 +74,11 @@ const goToEndGame = (game, winners) => {
 
                 const averageTime = timeLefts.reduce((sum, time) => sum + time, 0) / timeLefts.length;
 
-                if (averageTime <= lowestTime) {
-                    newNewWinners.push(id);
+                if (averageTime < lowestTime) {
+                    newNewWinners = [id];
                     lowestTime = averageTime;
-                } else {
-                    let thisNewPlayerIndex = newNewWinners.indexOf(id);
-                    if (thisNewPlayerIndex > -	1)
-                        newNewWinners.splice(thisNewPlayerIndex, 1);
+                } else if (averageTime === lowestTime) {
+                    newNewWinners.push(id);
                 }
             });
 
@@ -113,7 +104,7 @@ const goToEndGame = (game, winners) => {
 
     const endTime = moment().add(lobby.config.hallOfFameTimeout, 'milliseconds').toDate();
 
-    Games.update(game._id, {$set: {
+    Games.update(gameId, {$set: {
         currentPhase: 'endgame',
         endTime,
         gameWinner: winner
@@ -197,7 +188,7 @@ const getWinnerAndAwardPoints = game => {
 
     // Calculate each player's votePoints and also find the winner(s)
     _.each(round.players, (player, playerId) => {
-        player.votePoints += player.votes & lobby.config.votedPoints;
+        player.votePoints += player.votes * lobby.config.votedPoints;
 
         if (player.votes > highestVotes) {
             winners = [{id: playerId, timeLeft: player.submission.timeLeft}];
@@ -271,7 +262,7 @@ const getWinnerAndAwardPoints = game => {
 
     // Is there anyone over gameEndPoints?
     if (ultimateWinners.length > 0) {
-        goToEndGame(game, winners);
+        goToEndGame(game._id, ultimateWinners);
     } else {
         // No winners yet, start a new round
         Meteor.setTimeout(() => {

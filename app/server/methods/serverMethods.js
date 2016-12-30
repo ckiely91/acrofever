@@ -91,15 +91,12 @@ Meteor.methods({
 
 		_.each(currentRound.players, (player, playerId) => {
 			if (playerId !== this.userId && player.submission) {
-				console.log(player);
-				console.log(playerId);
 				submittedPlayers++;
 			}
 		});
 
 		if (submittedPlayers === totalPlayers) {
 			//everyone has submitted! advance the game phase
-			console.log("Everyone has submitted");
 			AcrofeverGameManager.advancePhase(gameId, 'acro', game.currentRound);
 		}
 	},

@@ -7,7 +7,7 @@ import {checkValidEmail} from '../../imports/validators';
 import {countryTags} from '../../imports/statics';
 import {getUserEmail} from '../imports/ServerHelpers';
 import {SendInviteEmail} from '../imports/Emails';
-import {IsRankedGame} from '../imports/Rankings';
+import {IsRankedGameForUser} from '../imports/Rankings';
 
 Meteor.methods({
     joinOrLeaveOfficialLobby(lobbyId, join) {
@@ -141,7 +141,7 @@ Meteor.methods({
 
                 _.each(games, game => {
                     // Determine if a ranked game
-                    if (!IsRankedGame(game.rounds, userId)) return;
+                    if (!IsRankedGameForUser(game.rounds, userId)) return;
 
                     const day = moment(game.created).format('YYYY-MM-DD');
 
