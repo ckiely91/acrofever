@@ -198,7 +198,12 @@ export const AcrofeverEndRoundPhase = React.createClass({
                 </div>
                 <div className="ui divider" style={dividerStyle}></div>
 
-                <h3 className="ui center aligned header">Round results</h3>
+                <h3 className="ui header">
+                    <i className="trophy icon"></i>
+                    <div className="content">
+                        Round results
+                    </div>
+                </h3>
 
                 <div className="ui basic segment">
                     <RoundResultsTable round={this.props.round} />

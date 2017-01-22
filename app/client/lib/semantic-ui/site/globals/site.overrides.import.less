@@ -2,12 +2,30 @@
          Site Overrides
 *******************************/
 
+html {
+	font-size: @mobileEmSize;
+
+	@media screen and (min-width: @tabletBreakpoint) {
+		font-size: @emSize;
+	}
+}
+
 body {
 	background-image: url('/images/acro-bg.png');
 }
 
 div.clear {
 	clear: both;
+}
+
+#mainView {
+	transform: inherit; // Fix Chrome bug affecting fixed elements inside Pusher
+}
+
+.ui.stackable.tight.grid > .wide.column {
+	@media screen and (max-width: 767px) {
+		padding: 1rem 0 !important;
+	}
 }
 
 #brandHeader, #brandHeader.active, #homeHeader {
@@ -122,6 +140,11 @@ span {
 	vertical-align: top;
 }
 
+.chosenAcro {
+  cursor: pointer;
+  border-bottom: 1px dotted @black;
+}
+
 .ui.inverted.menu #rightNav .item:before {
 	background: none;
 }
@@ -167,6 +190,19 @@ span {
 			background: linear-gradient(to bottom,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
 		}
 	}
+}
+
+#chatSidebar {
+	background: white;
+	position: fixed;
+	top: 0;
+	bottom: 0;
+}
+
+#chatSidebarBtn {
+	position: fixed;
+	right: 0;
+	z-index: 1;
 }
 
 img.ui.image.inline {

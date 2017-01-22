@@ -112,15 +112,19 @@ const SubmitAcro = React.createClass({
     render() {
         const submittedAcro = (
             <p>
-                <strong>Submitted acro:</strong> {this.state.chosenAcro}<br />
-                (<a href="#" onClick={this.changeAcro}>change?</a>)
+                <span className="chosenAcro" onClick={this.changeAcro}>{this.state.chosenAcro}</span>
             </p>
         );
 
         return (
             <div className="ui centered grid">
-                <div className="sixteen-wide-tablet ten-wide-computer center aligned column">
-                    <h3 className="ui header">Write your Acro</h3>
+                <div className="sixteen-wide-tablet ten-wide-computer column">
+                    <h3 className="ui header">
+                        <i className="write icon"></i>
+                        <div className="content">
+                            Write your Acro
+                        </div>
+                    </h3>
                     <div>
                         {this.state.hasChosenAcro ? submittedAcro : <SubmitAcroForm chosenAcro={this.state.chosenAcro} submitAcro={this.submitAcro} />}
                     </div>

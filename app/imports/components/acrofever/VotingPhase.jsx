@@ -50,8 +50,9 @@ const AcroVoting = React.createClass({
 
         return (
             <div key={index} className={className} onClick={(evt) => this.handleVote(evt, acro.id)}>
+                {votedForThis ? <i className="check icon" /> : null}
                 <div className="content">
-                    {acro.acro} {votedForThis ? <i className="check icon" /> : null}
+                    {acro.acro}
                 </div>
             </div>
         )
@@ -63,18 +64,18 @@ const AcroVoting = React.createClass({
     render() {
         let acroList;
         const selectionList = {
-            textAlign: 'center'
+            //textAlign: 'center'
         };
 
         if (this.isInRound()) {
             acroList = (
-                <div style={selectionList} className="ui middle aligned selection list">
+                <div style={selectionList} className="ui middle aligned relaxed divided selection list">
                     {this.state.roundAcros.map(this.renderItem)}
                 </div>
             );
         } else {
             acroList = (
-                <div className="ui relaxed list">
+                <div className="ui relaxed divided list">
                     {this.state.roundAcros.map(this.renderDisabledItem)}
                 </div>
             );
@@ -82,11 +83,16 @@ const AcroVoting = React.createClass({
 
 
         return (
-            <div className="ten wide center aligned column">
-                <h3 className={this.isInRound() ? 'ui header': 'ui disabled header'}>
-                    {this.isInRound() ? 'Vote for your favourite Acro' : 'Players are voting for their favourite Acros...'}
-                </h3>
-                {acroList}
+            <div className="ui centered grid">
+                <div className="sixteen-wide-tablet ten-wide-computer column">
+                    <h3 className={this.isInRound() ? 'ui header': 'ui disabled header'}>
+                        <i className="thumbs outline up icon"></i>
+                        <div className="content">
+                            {this.isInRound() ? 'Vote for your favourite Acro' : 'Players are voting for their favourite Acros...'}
+                        </div>
+                    </h3>
+                    {acroList}
+                </div>
             </div>
         );
     }
@@ -110,9 +116,7 @@ export const AcrofeverVotingPhase = React.createClass({
                     <CountdownHeader endTime={this.props.endTime} header={this.currentAcro()} subheader={this.props.round.category} />
                 </div>
                 <div className="ui divider" style={dividerStyle}></div>
-                <div className="ui ten column centered grid">
-                    <AcroVoting round={this.props.round} gameId={this.props.gameId} />
-                </div>
+                <AcroVoting round={this.props.round} gameId={this.props.gameId} />
                 <div className="ui hidden divider"></div>
             </div>
         );

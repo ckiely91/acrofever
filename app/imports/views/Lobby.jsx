@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {LobbyFeedComponent} from '../components/Feeds';
+import {LobbyFeedComponent, LobbyFeedSidebar} from '../components/Feeds';
 import {CountdownSpan} from '../components/Countdown';
 
 import {AcrofeverCategoryPhase} from'../components/acrofever/CategoryPhase';
@@ -254,7 +254,7 @@ class ScoresTable extends React.Component {
 
     render() {
         return (
-            <table className="ui unstackable table">
+            <table className="ui very basic unstackable table">
                 <tbody>
                 {this.sortedScores() ? this.sortedScores().map((score, index) => <ScoresTableRow key={index} score={score} />) : <div className="ui active inline loader"></div>}
                 </tbody>
@@ -443,45 +443,48 @@ export const LobbyView = React.createClass({
     render() {
         if (this.data.lobby && this.data.game) {
             return (
-                <div className="ui stackable grid">
-                    <div className="five wide column">
-                        <h2 className="ui header">{this.data.lobby.displayName}</h2>
-                        <div className="ui raised segments">
-                            <div className="ui segment">
-                                <button className={this.isInLobby() ? 'ui fluid button' : 'ui primary fluid button'} onClick={this.joinOrLeaveLobby}>{this.isInLobby() ? 'Leave' : 'Join'} lobby</button>
-                            </div>
-                            <div className="ui segment">
-                                <h3 className="ui header">Current round: <span className="normalWeight">{this.data.game.currentRound}</span></h3>
-                            </div>
-                            <div className="ui segment">
-                                <h3 className="ui header">Scores</h3>
-                                <div>
-                                    <ScoresTable scores={this.data.game.scores} players={this.data.lobby.players} />
+                <div>
+                    <LobbyFeedSidebar lobbyId={this.props.lobbyId} />
+                    <h2 className="ui header">{this.data.lobby.displayName}</h2>
+                    <div className="ui stackable mobile reversed tight grid">
+                        <div className="five wide column">
+                            <div className="ui raised segments">
+                                <div className="ui segment">
+                                    <button className={this.isInLobby() ? 'ui fluid button' : 'ui primary fluid button'} onClick={this.joinOrLeaveLobby}>{this.isInLobby() ? 'Leave' : 'Join'} lobby</button>
+                                </div>
+                                <div className="ui segment hiddenOnMobile">
+                                    <h3 className="ui header">Current round: <span className="normalWeight">{this.data.game.currentRound}</span></h3>
+                                </div>
+                                <div className="ui segment">
+                                    <h3 className="ui header">Scores</h3>
+                                    <div>
+                                        <ScoresTable scores={this.data.game.scores} players={this.data.lobby.players} />
+                                    </div>
+                                </div>
+                                <div className="ui segment hiddenOnMobile">
+                                    <h3 className="ui header">Lobby settings</h3>
+                                    <LobbySettings {...this.data.lobby.config} />
                                 </div>
                             </div>
                             <div className="ui segment hiddenOnMobile">
-                                <h3 className="ui header">Lobby settings</h3>
-                                <LobbySettings {...this.data.lobby.config} />
+                                <Beggar />
                             </div>
                         </div>
-                        <div className="ui segment hiddenOnMobile">
-                            <Beggar />
-                        </div>
-                    </div>
-                    <div className="eleven wide column">
-                        <div className="ui raised segment">
-                            <GameWindow
-                                game={this.data.game}
-                                newGameStarting = {this.data.lobby.newGameStarting}
-                                players = {this.data.lobby.players}
-                                endTime = {this.data.game.endTime}
-                                lobbyEndTime = {this.data.lobby.endTime}
-                                config = {this.data.lobby.config}
-                            />
-                        </div>
-                        <div className="ui hidden divider"></div>
-                        <div className="semiTransparentWhiteBG">
-                            <LobbyFeedComponent lobbyId={this.props.lobbyId} />
+                        <div className="eleven wide column">
+                            <div className="ui raised segment">
+                                <GameWindow
+                                    game={this.data.game}
+                                    newGameStarting = {this.data.lobby.newGameStarting}
+                                    players = {this.data.lobby.players}
+                                    endTime = {this.data.game.endTime}
+                                    lobbyEndTime = {this.data.lobby.endTime}
+                                    config = {this.data.lobby.config}
+                                />
+                            </div>
+                            <div className="ui hidden divider hiddenOnMobile"></div>
+                            <div className="semiTransparentWhiteBG hiddenOnMobile">
+                                <LobbyFeedComponent lobbyId={this.props.lobbyId} />
+                            </div>
                         </div>
                     </div>
                 </div>

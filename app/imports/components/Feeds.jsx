@@ -73,7 +73,7 @@ class ChatInput extends React.Component {
                 <form id="chat-input-form" className="ui form" onSubmit={(evt) => this.handleSubmit(evt)}>
                     <div className="ui fluid icon input">
                         <input type="text" id="chat-input-box" name="message" placeholder="Type here to chat..." autoComplete="off" required="true" ref={(ref) => this.inputField = ref}/>
-                        <i className="circular smile link icon" onClick={(evt) => this.toggleEmojiPicker(evt)}/>
+                        {this.props.hideEmojiPicker ? null : <i className="circular smile link icon" onClick={(evt) => this.toggleEmojiPicker(evt)}/> }
                     </div>
                 </form>
                 {this.state.showEmojiPicker ? <EmojiPicker search={true} onChange={(data) => this.pickEmoji(data)} /> : null}
@@ -248,7 +248,9 @@ export const GlobalFeedComponent = React.createClass({
     render() {
         return (
             <div>
-                <div><ChatInput /></div>
+                <div>
+                    <ChatInput />
+                </div>
                 <div className="feedChatDiv">
                     <div className="fade upper"></div>
                     <div className="fade lower"></div>
@@ -269,6 +271,11 @@ export const LobbyFeedComponent = React.createClass({
     mixins: [ReactMeteorData],
     propTypes: {
         lobbyId: React.PropTypes.string.isRequired
+    },
+    getInitialState() {
+        return {
+            hasUnread: true
+        }
     },
     getMeteorData() {
         if (!Session.get('lobbyFeedLimit'))
@@ -318,8 +325,14 @@ export const LobbyFeedComponent = React.createClass({
         this.tracker = Tracker.autorun(() => {
             LobbyFeed.find({lobbyId: this.props.lobbyId}).observeChanges({
                 added: (id, doc) => {
-                    if (this.data.subsReady && doc.user) {
-                        playSound('chat');
+                    if (this.data.subsReady) {
+                        console.log(this.props.noSound);
+                        if (doc.user && !this.props.noSound) {
+                            playSound('chat');
+                        }
+                        if (this.props.hasUnread) {
+                            this.props.hasUnread(true);
+                        }
                     }
                 }
             });
@@ -334,7 +347,9 @@ export const LobbyFeedComponent = React.createClass({
     render() {
         return (
             <div>
-                <div><ChatInput lobbyId={this.props.lobbyId} /></div>
+                <div>
+                    <ChatInput lobbyId={this.props.lobbyId} hideEmojiPicker={this.props.hideEmojiPicker} />
+                </div>
                 <div className="ui small feed">
                     {this.data.events.map(this.renderEvent)}
                     {this.data.subsReady ? null : <div className="ui inline active centered loader"></div>}
@@ -344,3 +359,50 @@ export const LobbyFeedComponent = React.createClass({
         );
     }
 });
+
+export class LobbyFeedSidebar extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {unread: false};
+        this.hasUnread = this.hasUnread.bind(this);
+    }
+
+    componentDidMount() {
+        $(this.sidebar).sidebar({
+            context: '#mainView',
+            mobileTransition: 'overlay',
+            onHide: () => {
+                this.hasUnread(false);
+            }
+        });
+    }
+
+    componentWillUnmount() {
+        $(this.sidebar).remove();
+    }
+
+    showSidebar(evt) {
+        evt.preventDefault();
+        $(this.sidebar).sidebar('show');
+    }
+
+    hasUnread(unread) {
+        this.setState({unread})
+    }
+
+    render() {
+        return (
+            <div>
+                <div className={`ui ${this.state.unread ? 'red' : ''} left attached icon button showOnMobile`} id="chatSidebarBtn" onClick={evt => this.showSidebar(evt)}>
+                    <i className="ui comments icon"></i>
+                </div>
+                <div className="ui right sidebar showOnMobile" id="chatSidebar" ref={ref => this.sidebar = ref}>
+                    <div className="ui basic segment">
+                        <h3 className="ui header">Lobby chat</h3>
+                        <LobbyFeedComponent noSound={true} hasUnread={this.hasUnread} lobbyId={this.props.lobbyId} hideEmojiPicker={true}/>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+}

@@ -51,10 +51,12 @@ export class Layout extends React.Component {
             <div>
                 <NavComponent />
                 <EventBanner />
-                <div className="ui main container">
-                    <NagsComponent />
-                    {_.isFunction(this.props.content) ? this.props.content() : this.props.content}
-                    <FooterComponent />
+                <div id="mainView">
+                    <div className="ui main container">
+                        <NagsComponent />
+                        {_.isFunction(this.props.content) ? this.props.content() : this.props.content}
+                        <FooterComponent />
+                    </div>
                 </div>
                 <HowToPlayModal />
                 <PageDimmer />

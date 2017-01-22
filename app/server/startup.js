@@ -50,6 +50,7 @@ Meteor.startup(function() {
 			Lobbies.update(insertedLobby._id, {$set: {currentGame: gameId}, $push: {games: gameId}});
 		} else {
 			//game may be in progress, we should end it so timeouts will work properly
+			return;
 			const game = Games.findOne(insertedLobby.currentGame, {fields: {active: true}});
 			const active = game && game.active;
 			if (active) {
