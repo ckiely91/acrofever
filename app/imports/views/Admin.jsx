@@ -377,7 +377,7 @@ export const AdminHallOfFame = React.createClass({
                     </tr>
                     </thead>
                     <tbody>
-                    {this.data.hallOfFame.map((item, index) => <AdminHallOfFameRow key={index} {...item} />)}
+                    {this.data.hallOfFame.map((item, index) => <AdminHallOfFameRow key={item._id} {...item} />)}
                     </tbody>
                 </table>
                 <button className="ui button" onClick={this.getMore}>Get more</button>
@@ -494,7 +494,7 @@ export const AdminCategories = React.createClass({
                     </tr>
                     </thead>
                     <tbody>
-                    {this.data.categories.map((item, index) => <AdminCategoryRow key={index} {...item} />)}
+                    {this.data.categories.map((item) => <AdminCategoryRow key={item._id} {...item} />)}
                     </tbody>
                 </table>
                 <button className="ui button" onClick={this.getMore}>Get more</button>
