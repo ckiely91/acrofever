@@ -123,9 +123,3 @@ export const acrofeverAnalytics = {
             analytics.page(page, obj);
     }
 };
-
-export const specialTagRules = {
-    maxLength: 8,
-    colors: ['blue', 'magenta', 'purple'],
-    forbiddenWords: ['admin']
-};
