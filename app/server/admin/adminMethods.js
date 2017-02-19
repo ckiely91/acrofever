@@ -119,6 +119,24 @@ Meteor.methods({
         	curUser++;
         	console.log("recalculated for user " + curUser + " of " + total);
 		});
+	},
+	adminShadowbanUser(userId, ban) {
+        if (!isAdminUser(this.userId))
+            throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
+
+        if (ban === true) {
+        	Meteor.users.update(userId, {
+        		$set: {
+        			'profile.shadowbanned': true
+				}
+			});
+		} else {
+        	Meteor.users.update(userId, {
+        		$unset: {
+        			'profile.shadowbanned': true
+				}
+			});
+		}
 	}
 });
 

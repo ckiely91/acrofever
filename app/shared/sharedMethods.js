@@ -8,11 +8,15 @@ Meteor.methods({
 		
 		check(message, checkValidChatString);
 
+		// Set chat message as a hidden if user is shadowbanned
+		const hidden = _.get(Meteor.users.findOne(this.userId, {fields: {profile: true}}), 'profile.shadowbanned', false);
+
 		LobbyFeed.insert({
 			lobbyId: lobbyId,
 			user: this.userId,
 			timestamp: new Date(),
-			detail: message
+			detail: message,
+            hidden
 		});
 
         Lobbies.findOne(lobbyId, {$currentDate: {lastUpdated: true}});
@@ -23,10 +27,14 @@ Meteor.methods({
 		
 		check(message, checkValidChatString);
 
+        // Set chat message as a hidden if user is shadowbanned
+        const hidden = _.get(Meteor.users.findOne(this.userId, {fields: {profile: true}}), 'profile.shadowbanned', false);
+
 		GlobalFeed.insert({
 			user: this.userId,
 			timestamp: new Date(),
-			detail: message
+			detail: message,
+            hidden
 		});
 	},
 	markNagAsClosed(id) {

@@ -2,7 +2,7 @@ import React from 'react';
 import Highchart from 'react-highcharts';
 
 import {HallOfFameAcros} from './HallOfFame';
-import {profilePicture, displayName, specialTags} from '../helpers';
+import {profilePicture, displayName, specialTags, specialTagRules} from '../helpers';
 import {lobbySubs} from '../subsManagers';
 import {Lobbies} from '../collections';
 import {countryTags} from '../statics';
@@ -208,6 +208,7 @@ class EditProfileModal extends React.Component {
         super(props);
         this.openModal = this.openModal.bind(this);
         this.changePassword = this.changePassword.bind(this);
+        this.userFlair = this.userFlair.bind(this);
     }
 
     componentDidMount() {
@@ -277,6 +278,12 @@ class EditProfileModal extends React.Component {
         FlowRouter.go('/change-password');
     }
 
+    userFlair() {
+        return _.has(this, 'user.profile.specialTags') && this.user.profile.specialTags.lengt
+            ? this.user.profile.specialTags[0]
+            : {tag: '', color: 'blue'};
+    }
+
     render() {
         return (
             <div className="ui modal" ref={(ref) => this.modal = ref}>
@@ -318,6 +325,22 @@ class EditProfileModal extends React.Component {
                             </div>
                             <button className="ui positive button" type="submit">Save country</button>
                             <div className="ui error message"></div>
+                        </form>
+                        <div className="ui divider"></div>
+                        <div className="ui header">
+                            Edit flair <div className="ui label">VIP only</div>
+                        </div>
+                        <form className="ui form">
+                            <div className="field">
+                                <input type="text" name="flairtext" defaultValue={this.userFlair().tag} />
+                            </div>
+                            <div className="field">
+                                <select name="flaircolor" className="ui dropdown" ref={(ref) => this.flairColorSelect = ref}>
+                                    {specialTagRules.colors.map(color => (
+                                        <option key={color} value={color}>{color}</option>
+                                    ))}
+                                </select>
+                            </div>
                         </form>
                     </div>
                 </div>

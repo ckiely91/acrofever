@@ -4,7 +4,14 @@ Meteor.publish('globalFeed', function(limit) {
 	const maxFeedResults = 200;
 	if (limit > maxFeedResults)
 		limit = maxFeedResults;
-	return GlobalFeed.find({}, {sort: {timestamp: -1}, limit: limit});
+
+    // Show hidden chats for shadowbanned user, else show all non-hidden chats
+	return GlobalFeed.find({
+        $or: [
+            { user: this.userId },
+            { hidden: { $ne: true } }
+        ]
+    }, {sort: {timestamp: -1}, limit: limit});
 });
 
 Meteor.publish('lobbyFeed', function(lobbyId, limit) {
@@ -16,7 +23,14 @@ Meteor.publish('lobbyFeed', function(lobbyId, limit) {
 	if (limit > maxFeedResults)
 		limit = maxFeedResults;
 
-	return LobbyFeed.find({ lobbyId: lobbyId }, { sort: { timestamp: -1	}, limit: limit	});
+    // Show hidden chats for shadowbanned user, else show all non-hidden chats
+	return LobbyFeed.find({
+	    lobbyId: lobbyId,
+        $or: [
+            { user: this.userId },
+            { hidden: { $ne: true } }
+        ]
+	}, { sort: { timestamp: -1	}, limit: limit	});
 });
 
 Meteor.publish('lobbies', function() {
