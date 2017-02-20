@@ -66,7 +66,7 @@ class LeaderboardTable extends React.Component {
                     </tr>
                 </thead>
                 <tbody>
-                    {this.props.players.map((player, index) => <LeaderboardTableRow key={index} num={index + 1} {...player}/>)}
+                    {this.props.players.map((player, index) => <LeaderboardTableRow key={player._id} num={index + 1} {...player}/>)}
                 </tbody>
             </table>
         )

@@ -105,3 +105,20 @@ export function SendInviteEmail(user, lobby, inviterId) {
         console.log(res);
     });
 }
+
+export function SendShadowBannedNotification(bannedUserId, moderatorUserId, reason, banned) {
+    const email = new sendgrid.Email();
+    email.subject = `User has been ${banned ? 'BANNED' : 'UNBANNED'}`;
+    email.from = "no-reply@acrofever.com";
+    email.fromname = "Acrofever";
+    email.setHtml(`The user ${displayName(bannedUserId)} (${bannedUserId}) has been ${banned ? 'BANNED' : 'UNBANNED'} by 
+        ${displayName(moderatorUserId)} (${moderatorUserId}) for the following reason: ${reason}`);
+    email.setText(`The user ${displayName(bannedUserId)} (${bannedUserId}) has been ${banned ? 'BANNED' : 'UNBANNED'} by 
+        ${displayName(moderatorUserId)} (${moderatorUserId}) for the following reason: ${reason}`);
+    email.addSmtpapiTo("christian@acrofever.com");
+
+    sendgrid.send(email, (err, res) => {
+        if (err) return console.error(err);
+        console.log(res);
+    });
+}

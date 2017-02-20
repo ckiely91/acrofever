@@ -429,7 +429,12 @@ export const ProfileView = React.createClass({
         let numberOfHallOfFame = new ReactiveVar();
         let gamesPlayedStats = null;
         let averageScoreStats = null;
-        return {numberOfHallOfFame, gamesPlayedStats, averageScoreStats};
+        return {
+            numberOfHallOfFame: new ReactiveVar(),
+            gamesPlayedStats: null,
+            averageScoreStats: null,
+            isModerator: false
+        };
     },
     getMeteorData() {
         var data = {
@@ -455,6 +460,8 @@ export const ProfileView = React.createClass({
     },
     componentWillMount() {
         this.refreshStats();
+
+        Meteor.call('isAdminUserOrModerator', (err, res) => (this.setState({isModerator: res})));
     },
     refreshStats() {
         Meteor.call('getUserStat', this.props.userId, 'gamesPlayed', (err, res) => {
@@ -543,6 +550,15 @@ export const ProfileView = React.createClass({
             return false;
         }
     },
+    banUser() {
+        const reason = prompt("Why do you want to shadowban this user? Please provide details.");
+        if (reason && reason.length > 0) {
+            Meteor.call('adminShadowbanUser', this.props.userId, true, reason);
+        }
+    },
+    unbanUser() {
+        Meteor.call('adminShadowbanUser', this.props.userId, false);
+    },
     render() {
         let body;
         const styles = {
@@ -608,6 +624,15 @@ export const ProfileView = React.createClass({
                                                         </button>
                                                     );
                                                 }
+                                            })()}
+                                            {(() => {
+                                              if (this.state.isModerator) {
+                                                  return this.data.user.profile.shadowbanned ? (
+                                                      <button className="ui button" onClick={this.unbanUser}>Unban user</button>
+                                                  ) : (
+                                                      <button className="ui button" onClick={this.banUser}>Ban user</button>
+                                                  );
+                                              }
                                             })()}
                                         </div>
                                     )

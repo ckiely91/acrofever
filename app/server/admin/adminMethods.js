@@ -1,41 +1,48 @@
 import {HallOfFame, Nags, Events, Categories, Games} from '../../imports/collections';
+import {SendShadowBannedNotification} from '../imports/Emails';
 import * as Rankings from '../imports/Rankings';
 
 Meteor.methods({
 	isAdminUser() {
 		return isAdminUser(this.userId);
 	},
+    isModerator() {
+	    return isModerator(this.userId);
+    },
+    isAdminUserOrModerator() {
+	    return (isAdminUser(this.userId) || isModerator(this.userId));
+    },
 	adminEditHallOfFameEntry(id, options) {
-		if (!isAdminUser(this.userId))
+		if (!isAdminUser(this.userId) && !isModerator(this.userId))
 			throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
 
 		if (options.deactivate) {
-			HallOfFame.update(id, {$set: {active: false}});
+			HallOfFame.update(id, {$set: {active: false, deactivatedBy: this.userId}});
 		} else if (options.delete) {
-			HallOfFame.remove(id);
+			HallOfFame.update(id, {$set: {deleted: true, deletedBy: this.userId}});
 		} else if (options.activate) {
-			HallOfFame.update(id, {$set: {active: true}});
+			HallOfFame.update(id, {$set: {active: true, activatedBy: this.userId}});
 		}
 	},
     adminEditCategory(id, options) {
-        if (!isAdminUser(this.userId))
+        if (!isAdminUser(this.userId) && !isModerator(this.userId))
             throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
 
         if (options.deactivate) {
-            Categories.update(id, {$set: {active: false}});
+            Categories.update(id, {$set: {active: false, deactivatedBy: this.userId}});
         } else if (options.delete) {
-            Categories.remove(id);
+            Categories.update(id, {$set: {deleted: true, deletedBy: this.userId}});
         } else if (options.activate) {
-            Categories.update(id, {$set: {active: true}});
+            Categories.update(id, {$set: {active: true, activatedBy: this.userId}});
         } else if (options.edit) {
-        	Categories.update(id, {$set: {category: options.category}});
+        	Categories.update(id, {$set: {category: options.category, editedBy: this.userId}});
 		}
     },
 	adminAddNag(fields) {
 		if (!isAdminUser(this.userId))
 			throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
 
-		var nag = {
+		const nag = {
 			timestamp: new Date()
 		};
 
@@ -120,8 +127,8 @@ Meteor.methods({
         	console.log("recalculated for user " + curUser + " of " + total);
 		});
 	},
-	adminShadowbanUser(userId, ban) {
-        if (!isAdminUser(this.userId))
+	adminShadowbanUser(userId, ban, reason) {
+        if (!isAdminUser(this.userId) && !isModerator(this.userId))
             throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
 
         if (ban === true) {
@@ -137,9 +144,34 @@ Meteor.methods({
 				}
 			});
 		}
+
+        SendShadowBannedNotification(userId, this.userId, reason, ban);
+	},
+	adminMakeModerator(userId, isModerator) {
+        if (!isAdminUser(this.userId))
+            throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
+
+        if (isModerator === true) {
+        	Meteor.users.update(userId, {
+        		$set: {
+        			'profile.moderator': true
+				}
+			});
+		} else {
+        	Meteor.users.update(userId, {
+        		$unset: {
+        			'profile.moderator': true
+				}
+			});
+		}
 	}
 });
 
 function isAdminUser(userId) {
 	return (Meteor.settings.adminUsers.indexOf(userId) > -1);
+}
+
+function isModerator(userId) {
+    const user = Meteor.users.findOne(userId, {fields: {profile: true}});
+    return _.get(user, 'profile.moderator', false) === true;
 }

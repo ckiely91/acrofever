@@ -13,6 +13,7 @@ import {ProfileView} from '../imports/views/Profile';
 import {FriendsView} from '../imports/views/Friends';
 import {PageNotFound} from '../imports/views/PageNotFound';
 import {AdminMain, AdminHome, AdminHallOfFame, AdminNags, AdminEvents, AdminCategories} from '../imports/views/Admin';
+import {ModeratorMain} from '../imports/views/Moderators';
 
 FlowRouter.route('/', {
     name: 'home',
@@ -93,6 +94,39 @@ FlowRouter.notFound = {
 };
 
 /* BLAZE ROUTES */
+
+const moderatorRoutes = FlowRouter.group({
+    prefix: '/moderators',
+    name: 'moderators',
+    triggersEnter: [AccountsTemplates.ensureSignedIn]
+});
+
+moderatorRoutes.route('/', {
+    name: 'moderatorHome',
+    action: function() {
+        mount(Layout, {
+            content: () => (<ModeratorMain />)
+        });
+    }
+});
+
+moderatorRoutes.route('/categories', {
+    name: 'moderatorCategories',
+    action: function() {
+        mount(Layout, {
+            content: () => (<ModeratorMain subComponentString="categories" />)
+        });
+    }
+});
+
+moderatorRoutes.route('/halloffame', {
+    name: 'moderatorHallOfFame',
+    action: function() {
+        mount(Layout, {
+            content: () => (<ModeratorMain subComponentString="halloffame" />)
+        });
+    }
+});
 
 const adminRoutes = FlowRouter.group({
     prefix: '/admin',

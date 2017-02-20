@@ -1,10 +1,13 @@
 import {HallOfFame, Nags, Events, Categories} from '../../imports/collections';
 
 Meteor.publish('adminHallOfFame', function(limit) {
-	if (!isAdminUser(this.userId))
-		return [];
+	if (!isAdminUser(this.userId) && !isModerator(this.userId)) {
+	    return [];
+    }
 
-	return HallOfFame.find({}, {
+	return HallOfFame.find({
+	    deleted: {$ne: true}
+    }, {
 	    sort: {created: -1},
         limit: limit || 0
     });
@@ -13,6 +16,7 @@ Meteor.publish('adminHallOfFame', function(limit) {
 Meteor.publish('adminNags', function() {
 	if (!isAdminUser(this.userId))
 		return [];
+
 	return Nags.find();
 });
 
@@ -27,15 +31,24 @@ Meteor.publish('adminEvents', function() {
 });
 
 Meteor.publish('adminCategories', function(limit) {
-	if (!isAdminUser(this.userId))
+	if (!isAdminUser(this.userId) && !isModerator(this.userId))
 		return [];
 
-	return Categories.find({custom: true}, {
+	return Categories.find({
+	    custom: true,
+        deleted: {$ne: true}
+	}, {
 	    sort: {createdAt: -1},
         limit: limit || 0
     });
 });
 
 function isAdminUser(userId) {
+    console.log(Meteor.settings.adminUsers);
 	return (Meteor.settings.adminUsers.indexOf(userId) > -1);
+}
+
+function isModerator(userId) {
+    const user = Meteor.users.findOne(userId, {fields: {profile: true}});
+    return _.get(user, 'profile.moderator', false) === true;
 }

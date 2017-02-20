@@ -77,7 +77,7 @@ export const AdminEvents = React.createClass({
     render() {
         return (
             <div>
-                <a href={FlowRouter.path('adminHome')} className="ui labeled icon button"><i className="arrow left icon" /> Back</a>
+                <a href="#" onClick={() => window.history.back()} className="ui labeled icon button"><i className="arrow left icon" /> Back</a>
                 <h2 className="ui header">Manage events</h2>
                 <h3 className="ui dividing header">Add event</h3>
 
@@ -232,7 +232,7 @@ export const AdminNags = React.createClass({
     render() {
         return (
             <div>
-                <a href={FlowRouter.path('adminHome')} className="ui labeled icon button"><i className="arrow left icon"></i> Back</a>
+                <a href="#" onClick={() => window.history.back()} className="ui labeled icon button"><i className="arrow left icon"></i> Back</a>
                 <h2 className="ui header">Manage nags</h2>
 
                 <h3 className="ui header">Add nag</h3>
@@ -362,7 +362,7 @@ export const AdminHallOfFame = React.createClass({
     render() {
         return (
             <div>
-                <a href={FlowRouter.path('adminHome')} className="ui labeled icon button"><i className="arrow left icon"></i> Back</a>
+                <a href="" onClick={() => window.history.back()} className="ui labeled icon button"><i className="arrow left icon"></i> Back</a>
                 <h2 className="ui header">Approve Hall of Fame entries</h2>
                 <table className="ui table">
                     <thead>
@@ -377,7 +377,7 @@ export const AdminHallOfFame = React.createClass({
                     </tr>
                     </thead>
                     <tbody>
-                    {this.data.hallOfFame.map((item, index) => <AdminHallOfFameRow key={item._id} {...item} />)}
+                    {this.data.hallOfFame.map((item) => <AdminHallOfFameRow key={item._id} {...item} />)}
                     </tbody>
                 </table>
                 <button className="ui button" onClick={this.getMore}>Get more</button>
@@ -482,7 +482,7 @@ export const AdminCategories = React.createClass({
     render() {
         return (
             <div>
-                <a href={FlowRouter.path('adminHome')} className="ui labeled icon button"><i className="arrow left icon"></i> Back</a>
+                <a href="" onClick={() => window.history.back()} className="ui labeled icon button"><i className="arrow left icon"></i> Back</a>
                 <h2 className="ui header">Approve Categories</h2>
                 <table className="ui table">
                     <thead>
