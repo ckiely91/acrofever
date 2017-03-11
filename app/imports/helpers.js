@@ -1,3 +1,5 @@
+import { Cookies } from 'meteor/ostrio:cookies';
+
 export function notify(title, body, image) {
     if (typeof Notification === 'undefined')
         return;
@@ -123,3 +125,10 @@ export const acrofeverAnalytics = {
             analytics.page(page, obj);
     }
 };
+
+export function checkBanCookie() {
+    const cookies = new Cookies();
+    if (cookies.get('permabanned') === "true") {
+        window.location.href = "http://google.com";
+    }
+}
