@@ -1,5 +1,9 @@
+import { checkBanCookie } from '../imports/helpers';
+
 Meteor.startup(() => {
-    // Resync server time every 10 minutes
+	checkBanCookie();
+
+	// Resync server time every 10 minutes
 	Meteor.setInterval(() => {
 		TimeSync.resync();
 	}, 600000);

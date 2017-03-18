@@ -5,7 +5,7 @@ import {displayName} from '../../imports/helpers';
 import {Games, Lobbies, HallOfFame, Events} from '../../imports/collections';
 import {checkValidEmail} from '../../imports/validators';
 import {countryTags} from '../../imports/statics';
-import {getUserEmail} from '../imports/ServerHelpers';
+import {getUserEmail, isShadowbanned} from '../imports/ServerHelpers';
 import {SendInviteEmail} from '../imports/Emails';
 import {IsRankedGameForUser} from '../imports/Rankings';
 
@@ -15,24 +15,24 @@ Meteor.methods({
         if (typeof join !== "undefined")
             check(join, Boolean);
 
-        var userId = Meteor.userId();
-        if (!userId)
+        if (!this.userId)
             throw new Meteor.Error('403', 'You must be logged in to do that');
 
-        var lobby = Lobbies.findOne(lobbyId);
+        let lobby = Lobbies.findOne(lobbyId);
         if (!lobby || !lobby.official)
             throw new Meteor.Error('No valid lobby');
 
+        let username;
         if (join) {
             //user is joining the lobby
-            Lobbies.update(lobbyId, {$addToSet: {players: userId}});
-            let username = displayName(userId, true);
+            Lobbies.update(lobbyId, {$addToSet: {players: this.userId}});
+            username = displayName(this.userId, true);
             LobbyManager.addSystemMessage(lobbyId, username + ' joined the lobby.');
             LobbyManager.addSystemMessage(null, username + ' joined the lobby ' + lobby.displayName);
 
             //refresh lobby
             lobby = Lobbies.findOne(lobbyId);
-            var game = Games.findOne(lobby.currentGame);
+            const game = Games.findOne(lobby.currentGame);
 
             if (!game.active && !lobby.newGameStarting && lobby.players.length >= Meteor.settings[game.type].minimumPlayers) {
                 //game is inactive but we now have the minimum players. Start the game!
@@ -42,8 +42,8 @@ Meteor.methods({
 
         } else {
             //user is leaving the lobby
-            Lobbies.update(lobbyId, {$pull: {players: userId}});
-            let username = displayName(userId, true);
+            Lobbies.update(lobbyId, {$pull: {players: this.userId}});
+            username = displayName(this.userId, true);
             LobbyManager.addSystemMessage(lobbyId, username + ' left the lobby.');
             LobbyManager.addSystemMessage(null, username + ' left the lobby ' + lobby.displayName);
             //lobby should only be made inactive at the end of the round

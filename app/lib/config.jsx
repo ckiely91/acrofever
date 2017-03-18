@@ -19,6 +19,9 @@ AccountsTemplates.configure({
     positiveValidation: true,
     negativeFeedback: false,
     positiveFeedback: true,
+    sendVerificationEmail: true,
+    enforceEmailVerification: true,
+    showResendVerificationEmailLink: true,
     texts: {
         errors: {
             loginForbidden: "Login failed. Check your username/email and password.",

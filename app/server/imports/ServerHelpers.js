@@ -13,3 +13,8 @@ export function getUserEmail(user) {
 
     return null;
 }
+
+export function isShadowbanned(userId) {
+    const user = Meteor.users.findOne(userId, { fields: { 'profile.shadowbanned': true }});
+    return _.get(user, 'profile.shadowbanned', false);
+}
