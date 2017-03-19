@@ -232,8 +232,6 @@ const GameResultsTable = React.createClass({
             return b.score - a.score;
         });
 
-        console.log('Calculated game results');
-
         return results;
     },
     render() {

@@ -26,7 +26,6 @@ const ChooseCategory = React.createClass({
     },
     componentDidMount() {
         const form = $(this.form);
-        console.log(form);
         form.form({
             fields: {
                 customCategory: {

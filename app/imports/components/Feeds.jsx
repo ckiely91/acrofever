@@ -39,7 +39,6 @@ class ChatInput extends React.Component {
 
     watchForClicks(evt) {
         if (!$(evt.target).closest('.emoji-dialog').length) {
-            //console.log('clicked outside!');
             this.setState({showEmojiPicker: false});
             $(document).unbind('click', this.watchForClicks);
         }
@@ -59,7 +58,6 @@ class ChatInput extends React.Component {
     pickEmoji(data) {
         this.setState({showEmojiPicker: false});
         $(document).unbind('click', this.watchForClicks);
-        //console.log('Emoji chosen', JSON.stringify(data));
         
         const input = $(this.inputField);
         input.val(`${input.val().length > 0 ? input.val() + ' ' : ''}${data.shortname} `);

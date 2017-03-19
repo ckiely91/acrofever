@@ -92,7 +92,7 @@ const SingleEvent = React.createClass({
             const doReminder = () => {
                 Meteor.call('registerForReminder', this.props._id, (err) => {
                     button.removeClass('loading');
-                    if (err) console.log(err.reason);
+                    if (err) console.error(err.reason);
                 });
             };
 
@@ -102,7 +102,7 @@ const SingleEvent = React.createClass({
                 Meteor.call('isEmailAddressSet', (err, res) => {
                     if (err) {
                         button.removeClass('loading');
-                        console.log(err);
+                        console.error(err);
                     } else if (res === true) {
                         doReminder();
                     } else {
@@ -121,7 +121,7 @@ const SingleEvent = React.createClass({
         button.addClass('loading');
         Meteor.call('registerForReminder', this.props._id, true, (err) => {
             button.removeClass('loading');
-            if (err) console.log(err.reason);
+            if (err) console.error(err.reason);
         });
     },
     isInReminderList() {
@@ -250,7 +250,6 @@ class HofBanner extends React.Component {
     componentWillMount() {
         // Grab a sample of 5 random HOFs
         Meteor.call('getSampleHofEntries', 5, (err, res) => {
-            console.log(res);
             if (err) {
                 console.error("Error retrieving HOF entries: " + err.message);
                 this.setState({loading: false, error: true});
@@ -320,10 +319,8 @@ export const EventBanner = React.createClass({
                 behind = moment(events[i].date).subtract(2, 'h');
 
             if (now.isBetween(events[i].date, ahead)) {
-                console.log(i + ' is current');
                 currentEvent = events[i];
             } else if (now.isBetween(behind, events[i].date)) {
-                console.log(i + ' is future');
                 futureEvent = events[i];
             }
         }

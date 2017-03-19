@@ -75,7 +75,7 @@ export const HallOfFameAcros = React.createClass({
 
 
         Meteor.call('hallOfFameAcroCount', this.props.userId, (err, res) => {
-            if (err) return console.log(err);
+            if (err) return console.error(err);
             self.state.totalAcros.set(res);
         });
 

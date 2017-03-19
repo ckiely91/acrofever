@@ -60,7 +60,7 @@ export const HomeView = React.createClass({
         Meteor.call('findPlayNowLobbyId', function(err, res) {
             dimmer.dimmer('hide');
             if (err)
-                console.log(err);
+                console.error(err);
             else
                 FlowRouter.go(FlowRouter.path('lobby', {lobbyId: res}));
         });

@@ -132,3 +132,15 @@ export function checkBanCookie() {
         window.location.href = "http://google.com";
     }
 }
+
+export function isUserBanned(userId) {
+  if (!userId) return false;
+
+  const user = Meteor.users.findOne(userId, {
+    fields: {'profile.shadowbanned': true, 'profile.permabanned': true}
+  });
+
+  if (!user) return false;
+
+  return (_.get(user, 'profile.shadowbanned', false) || _.get(user, 'profile.permabanned', false));
+}
