@@ -1,3 +1,5 @@
+import { SendBlacklistedEmailNotification } from "./imports/Emails";
+
 Meteor.startup(function() {
 	// login service configuration
 	ServiceConfiguration.configurations.update(
@@ -66,6 +68,13 @@ Accounts.onCreateUser(function(options, user) {
 					console.log("Successfully added user to MailChimp list");
 				}
 			});
+	}
+
+	if (Meteor.settings.blacklistedEmailDomains && userDetails.email) {
+		const match = userDetails.email.match(/@(\w.+)/);
+		if (match && match[1] && Meteor.settings.blacklistedEmailDomains.indexOf(match[1]) > -1) {
+      SendBlacklistedEmailNotification(userDetails.email, user._id);
+		}
 	}
 
 	return user;

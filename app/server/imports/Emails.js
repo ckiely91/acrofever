@@ -115,7 +115,28 @@ export function SendShadowBannedNotification(bannedUserId, moderatorUserId, reas
         ${displayName(moderatorUserId)} (${moderatorUserId}) for the following reason: ${reason}`);
     email.setText(`The user ${displayName(bannedUserId)} (${bannedUserId}) has been ${banned ? 'BANNED' : 'UNBANNED'} by 
         ${displayName(moderatorUserId)} (${moderatorUserId}) for the following reason: ${reason}`);
-    email.addSmtpapiTo("christian@acrofever.com");
+
+    for (let i = 0; i < Meteor.settings.adminNotificationEmails.length; i++) {
+        email.addSmtpapiTo(Meteor.settings.adminNotificationEmails[i]);
+    }
+
+    sendgrid.send(email, (err, res) => {
+        if (err) return console.error(err);
+        console.log(res);
+    });
+}
+
+export function SendBlacklistedEmailNotification(emailAddr, userId) {
+    const email = new sendgrid.Email();
+    email.subject = `New signup with email ${emailAddr}`;
+    email.from = "no-reply@acrofever.com";
+    email.fromname = "Acrofever";
+    email.setHtml(`A user signed up with email address: ${emailAddr}. <a href="https://acrofever.com/profile/${userId}">Profile link</a>`);
+    email.setText(`A user signed up with email address: ${emailAddr}. Profile link: https://acrofever.com/profile/${userId}`);
+
+    for (let i = 0; i < Meteor.settings.adminNotificationEmails.length; i++) {
+        email.addSmtpapiTo(Meteor.settings.adminNotificationEmails[i]);
+    }
 
     sendgrid.send(email, (err, res) => {
         if (err) return console.error(err);
