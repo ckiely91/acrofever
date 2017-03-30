@@ -8,7 +8,7 @@ import {UpdateRecurringEvents} from './imports/Events';
 import {DecayUserSigmaForMonth} from './imports/Rankings';
 import PostToTwitter from './imports/PostToTwitter';
 
-import {Games, Lobbies, Categories} from '../imports/collections';
+import {Games, Lobbies, Categories, BannedIPs} from '../imports/collections';
 import {defaultCategories} from '../imports/statics';
 
 Meteor.startup(function() {
@@ -74,6 +74,14 @@ Meteor.startup(function() {
              }
          });
     });
+});
+
+// Block banned IPs
+Meteor.onConnection(connection => {
+	if (connection.clientAddress && BannedIPs.findOne({ ip: connection.clientAddress })) {
+    console.log("CLOSING CONNECTION FROM " + connection.clientAddress);
+		connection.close();
+	}
 });
 
 //start cron jobs

@@ -1,4 +1,4 @@
-import {HallOfFame, Nags, Events, Categories, Games, Lobbies} from '../../imports/collections';
+import {HallOfFame, Nags, Events, Categories, Games, Lobbies, BannedIPs} from '../../imports/collections';
 import {displayName} from '../../imports/helpers';
 import LobbyManager from '../imports/LobbyManager';
 import {SendShadowBannedNotification} from '../imports/Emails';
@@ -157,34 +157,38 @@ Meteor.methods({
 
     SendShadowBannedNotification(userId, this.userId, reason, ban);
   },
-  adminMakeModerator(userId, isModerator) {
+  adminMakeModerator(userId, isModerator, addSpecialTag) {
     if (!isAdminUser(this.userId))
       throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
 
-    const specialTag = {
-      tag: 'Mod',
-      color: 'grey'
-    };
+    const setObj = {};
 
     if (isModerator === true) {
-      Meteor.users.update(userId, {
-        $set: {
-          'profile.moderator': true
-        },
-        $addToSet: {
-          'profile.specialTags': specialTag
-        }
-      });
+      setObj["$set"] = {
+        'profile.moderator': true
+      };
+
+      if (addSpecialTag === true) {
+        setObj["$addToSet"] = {
+          'profile.specialTags': {
+            tag: 'Mod',
+            color: 'grey'
+          }
+        };
+      }
     } else {
-      Meteor.users.update(userId, {
-        $unset: {
-          'profile.moderator': true
-        },
-        $pull: {
-          'profile.specialTags': specialTag
-        }
-      });
+      setObj["$unset"] = {
+        'profile.moderator': true
+      };
     }
+
+    Meteor.users.update(userId, setObj);
+  },
+  adminBanIp(ipAddr) {
+    if (!isAdminUser(this.userId))
+      throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
+
+    BannedIPs.upsert({ ip: ipAddr }, { $set: { ip: ipAddr } });
   },
   adminVerifyAllEmails() {
     if (!isAdminUser(this.userId))
