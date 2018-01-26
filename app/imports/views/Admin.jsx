@@ -461,11 +461,16 @@ export const AdminCategories = React.createClass({
     getInitialState() {
         return {limit: 50}
     },
+    componentDidMount() {
+        $("#category_tabs .item").tab();
+    },
     getMeteorData() {
         Meteor.subscribe('adminCategories', this.state.limit);
+        Meteor.subscribe('adminActiveCategories');
 
         let data = {
-            categories: Categories.find({custom: true}, {sort: {createdAt: -1}}).fetch()
+            categories: Categories.find({custom: true}, {sort: {createdAt: -1}}).fetch(),
+            activeCategories: Categories.find({active: true}, {sort: {createdAt: -1}}).fetch()
         };
 
         let userIds = _.uniq(data.categories.map(c => c.userId));
@@ -479,25 +484,72 @@ export const AdminCategories = React.createClass({
            limit: this.state.limit + 50
         });
     },
+    deleteActiveCategory(evt, itemId) {
+        evt.preventDefault();
+        Meteor.call('adminEditCategory', itemId, { delete: true }, (err) => {
+            if (err) alert(err);
+        });
+    },
+    addCategory(evt) {
+        evt.preventDefault();
+        const $btn = $(evt.currentTarget);
+        $btn.addClass('loading');
+        const category = $(this.addCategoryInput).val();
+        Meteor.call('adminAddCategory', category, (err) => {
+            if (err) {
+                alert(err);
+            } else {
+                this.addCategoryInput.value = "";
+            }
+            $btn.removeClass('loading');
+        });
+    },
     render() {
         return (
             <div>
                 <a href="" onClick={() => window.history.back()} className="ui labeled icon button"><i className="arrow left icon"></i> Back</a>
-                <h2 className="ui header">Approve Categories</h2>
-                <table className="ui table">
-                    <thead>
-                    <tr>
-                        <th className="two wide">Created</th>
-                        <th className="two wide">User</th>
-                        <th className="six wide">Category</th>
-                        <th className="two wide"></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {this.data.categories.map((item) => <AdminCategoryRow key={item._id} {...item} />)}
-                    </tbody>
-                </table>
-                <button className="ui button" onClick={this.getMore}>Get more</button>
+                <div className="ui top attached tabular menu" id="category_tabs">
+                    <a className="item active" data-tab="first">Approve Category Submissions</a>
+                    <a className="item" data-tab="second">Manage All Categories</a>
+                </div>
+                <div className="ui bottom attached tab segment active" data-tab="first">
+                    <table className="ui table">
+                        <thead>
+                        <tr>
+                            <th className="two wide">Created</th>
+                            <th className="two wide">User</th>
+                            <th className="six wide">Category</th>
+                            <th className="two wide"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {this.data.categories.map((item) => <AdminCategoryRow key={item._id} {...item} />)}
+                        </tbody>
+                    </table>
+                    <button className="ui button" onClick={this.getMore}>Get more</button>
+                </div>
+                <div className="ui bottom attached tab segment" data-tab="second">
+                    <div className="ui fluid action input">
+                        <input type="text" placeholder="Add category" ref={ref => this.addCategoryInput = ref} />
+                        <button className="ui icon button" onClick={this.addCategory}><i className="plus icon"></i></button>
+                    </div>
+                    <table className="ui selectable celled table">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th />
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {this.data.activeCategories.map((item) => (
+                                <tr key={item._id}>
+                                    <td>{item.category}</td>
+                                    <td><a href="#" onClick={(evt) => this.deleteActiveCategory(evt, item._id)}>Delete</a></td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         );
     }

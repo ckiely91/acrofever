@@ -40,6 +40,24 @@ Meteor.methods({
       Categories.update(id, {$set: {category: options.category, editedBy: this.userId}});
     }
   },
+  adminAddCategory(category) {
+    if (!isAdminUser(this.userId) && !isModerator(this.userId))
+      throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');
+
+    if (category.length > 0) {
+      Categories.upsert(
+        {category},
+        {
+          $setOnInsert: {
+            custom: true,
+            active: true,
+            userId: this.userId,
+            createdAt: new Date()
+          }
+        }
+      );
+    }
+  },
   adminAddNag(fields) {
     if (!isAdminUser(this.userId))
       throw new Meteor.Error('no-permission', 'You don\'t have permission to do that');

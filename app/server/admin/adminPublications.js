@@ -43,6 +43,18 @@ Meteor.publish('adminCategories', function(limit) {
     });
 });
 
+Meteor.publish('adminActiveCategories', function() {
+	if (!isAdminUser(this.userId) && !isModerator(this.userId))
+		return [];
+
+	return Categories.find({
+	    active: true,
+        deleted: {$ne: true}
+	}, {
+	    sort: {createdAt: -1}
+    });
+});
+
 function isAdminUser(userId) {
     console.log(Meteor.settings.adminUsers);
 	return (Meteor.settings.adminUsers.indexOf(userId) > -1);
