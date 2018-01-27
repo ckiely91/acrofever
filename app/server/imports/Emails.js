@@ -17,7 +17,6 @@ export function SendReminderEmails() {
     });
     
     if (events.count() === 0) {
-        console.log("No events coming up in the next fifteen");
         return;
     }
     
@@ -54,15 +53,9 @@ export function SendReminderEmails() {
                 }
             });
 
-            console.log('email constructed');
-            console.log(JSON.stringify(email));
-
             sendgrid.send(email, (err, res) => {
                 if (err) return console.error(err);
-                console.log(res);
             });
-        } else {
-            console.log('No user reminders set for this');
         }
 
         Events.update(event._id, {$set: {notificationsSent: true}});
@@ -91,7 +84,6 @@ export function SendInviteEmail(user, lobby, inviterId) {
         link = FlowRouter.url('lobby', {lobbyId: lobby._id});
 
     if (!userEmail) {
-        console.log('No user email');
         return;
     }
 
@@ -102,7 +94,6 @@ export function SendInviteEmail(user, lobby, inviterId) {
 
     sendgrid.send(email, (err, res) => {
         if (err) return console.error(err);
-        console.log(res);
     });
 }
 
@@ -122,7 +113,6 @@ export function SendShadowBannedNotification(bannedUserId, moderatorUserId, reas
 
     sendgrid.send(email, (err, res) => {
         if (err) return console.error(err);
-        console.log(res);
     });
 }
 
@@ -140,6 +130,5 @@ export function SendBlacklistedEmailNotification(emailAddr, userId) {
 
     sendgrid.send(email, (err, res) => {
         if (err) return console.error(err);
-        console.log(res);
     });
 }

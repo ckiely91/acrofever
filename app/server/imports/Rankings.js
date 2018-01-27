@@ -62,7 +62,6 @@ trueskill.SetParameters(trueskillBeta, trueskillEpsilon, null, trueskillGamma);
 
 export const RecalculateRankingForGame = (game, date) => {
     if (game.unranked === true) {
-        console.log(`Game ${game._id} is unranked!`);
         return;
     }
 
@@ -112,7 +111,6 @@ export const RecalculateRankingForGame = (game, date) => {
 
 export const DecayUserSigmaForMonth = (date) => {
     date = date ? moment(date) : moment();
-    console.log("Decaying ranking sigma for month of " + date.format('MM-YYYY'));
 
     const decaySigma = 0.5;
 
@@ -149,8 +147,6 @@ export const DecayUserSigmaForMonth = (date) => {
 
     const usersNotPlayed = _.difference(knownUsers, usersPlayed);
 
-    console.log("Decaying " + usersNotPlayed.length + "users");
-
     Meteor.users.find({
         _id: {$in: usersNotPlayed},
         'profile.trueskill.sigma': {$lte: initialSigma - decaySigma}
@@ -163,7 +159,6 @@ export const DecayUserSigmaForMonth = (date) => {
                 'profile.trueskill.skillEstimate': newSkillEstimate
             }
         });
-        console.log(`Updated player ${user._id}: Sigma ${newSigma}, Estimate ${newSkillEstimate}`);
     });
 
 };
@@ -191,7 +186,6 @@ export const RecalculateAllRankings = () => {
         RecalculateRankingForGame(game, game.created);
 
         curGame++;
-        console.log("Recalculated rankings for " + curGame + " of " + totalGames);
     });
 };
 

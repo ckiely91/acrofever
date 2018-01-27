@@ -64,8 +64,6 @@ Accounts.onCreateUser(function(options, user) {
 				if (error) {
 					console.log("Error adding user to MailChimp list");
 					console.log(error);
-				} else {
-					console.log("Successfully added user to MailChimp list");
 				}
 			});
 	}

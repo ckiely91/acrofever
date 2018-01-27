@@ -144,7 +144,6 @@ Meteor.methods({
       Meteor.users.update(user._id, {$set: {'profile.stats': {gamesPlayed: playedGames, gamesWon: wonGames}}});
 
       curUser++;
-      console.log("recalculated for user " + curUser + " of " + total);
     });
   },
   adminShadowbanUser(userId, ban, reason) {

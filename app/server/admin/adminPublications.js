@@ -56,7 +56,6 @@ Meteor.publish('adminActiveCategories', function() {
 });
 
 function isAdminUser(userId) {
-    console.log(Meteor.settings.adminUsers);
 	return (Meteor.settings.adminUsers.indexOf(userId) > -1);
 }
 

@@ -16,7 +16,6 @@ export function notify(title, body, image) {
         });
         setTimeout(n.close.bind(n), 4000);
     } else if (Notification.permission === "default") {
-        console.log('default permission');
         Notification.requestPermission(function(result) {
             if (result === 'granted') {
                 Meteor.call('toggleNotifications', true);

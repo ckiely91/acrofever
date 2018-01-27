@@ -7,11 +7,10 @@ export default function() {
     console.log("Running PostToTwitter job");
     const entries = HallOfFame.find({active: true, postedToTwitter: {$ne: true}});
 
-    if (entries.count() === 0) return console.log("No entries to post!");
+    if (entries.count() === 0) return;
 
     // get a random entry
     const hofEntry = _.sample(entries.fetch());
-    console.log(`Posting ${hofEntry._id} to twitter`);
 
     postToTwitter(hofEntry, Meteor.bindEnvironment((err) => {
         if (err) {
@@ -50,8 +49,6 @@ function postToTwitter(hofEntry, callback) {
         tweet += ', by ' + username.str;
     }
 
-    console.log(tweet);
-
     const client = new Twitter({
         consumer_key: Meteor.settings.twitterPoster.consumerKey,
         consumer_secret: Meteor.settings.twitterPoster.consumerSecret,
@@ -63,7 +60,6 @@ function postToTwitter(hofEntry, callback) {
         if (err)
             return callback(err);
 
-        console.log('Posted tweet');
         callback();
     });
 

@@ -8,8 +8,6 @@ const AcrofeverGameManager = {
         //this function assumes that checks have already been made to ensure this game SHOULD go active
         const game = Games.findOne(gameId);
 
-        console.log('Making game ' + gameId + ' active');
-
         if (!game || game.active) {
             Logger.warn('AcrofeverGameManager.makeGameActive was called on a nonexistent or already active game', {gameId: gameId});
             console.error('AcrofeverGameManager.makeGameActive was called on a nonexistent or already active game: ' + gameId);
@@ -40,11 +38,8 @@ const AcrofeverGameManager = {
     makeGameInactive(gameId) {
         const game = Games.findOne(gameId);
 
-        console.log('Making game' + gameId + ' inactive');
-
         if (!game || !game.active) {
             Logger.warn('AcrofeverGameManager.makeGameInactive was called on a nonexistent or already inactive game', {gameId: gameId});
-            console.log('AcrofeverGameManager.makeGameInactive was called on a nonexistent or already inactive game: ' + gameId);
             return;
         }
 
@@ -80,7 +75,6 @@ const AcrofeverGameManager = {
             const gameId = Games.insert(newGame);
 
             Logger.info('New game started', {lobbyId: lobbyId, gameId: gameId});
-            console.log('New game started');
 
             Lobbies.update(lobbyId, {$push: {games: gameId}, $set: {currentGame: gameId, newGameStarting: false}, $currentDate: {lastUpdated: true}});
             LobbyManager.addSystemMessage(lobbyId, 'New game started.');
@@ -199,7 +193,6 @@ const AcrofeverGameManager = {
             gameId: gameId,
             currentPhase: currentPhase
         });
-        console.log('Advancing game phase for ' + gameId);
 
         switch (currentPhase) {
             case 'category':

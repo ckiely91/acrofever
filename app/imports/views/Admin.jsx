@@ -49,7 +49,6 @@ export const AdminEvents = React.createClass({
 
         fields.date = moment(fields.date, 'DD-MM-YYYY HH:mm Z').toDate();
         fields.recurring = fields.recurring ? true : false;
-        console.log(fields);
         
         var $form = $(evt.currentTarget),
             $btn = $form.find('button');
@@ -414,7 +413,6 @@ const AdminCategoryRow = React.createClass({
         const $btn = $(evt.currentTarget);
         $btn.addClass('loading');
         const category = $(this.categoryInput).val();
-        console.log(this.props._id, category);
         Meteor.call('adminEditCategory', this.props._id, {edit: true, category}, (err) => {
             $btn.removeClass('loading');
             if (err) alert(err);
