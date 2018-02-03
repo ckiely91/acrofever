@@ -12,7 +12,7 @@ class Home extends Component {
       <Container>
         <StatusBar barStyle="light-content" />
         <ImageBackground source={launchscreenBg} style={styles.imageContainer}>
-          <View style={{ marginBottom: 80 }}>
+          <View style={{ marginTop: 80 }}>
             <Button
               style={{ backgroundColor: "#6FAF98", alignSelf: "center" }}
               onPress={() => this.props.navigation.navigate("DrawerOpen")}
