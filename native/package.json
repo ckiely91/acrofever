@@ -23,10 +23,13 @@
   "dependencies": {
     "@expo/vector-icons": "^6.2.2",
     "expo": "^25.0.0",
+    "lodash": "^4.17.4",
+    "moment": "^2.20.1",
     "native-base": "^2.3.7",
     "prop-types": "^15.6.0",
     "react": "16.2.0",
     "react-native": "0.52.0",
+    "react-native-keyboard-aware-scroll-view": "^0.4.3",
     "react-native-meteor": "^1.2.0",
     "react-navigation": "^1.0.0-beta.27"
   }

@@ -19,8 +19,8 @@ const listData = [
     route: "Home"
   },
   {
-    name: "Other",
-    route: "Other"
+    name: "Lobbies",
+    route: "LobbyList"
   },
   {
     name: "Log out",

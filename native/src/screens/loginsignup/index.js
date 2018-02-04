@@ -10,7 +10,8 @@ import {
   Label,
   Button,
   Text,
-  Spinner
+  Spinner,
+  Toast
 } from "native-base";
 
 import styles from "./styles";
@@ -31,6 +32,13 @@ class LoginSignup extends Component {
     Meteor.loginWithPassword(this.state.username, this.state.password, (err) => {
       if (err) {
         console.log("error logging in", err);
+        Toast.show({
+          type: "danger",
+          text: "Incorrect username or password entered",
+          position: "bottom",
+          buttonText: "Okay",
+          duration: 5000
+        });
       }
     });
   }

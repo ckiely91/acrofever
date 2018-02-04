@@ -2,6 +2,7 @@ import * as Expo from "expo";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Meteor, { createContainer } from "react-native-meteor";
+import { Root } from "native-base";
 
 import App from "../App";
 import LoginSignup from "../screens/loginsignup";
@@ -44,7 +45,7 @@ class Setup extends Component {
     }
 
     if (!this.props.user) {
-      return <LoginSignup loggingIn={this.props.loggingIn} />;
+      return <Root><LoginSignup loggingIn={this.props.loggingIn} /></Root>;
     }
 
     return <App />;

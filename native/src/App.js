@@ -3,12 +3,16 @@ import { Root } from "native-base";
 import { StackNavigator, DrawerNavigator } from "react-navigation";
 
 import Home from "./screens/home";
+import LobbyList from "./screens/lobbylist";
+import Lobby from "./screens/lobby";
 import Other from "./screens/other";
 import SideBar from "./screens/sidebar";
 
 const Drawer = DrawerNavigator(
   {
     Home: { screen: Home },
+    LobbyList: { screen: LobbyList },
+    Lobby: { screen: Lobby },
     Other: { screen: Other }
   },
   {
