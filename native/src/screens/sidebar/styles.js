@@ -1,13 +1,17 @@
-const React = require("react-native");
-const { Platform, Dimensions } = React;
-
+import { Platform, Dimensions } from "react-native";
 const deviceHeight = Dimensions.get("window").height;
 const deviceWidth = Dimensions.get("window").width;
 
+import * as base from "../../styles/base";
+
 export default {
+  content: {
+    flex: 1,
+    backgroundColor: base.colors.black
+  },
   drawerCover: {
     alignSelf: "stretch",
-    height: deviceHeight / 3.5,
+    height: deviceHeight / 4.5,
     width: null,
     position: "relative",
     marginBottom: 10
@@ -18,11 +22,12 @@ export default {
     top: Platform.OS === "android" ? deviceHeight / 13 : deviceHeight / 12,
     width: 210,
     height: 75,
-    resizeMode: "cover"
+    // resizeMode: "cover"
   },
   text: {
-    fontWeight: Platform.OS === "ios" ? "500" : "400",
-    fontSize: 16,
+    ...base.text,
+    color: base.colors.white,
     marginLeft: 20
-  }
+  },
+  list: base.colors.red
 };

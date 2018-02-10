@@ -17,6 +17,7 @@ class GameVotingPhase extends Component {
   static propTypes = {
     gameId: PropTypes.string.isRequired,
     currentRound: PropTypes.object.isRequired,
+    currentUserIsInRound: PropTypes.bool.isRequired,
     userId: PropTypes.string.isRequired
   }
 
@@ -78,20 +79,25 @@ class GameVotingPhase extends Component {
 
   render() {
     const acros = this.getAcros();
-    console.log("user has voted for ", this.state.votedFor);
 
     return(
       <View style={{ padding: 10 }}>
         <Card>
           <CardItem header>
-            <Text>Pick your favourite acro</Text>
+            <Text>{this.props.currentUserIsInRound ? "Pick your favourite acro" : "Players are picking their favourite acro..."}</Text>
           </CardItem>
           {acros.map(a => (
-            <CardItem key={a.id} button onPress={() => this.voteForAcro(a.id)}>
+            <CardItem 
+              key={a.id} 
+              button 
+              onPress={this.props.currentUserIsInRound ? () => this.voteForAcro(a.id) : null}
+            >
               <Text>{a.acro}</Text>
-              <Right>
-                <Radio selected={a.id === this.state.votedFor} />
-              </Right>
+              {this.props.currentUserIsInRound && (
+                <Right>
+                  <Radio selected={a.id === this.state.votedFor} />
+                </Right>
+              )}
             </CardItem>
           ))}
         </Card>

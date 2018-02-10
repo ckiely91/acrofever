@@ -8,10 +8,11 @@ import App from "../App";
 import LoginSignup from "../screens/loginsignup";
 import { startTimesync } from "../timesync";
 
-const host = "192.168.0.16:3000";
-const protocol = "http";
+import { fonts } from "../styles/base";
 
-Meteor.connect(`ws://${host}/websocket`);
+import env from "../env";
+
+Meteor.connect(`ws://${env.host}/websocket`);
 
 class Setup extends Component {
   static propTypes = {
@@ -23,34 +24,52 @@ class Setup extends Component {
     user: null
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      isReady: false
+      isReady: false,
+      initialLoggingIn: props.loggingIn
     };
   }
 
   componentWillMount() {
     this.loadFonts();
-    startTimesync(`${protocol}://${host}/timesync`, 20000);
+    startTimesync(`${env.protocol}://${env.host}/timesync`, 20000);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.loggingIn === false && this.state.initialLoggingIn) {
+      this.setState({ initialLoggingIn: false });
+    }
   }
 
   async loadFonts() {
     await Expo.Font.loadAsync({
-      Roboto: require("native-base/Fonts/Roboto.ttf"),
-      Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
-      Ionicons: require("@expo/vector-icons/fonts/Ionicons.ttf")
+      [fonts.pacifico]: require("../../assets/fonts/Pacifico-Regular.ttf"),
+      [fonts.openSans.regular]: require("../../assets/fonts/OpenSans-Regular.ttf"),
+      [fonts.openSans.italic]: require("../../assets/fonts/OpenSans-Italic.ttf"),
+      [fonts.openSans.light]: require("../../assets/fonts/OpenSans-Light.ttf"),
+      [fonts.openSans.lightItalic]: require("../../assets/fonts/OpenSans-LightItalic.ttf"),
+      [fonts.openSans.bold]: require("../../assets/fonts/OpenSans-Bold.ttf"),
+      [fonts.openSans.boldItalic]: require("../../assets/fonts/OpenSans-BoldItalic.ttf"),
+      [fonts.roboto.regular]: require("native-base/Fonts/Roboto.ttf"),
+      [fonts.roboto.medium]: require("native-base/Fonts/Roboto_medium.ttf"),
+      [fonts.ionicons]: require("@expo/vector-icons/fonts/Ionicons.ttf")
     });
     this.setState({ isReady: true });
   }
 
   render() {
-    if (!this.state.isReady) {
+    if (!this.state.isReady || (!this.props.user && this.state.initialLoggingIn)) {
       return <Expo.AppLoading />;
     }
 
     if (!this.props.user) {
-      return <Root><LoginSignup loggingIn={this.props.loggingIn} /></Root>;
+      return (
+        <Root>
+          <LoginSignup />
+        </Root>
+      );
     }
 
     return <App />;

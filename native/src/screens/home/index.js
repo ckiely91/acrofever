@@ -1,26 +1,39 @@
 import React, { Component } from "react";
-import { ImageBackground, View, StatusBar } from "react-native";
-import { Container, Button, Text } from "native-base";
+import { View, StatusBar } from "react-native";
+import { Container, Button, Text, H3 } from "native-base";
 
+import ImageBackgroundRepeat from "../../components/ImageBackgroundRepeat";
 import styles from "./styles";
 
-const launchscreenBg = require("../../../assets/splash-720x1280.png");
+const launchscreenBg = require("../../../assets/acro-bg-pattern.png");
 
 class Home extends Component {
   render() {
     return (
       <Container>
-        <StatusBar barStyle="light-content" />
-        <ImageBackground source={launchscreenBg} style={styles.imageContainer}>
-          <View style={{ marginTop: 80 }}>
+        <StatusBar />
+        <ImageBackgroundRepeat source={launchscreenBg} style={styles.imageContainer}>
+          <View style={styles.logoContainer}>
+            <Text style={styles.logoText}>Acrofever!</Text>
+          </View>
+          <View
+            style={{
+              alignItems: "center",
+              marginBottom: 50,
+              backgroundColor: "transparent"
+            }}
+          >
+            <H3 style={styles.text}>Mobile Alpha</H3>
+          </View>
+          <View style={{ marginBottom: 80 }}>
             <Button
-              style={{ backgroundColor: "#6FAF98", alignSelf: "center" }}
+              style={styles.button}
               onPress={() => this.props.navigation.navigate("DrawerOpen")}
             >
-              <Text>Lets Go!</Text>
+              <Text style={styles.buttonText}>Lets Go!</Text>
             </Button>
           </View>
-        </ImageBackground>
+        </ImageBackgroundRepeat>
       </Container>
     );
   }

@@ -4,13 +4,8 @@ import PropTypes from "prop-types";
 import { uniq as _uniq, difference as _difference } from "lodash";
 import {
   Container,
-  Content,
   Text,
-  List, 
-  ListItem,
   Icon,
-  Body, 
-  Right,
   Footer,
   FooterTab,
   Button,

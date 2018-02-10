@@ -10,7 +10,6 @@ import {
   Thumbnail,
   Body,
   Text,
-  Button,
   Icon,
   Right
 } from "native-base";
@@ -20,6 +19,7 @@ import { getUserById, profilePicture, displayName } from "../../helpers";
 const EndRoundPlayerCard = ({
   user,
   accolades,
+  winner,
   acro,
   numVotes,
   numPoints
@@ -29,6 +29,7 @@ const EndRoundPlayerCard = ({
       <Left>
         <Thumbnail source={{ uri: profilePicture(user, 150) }} />
         <Body>
+          {winner && <Icon name="star" />}
           <Text>{displayName(user)}</Text>
           {accolades.length > 0 && <Text note>{accolades.join(", ")}</Text>}
         </Body>
@@ -61,8 +62,9 @@ EndRoundPlayerCard.propTypes = {
   numPoints: PropTypes.number
 };
 
-class GameEndRoundPhase extends Component {
+export class RoundResults extends Component {
   static propTypes = {
+    title: PropTypes.string.isRequired,
     currentRound: PropTypes.object.isRequired,
     users: PropTypes.array.isRequired,
     userId: PropTypes.string.isRequired
@@ -83,7 +85,8 @@ class GameEndRoundPhase extends Component {
       const playerId = playerIds[i];
       const playerObj = this.props.currentRound.players[playerId];
       const accolades = [];
-      if (playerId === this.props.currentRound.winner) {
+      const winner = playerId === this.props.currentRound.winner;
+      if (winner) {
         accolades.push("Round winner");
       }
 
@@ -95,6 +98,7 @@ class GameEndRoundPhase extends Component {
       roundAcros.push({
         ...playerObj,
         accolades,
+        winner,
         playerId
       });
     }
@@ -106,7 +110,7 @@ class GameEndRoundPhase extends Component {
       }
     }
 
-    roundAcros.sort((a, b) => (GameEndRoundPhase.totalPoints(b) - GameEndRoundPhase.totalPoints(a)));
+    roundAcros.sort((a, b) => (RoundResults.totalPoints(b) - RoundResults.totalPoints(a)));
 
     return roundAcros;
   }
@@ -114,20 +118,33 @@ class GameEndRoundPhase extends Component {
   render() {
     return (
       <View style={{ padding: 10 }}>
-        <H2>Round results</H2>
+        <H2>{this.props.title}</H2>
         {this.roundAcros().map(a => (
           <EndRoundPlayerCard
             key={a.playerId}
             user={getUserById(this.props.users, a.playerId)}
+            winner={a.winner}
             accolades={a.accolades}
             acro={a.submission ? a.submission.acro : null}
             numVotes={a.votes}
-            numPoints={GameEndRoundPhase.totalPoints(a)}
+            numPoints={RoundResults.totalPoints(a)}
           />
         ))}
       </View>
     );
   }
 }
+
+const GameEndRoundPhase = ({ currentRound, users, userId }) => (
+  <View style={{ padding: 10 }}>
+    <RoundResults title="Round results" currentRound={currentRound} users={users} userId={userId} />
+  </View>
+);
+
+GameEndRoundPhase.propTypes = {
+  currentRound: PropTypes.object.isRequired,
+  users: PropTypes.array.isRequired,
+  userId: PropTypes.string.isRequired
+};
 
 export default GameEndRoundPhase;

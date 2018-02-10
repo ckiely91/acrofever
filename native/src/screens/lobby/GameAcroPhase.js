@@ -16,6 +16,7 @@ import {
 class GameAcroPhase extends Component {
   static propTypes = {
     gameId: PropTypes.string.isRequired,
+    currentUserIsInRound: PropTypes.bool.isRequired,
     submittedAcro: PropTypes.string
   }
 
@@ -40,7 +41,6 @@ class GameAcroPhase extends Component {
   }
 
   submitAcro = () => {
-    console.log("submitted acro", this.state.writtenAcro);
     this.setState({ loading: true });
 
     Meteor.call('acrofeverSubmitAcro', this.props.gameId, this.state.writtenAcro, (err) => {
@@ -51,6 +51,14 @@ class GameAcroPhase extends Component {
   }
 
   render() {
+    if (!this.props.currentUserIsInRound) {
+      return (
+        <View style={{ padding: 10 }}>
+          <Text>Players are submitting their acros...</Text>
+        </View>
+      );
+    }
+
     return (
       <View style={{ padding: 10 }}>
         {this.state.editMode ? (

@@ -9,18 +9,32 @@ import {
   Body
 } from "native-base";
 
+import * as base from "../styles/base";
+
+const styles = {
+  header: {
+    backgroundColor: base.colors.red
+  },
+  icon: {
+    color: base.colors.white
+  },
+  title: {
+    color: base.colors.white
+  }
+}
+
 const StandardHeader = ({ navigation, title, rightContent, goBack }) => (
-  <Header>
+  <Header style={styles.header}>
     <Left>
       <Button
         transparent
         onPress={goBack ? () => navigation.goBack() : () => navigation.navigate("DrawerOpen")}
       >
-        <Icon name={goBack ? "arrow-back" : "ios-menu"} />
+        <Icon name={goBack ? "arrow-back" : "ios-menu"} style={styles.icon} />
       </Button>
     </Left>
     <Body>
-      <Title>{title}</Title>
+      <Title style={styles.title}>{title}</Title>
     </Body>
     <Right>{rightContent}</Right>
   </Header>

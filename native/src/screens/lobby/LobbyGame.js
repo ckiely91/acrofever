@@ -25,12 +25,14 @@ import GameCategoryPhase from "./GameCategoryPhase";
 import GameAcroPhase from "./GameAcroPhase";
 import GameVotingPhase from "./GameVotingPhase";
 import GameEndRoundPhase from "./GameEndRoundPhase";
+import GameEndGamePhase from "./GameEndGamePhase";
 
 import { now } from "../../timesync";
 import { getUserById, profilePicture, displayName } from "../../helpers";
 
 const GameViewSwitcher = ({ lobby, game, users, user }) => {
   const currentRound = game.rounds[game.currentRound - 1];
+  const currentUserIsInRound = !!currentRound.players[user._id];
 
   switch(game.currentPhase) {
     case "category":
@@ -46,6 +48,7 @@ const GameViewSwitcher = ({ lobby, game, users, user }) => {
       return (
         <GameAcroPhase
           gameId={game._id}
+          currentUserIsInRound={currentUserIsInRound}
           submittedAcro={_get(currentRound, `players.${user._id}.submission.acro`)}
         />
       );
@@ -54,6 +57,7 @@ const GameViewSwitcher = ({ lobby, game, users, user }) => {
         <GameVotingPhase
           gameId={game._id}
           userId={user._id}
+          currentUserIsInRound={currentUserIsInRound}
           currentRound={currentRound}
         />
       );
@@ -64,7 +68,18 @@ const GameViewSwitcher = ({ lobby, game, users, user }) => {
           users={users}
           userId={user._id}
         />
-      )
+      );
+    case "endgame":
+      return (
+        <GameEndGamePhase
+          currentRound={currentRound}
+          rounds={game.rounds}
+          scores={game.scores}
+          winner={game.gameWinner}
+          users={users}
+          userId={user._id}
+        />
+      );
     default:
       return (
         <View><Text>Phase not implemented</Text></View>

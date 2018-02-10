@@ -1,5 +1,6 @@
-const React = require("react-native");
-const { Dimensions, Platform } = React;
+import { Dimensions } from "react-native";
+import * as base from "../../styles/base";
+
 const deviceHeight = Dimensions.get("window").height;
 
 export default {
@@ -13,16 +14,19 @@ export default {
     marginTop: deviceHeight / 8,
     marginBottom: 30
   },
-  logo: {
-    position: "absolute",
-    left: Platform.OS === "android" ? 40 : 50,
-    top: Platform.OS === "android" ? 35 : 60,
-    width: 280,
-    height: 100
+  logoText: {
+    ...base.logo
   },
   text: {
-    color: "#D8D8D8",
+    ...base.text,
     bottom: 6,
     marginTop: 5
+  },
+  button: {
+    ...base.buttonPrimary,
+    alignSelf: "center"
+  },
+  buttonText: {
+    ...base.buttonPrimaryText
   }
 };

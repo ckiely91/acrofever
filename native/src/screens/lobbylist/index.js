@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { StatusBar } from "react-native";
 import {
   Container,
   Content,
@@ -27,9 +28,9 @@ class LobbyList extends Component {
   }
 
   render() {
-    console.log("lobbies", this.props.lobbies);
     return (
       <Container>
+        <StatusBar />
         <StandardHeader navigation={this.props.navigation} title="Lobbies" />
         <Content>
           <List>

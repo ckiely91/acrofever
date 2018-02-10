@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import Meteor from "react-native-meteor";
-import PropTypes from "prop-types";
-import { ImageBackground, View } from "react-native";
+import { Alert, View, KeyboardAvoidingView, StatusBar, Linking } from "react-native";
 import { 
   Container,
   Form,
@@ -14,73 +13,110 @@ import {
   Toast
 } from "native-base";
 
+import ImageBackgroundRepeat from "../../components/ImageBackgroundRepeat";
+
 import styles from "./styles";
 
-const launchscreenBg = require("../../../assets/splash-720x1280.png");
+const launchscreenBg = require("../../../assets/acro-bg-pattern.png");
 
 class LoginSignup extends Component {
-  static propTypes = {
-    loggingIn: PropTypes.bool.isRequired
-  }
-
   state = {
     username: "",
     password: ""
   }
 
   login = () => {
+    this.setState({ loggingIn: true });
     Meteor.loginWithPassword(this.state.username, this.state.password, (err) => {
       if (err) {
         console.log("error logging in", err);
         Toast.show({
-          type: "danger",
+          type: "warning",
           text: "Incorrect username or password entered",
           position: "bottom",
           buttonText: "Okay",
           duration: 5000
         });
+        this.setState({ loggingIn: false });
       }
     });
+  }
+
+  signup = () => {
+    Alert.alert(
+      "Sign up on acrofever.com",
+      `Signing up must currently be done at acrofever.com. Create a new account there and then re-open the app to sign in. Third party services (such as Facebook, Google and Twitter) are not yet supported on mobile.`,
+      [
+        { text: 'Go to acrofever.com', onPress: () => Linking.openURL("https://acrofever.com")},
+        { text: "Dismiss" }
+      ]
+    );
+  }
+
+  showSigninHelpMsg = () => {
+    Alert.alert(
+      "Not yet supported",
+      `Signing in with third party services is not yet supported on the mobile app.
+If you have previously signed up with Facebook, Google, or Twitter, log in to acrofever.com and set a password on your account.`,
+      [
+        { text: 'Go to acrofever.com', onPress: () => Linking.openURL("https://acrofever.com")},
+        { text: "Dismiss" }
+      ]
+    );
   }
 
   render() {
     return (
       <Container>
-        <ImageBackground source={launchscreenBg} style={styles.imageContainer}>
-          <View>
-            <Form>
-              <Item floatingLabel>
-                <Label>Username/email</Label>
-                <Input
-                  onChangeText={(username) => this.setState({ username })}
-                  value={this.state.username} 
-                  onSubmitEditing={this.login}
-                />
-              </Item>
-              <Item floatingLabel>
-                <Label>Password</Label>
-                <Input 
-                  secureTextEntry 
-                  onChangeText={(password) => this.setState({ password })}
-                  value={this.state.password}
-                  onSubmitEditing={this.login}
-                />
-              </Item>
-            </Form>
-            <Button 
-              block 
-              disabled={this.props.loggingIn} 
-              onPress={this.login}
-            >
-              {this.props.loggingIn ? (
-                <Spinner color="black" />
-              ) : (
-                <Text>Log in</Text>
-              )}
-            </Button>
-            <Button block light><Text>Sign up</Text></Button>
-          </View>
-        </ImageBackground>
+        <StatusBar />
+        <ImageBackgroundRepeat source={launchscreenBg} style={styles.imageContainer}>
+          <KeyboardAvoidingView behavior="padding" style={{ flex: 1, justifyContent: "flex-end" }}>
+            <View style={styles.logoContainer}>
+              <Text style={styles.logoText}>Acrofever!</Text>
+            </View>
+            <View style={styles.formContainer}>
+              <Form style={styles.form}>
+                <Item>
+                  <Input
+                    style={styles.text}
+                    placeholder="Username/email"
+                    onChangeText={(username) => this.setState({ username })}
+                    value={this.state.username} 
+                    onSubmitEditing={this.login}
+                  />
+                </Item>
+                <Item>
+                  <Input
+                    style={styles.text}
+                    placeholder="Password"
+                    secureTextEntry 
+                    onChangeText={(password) => this.setState({ password })}
+                    value={this.state.password}
+                    onSubmitEditing={this.login}
+                  />
+                </Item>
+              </Form>
+              <Button 
+                block
+                style={styles.buttonPrimary}
+                disabled={this.state.loggingIn} 
+                onPress={this.login}
+              >
+                {this.state.loggingIn ? (
+                  <Spinner color="white" />
+                ) : (
+                  <Text style={styles.buttonPrimaryText}>Log in</Text>
+                )}
+              </Button>
+              <Button block light style={styles.buttonSecondary} onPress={this.signup}>
+                <Text style={styles.buttonSecondaryText}>Sign up</Text>
+              </Button>
+              <Button transparent onPress={this.showSigninHelpMsg}>
+                <Text style={styles.smallLinkText}>Trying to sign in with Facebook, Google or Twitter?</Text>
+              </Button>
+            </View>
+          </KeyboardAvoidingView>
+        </ImageBackgroundRepeat>
       </Container>
     );
   }

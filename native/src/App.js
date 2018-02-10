@@ -1,6 +1,10 @@
+import * as Expo from "expo";
 import React from "react";
-import { Root } from "native-base";
+import { Platform } from "react-native";
+import { View, Root } from "native-base";
 import { StackNavigator, DrawerNavigator } from "react-navigation";
+
+import { colors } from "./styles/base";
 
 import Home from "./screens/home";
 import LobbyList from "./screens/lobbylist";
@@ -17,7 +21,7 @@ const Drawer = DrawerNavigator(
   {
     initialRouteName: "Home",
     contentOptions: {
-      activeTintColor: "#e91e63"
+      activeTintColor: colors.primaryColor
     },
     contentComponent: props => <SideBar {...props} />
   }
@@ -36,7 +40,9 @@ const AppNavigator = StackNavigator(
 
 const App = () => (
   <Root>
-    <AppNavigator />
+    <View style={{ flex: 1, paddingTop: Platform.OS === "ios" ? 0 : Expo.Constants.statusBarHeight }}>
+      <AppNavigator />
+    </View>
   </Root>
 );
 

@@ -29,14 +29,14 @@ const listData = [
 ];
 
 const drawerCover = require("../../../assets/drawer-cover.png");
-const drawerImage = require("../../../assets/logo-kitchen-sink.png");
+const drawerImage = require("../../../assets/drawer-logo.png");
 class SideBar extends Component {
   render() {
     return (
       <Container>
         <Content
           bounces={false}
-          style={{ flex: 1, backgroundColor: "#fff" }}
+          style={styles.content}
         >
           <Image source={drawerCover} style={styles.drawerCover} />
           <Image square style={styles.drawerImage} source={drawerImage} />

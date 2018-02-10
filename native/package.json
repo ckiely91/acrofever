@@ -15,7 +15,8 @@
     "eject": "react-native-scripts eject",
     "android": "react-native-scripts android",
     "ios": "react-native-scripts ios",
-    "test": "node node_modules/jest/bin/jest.js"
+    "test": "node node_modules/jest/bin/jest.js",
+    "exp-publish": "exp publish --release-channel beta"
   },
   "jest": {
     "preset": "jest-expo"
@@ -28,7 +29,7 @@
     "native-base": "^2.3.7",
     "prop-types": "^15.6.0",
     "react": "16.2.0",
-    "react-native": "0.52.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-25.0.0.tar.gz",
     "react-native-keyboard-aware-scroll-view": "^0.4.3",
     "react-native-meteor": "^1.2.0",
     "react-navigation": "^1.0.0-beta.27"
