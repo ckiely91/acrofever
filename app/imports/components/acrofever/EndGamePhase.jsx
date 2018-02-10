@@ -266,13 +266,6 @@ export const AcrofeverEndGamePhase = React.createClass({
         winner: React.PropTypes.string,
         endTime: React.PropTypes.instanceOf(Date).isRequired
     },
-    componentDidMount() {
-        if (Meteor.isCordova && AdMob) {
-            Meteor.setTimeout(() => {
-                AdMob.showInterstitial();
-            }, 15000);
-        }
-    },
     getMeteorData() {
         return {
             winnerDisplayName: displayName(this.props.winner)

@@ -177,13 +177,6 @@ export const AcrofeverEndRoundPhase = React.createClass({
         round: React.PropTypes.object.isRequired,
         endTime: React.PropTypes.instanceOf(Date).isRequired
     },
-    componentDidMount() {
-        if (Meteor.isCordova && AdMob) {
-            Meteor.setTimeout(() => {
-                AdMob.showInterstitial();
-            }, 10000);
-        }
-    },
 
     currentAcro() {
         var acro = this.props.round.acronym;

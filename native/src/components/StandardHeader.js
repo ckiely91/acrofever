@@ -9,14 +9,14 @@ import {
   Body
 } from "native-base";
 
-const StandardHeader = ({ navigation, title, rightContent }) => (
+const StandardHeader = ({ navigation, title, rightContent, goBack }) => (
   <Header>
     <Left>
       <Button
         transparent
-        onPress={() => navigation.navigate("DrawerOpen")}
+        onPress={goBack ? () => navigation.goBack() : () => navigation.navigate("DrawerOpen")}
       >
-        <Icon name="ios-menu" />
+        <Icon name={goBack ? "arrow-back" : "ios-menu"} />
       </Button>
     </Left>
     <Body>

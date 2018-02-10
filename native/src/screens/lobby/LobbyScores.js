@@ -7,18 +7,21 @@ import {
   ListItem,
   Left,
   Body,
-  Right
+  Right,
+  Thumbnail
 } from "native-base";
 
 import { getUserById, profilePicture, displayName } from "../../helpers";
+import styles from "./styles";
 
-const LobbyScoreItem = ({ id, score, active }) => {
-  const user = getUserById(id);
+const LobbyScoreItem = ({ id, user, score, active }) => {
   const pic = profilePicture(user, 100);
   const name = displayName(user);
 
+  console.log("score", score);
+
   return (
-    <ListItem avatar>
+    <ListItem avatar style={active ? {} : styles.disabledItem}>
       <Left>
         <Thumbnail small source={{ uri: pic }} />
       </Left>
@@ -26,7 +29,7 @@ const LobbyScoreItem = ({ id, score, active }) => {
         <Text>{name}</Text>
       </Body>
       <Right>
-        {score.score}
+        <Text>{score}</Text>
       </Right>
     </ListItem>
   )
@@ -35,7 +38,8 @@ const LobbyScoreItem = ({ id, score, active }) => {
 class LobbyScores extends Component {
   static propTypes = {
     scores: PropTypes.object.isRequired,
-    users: PropTypes.array.isRequired
+    users: PropTypes.array.isRequired,
+    players: PropTypes.array.isRequired
   };
 
   sortedScores() {
@@ -63,7 +67,14 @@ class LobbyScores extends Component {
     return (
       <Content>
         <List>
-          {this.sortedScores().map(score => <LobbyScoreItem key={score.id} {...score} />)}
+          {this.sortedScores().map(score => (
+            <LobbyScoreItem 
+              key={score.id} 
+              user={getUserById(this.props.users, score.id)} 
+              active={this.props.players.indexOf(score.id) > -1}
+              {...score} 
+            />
+          ))}
         </List>
       </Content>
     );

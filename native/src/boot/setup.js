@@ -6,8 +6,12 @@ import { Root } from "native-base";
 
 import App from "../App";
 import LoginSignup from "../screens/loginsignup";
+import { startTimesync } from "../timesync";
 
-Meteor.connect('ws://localhost:3000/websocket');
+const host = "192.168.0.16:3000";
+const protocol = "http";
+
+Meteor.connect(`ws://${host}/websocket`);
 
 class Setup extends Component {
   static propTypes = {
@@ -28,6 +32,7 @@ class Setup extends Component {
 
   componentWillMount() {
     this.loadFonts();
+    startTimesync(`${protocol}://${host}/timesync`, 20000);
   }
 
   async loadFonts() {

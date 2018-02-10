@@ -37,7 +37,8 @@ class Lobby extends Component {
     lobby: PropTypes.object,
     chats: PropTypes.array.isRequired,
     game: PropTypes.object,
-    users: PropTypes.array.isRequired
+    users: PropTypes.array.isRequired,
+    user: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -70,20 +71,18 @@ class Lobby extends Component {
   }
 
   render() {
-    console.log("lobbyProps", this.props);
-
     const { id: lobbyId, name: lobbyName } = this.props.navigation.state.params;
 
     let content;
     switch(this.state.currentTab) {
       case "game":
-        content = <LobbyGame />;
+        content = <LobbyGame lobby={this.props.lobby} game={this.props.game} user={this.props.user} users={this.props.users} />;
         break;
       case "chat":
         content = <LobbyChat lobbyId={lobbyId} chats={this.props.chats} users={this.props.users} />;
         break;
       case "scores":
-        content = <LobbyScores scores={this.props.game ? this.props.game.scores : {}} users={this.props.users} />;
+        content = <LobbyScores scores={this.props.game ? this.props.game.scores : {}} users={this.props.users} players={this.props.lobby.players || []} />;
         break;
       case "settings":
       default:
@@ -92,7 +91,7 @@ class Lobby extends Component {
 
     return (
       <Container>
-        <StandardHeader navigation={this.props.navigation} title={lobbyName} />
+        <StandardHeader goBack navigation={this.props.navigation} title={lobbyName} />
         {content}
         <Footer>
           <FooterTab>
@@ -128,12 +127,14 @@ export default createContainer(({ navigation }) => {
 
   const data = { 
     lobby: Meteor.collection("lobbies").findOne(lobbyId),
-    chats: Meteor.collection("lobbyFeed").find({ lobbyId }, { sort: { timestamp: -1 } })
+    chats: Meteor.collection("lobbyFeed").find({ lobbyId }, { sort: { timestamp: -1 } }),
+    user: Meteor.user()
   }
 
   if (data.lobby) {
     Meteor.subscribe("currentGame", data.lobby.currentGame);
     data.game = Meteor.collection("games").findOne(data.lobby.currentGame);
+    playerIds = playerIds.concat(data.lobby.players);
 
     if (data.game && data.game.scores) {
       playerIds = playerIds.concat(Object.keys(data.game.scores));

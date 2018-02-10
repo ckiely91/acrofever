@@ -1,51 +1,55 @@
 import React from 'react';
 
-export const CountdownSpan = React.createClass({
-    mixins: [ReactMeteorData],
-    getMeteorData() {
-        const now = TimeSync.serverTime(null, 500) || mo.now.get();
-        let diff = moment(this.props.endTime).diff(now);
-        if (diff < 0) diff = 0;
+const getDiff = (endTime) => {
+    return Math.max(0, moment(endTime).diff(TimeSync.now()));
+}
 
-        return { diff };
-    },
-    propTypes: {
-        endTime: React.PropTypes.instanceOf(Date).isRequired
-    },
-    countdown(diff) {
-        return moment(diff).format('m:ss');
-    },
-    render() {
-        return <span>{this.countdown(this.data.diff)}</span>;
+export class CountdownSpan extends React.Component {
+    constructor(props) {
+        super(props);
+        
+        this.state = {
+            diff: getDiff(props.endTime)
+        };
     }
-});
 
-const CountdownIconHeader = React.createClass({
-    mixins: [ReactMeteorData],
-    getMeteorData() {
-        const now = TimeSync.serverTime(null, 500) || mo.now.get();
-        let diff = moment(this.props.endTime).diff(now);
-        if (diff < 0) diff = 0;
+    componentWillMount() {
+        this.interval = setInterval(() => {
+            this.setState({ diff: getDiff(this.props.endTime) })
+        }, 500);
+    }
 
-        return { diff };
-    },
-    propTypes: {
-        endTime: React.PropTypes.instanceOf(Date).isRequired
-    },
-    getInitialState() {
-        return {isPulsing: false};
-    },
-    countdown(diff) {
-        return moment(diff).format('m:ss');
-    },
-    componentDidUpdate() {
-        if (this.data.diff <= 10000 && !this.state.isPulsing) {
-            this.setState({isPulsing: true});
-            this.startPulsing();
-        }
-    },
-    startPulsing() {
-        if (this.mainElement) {
+    componentWillUnmount() {
+        clearInterval(this.interval);
+    }
+
+    render() {
+        return <span>{moment(this.state.diff).format('m:ss')}</span>;
+    }
+}
+
+export class CountdownIconHeader extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            diff: getDiff(props.endTime),
+            isPulsing: false
+        };
+    }
+
+    componentWillMount() {
+        this.interval = setInterval(() => {
+            const diff = getDiff(this.props.endTime);
+            const isPulsing = diff <= 50000;
+            this.setState({ 
+                diff,
+                isPulsing
+            });
+        }, 500);
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (!prevState.isPulsing && this.state.isPulsing && this.mainElement) {
             const $main = $(this.mainElement);
             $main.animate({
                 color: '#dc3522'
@@ -53,16 +57,21 @@ const CountdownIconHeader = React.createClass({
 
             $main.find('i').transition('set looping').transition('pulse', '1s');
         }
-    },
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.interval);
+    }
+
     render() {
         return (
             <h3 className="ui center aligned icon header" ref={(ref) => this.mainElement = ref}>
                 <i className="clock icon"></i>
-                {this.countdown(this.data.diff)}
+                {moment(this.state.diff).format('m:ss')}
             </h3>
         );
     }
-});
+}
 
 export const CountdownHeader = React.createClass({
     propTypes: {

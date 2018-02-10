@@ -166,11 +166,6 @@ const GameWindow = React.createClass({
     lobbyEndTime: React.PropTypes.instanceOf(Date),
     config: React.PropTypes.object
   },
-  componentDidMount() {
-    if (!this.props.game.active && Meteor.isCordova && AdMob) {
-      AdMob.showInterstitial();
-    }
-  },
   render() {
     if (this.props.game.active) {
       return <GameWindowInner game={this.props.game} endTime={this.props.endTime} config={this.props.config}/>;

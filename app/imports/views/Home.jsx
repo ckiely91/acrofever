@@ -118,7 +118,7 @@ export const HomeView = React.createClass({
                     <GlobalFeedComponent />
                 </div>
                 {(() => {
-                    if (Meteor.settings.public.adsEnabled && !Meteor.isCordova) {
+                    if (Meteor.settings.public.adsEnabled) {
                         return (
                             <div className="sixteen wide column">
                                 <GoogleAd />

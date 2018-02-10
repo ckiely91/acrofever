@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Meteor from "react-native-meteor";
-import { ScrollView, KeyboardAvoidingView } from "react-native";
+import { ScrollView } from "react-native";
 import {
+  View,
   Text,
   List,
   ListItem,
@@ -61,19 +62,11 @@ class LobbyChatList extends Component {
     users: PropTypes.array.isRequired
   };
 
-  componentDidMount() {
-    this.scrollView.scrollToEnd();
-  }
-
-  componentDidUpdate(prevProps) {
-    this.scrollView.scrollToEnd();
-  }
-
   render() {
     return (
-      <ScrollView style={{ flex: 1 }} ref={ref => (this.scrollView = ref)}>
+      <ScrollView style={{ flex: 1 }}>
         <List>
-          {this.props.chats.slice().reverse().map((chat) => (
+          {this.props.chats.map((chat) => (
             <SingleChat key={chat._id} userObj={getUserById(this.props.users, chat.user)} {...chat} />
           ))}
         </List>
@@ -113,8 +106,7 @@ class LobbyChat extends Component {
 
   render() {
     return (
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-        <LobbyChatList chats={this.props.chats} users={this.props.users} />
+      <View style={{ flex: 1 }}>
         <Item regular>
           <Icon active name="quote"/>
           <Input 
@@ -124,7 +116,8 @@ class LobbyChat extends Component {
             onSubmitEditing={this.sendChatMessage}
           />
         </Item>
-      </KeyboardAvoidingView>
+        <LobbyChatList chats={this.props.chats} users={this.props.users} />
+      </View>
     );
   }
 }

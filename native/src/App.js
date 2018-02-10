@@ -12,7 +12,6 @@ const Drawer = DrawerNavigator(
   {
     Home: { screen: Home },
     LobbyList: { screen: LobbyList },
-    Lobby: { screen: Lobby },
     Other: { screen: Other }
   },
   {
@@ -26,7 +25,8 @@ const Drawer = DrawerNavigator(
 
 const AppNavigator = StackNavigator(
   {
-    Drawer: { screen: Drawer }
+    Drawer: { screen: Drawer },
+    Lobby: { screen: Lobby },
   },
   {
     initialRouteName: "Drawer",

@@ -1,4 +1,6 @@
-export function displayName(user) {
+import { get as _get } from "lodash";
+
+export const displayName = (user) => {
   if (!user) {
       return;
   }
@@ -32,7 +34,7 @@ const addSearch = (url, obj) => {
   return url;
 }
 
-export function profilePicture(user, size) {
+export const profilePicture = (user, size) => {
   if (!user || !user.profile || !user.profile.profilePicture)
       return 'https://acrofever.com/images/no-profile-pic.png';
 
@@ -82,4 +84,10 @@ export const getUserById = (users, userId) => {
   }
 
   return null;
+}
+
+export const isUserBanned = (user) => {
+  if (!user) return false;
+
+  return (_get(user, 'profile.shadowbanned', false) || _get(user, 'profile.permabanned', false));
 }
