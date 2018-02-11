@@ -2,6 +2,7 @@ import React from "react";
 import {
   Header,
   Title,
+  Subtitle,
   Button,
   Icon,
   Left,
@@ -20,11 +21,14 @@ const styles = {
   },
   title: {
     color: base.colors.white
+  },
+  subtitle: {
+    color: base.colors.white
   }
 }
 
-const StandardHeader = ({ navigation, title, rightContent, goBack }) => (
-  <Header style={styles.header}>
+const StandardHeader = ({ navigation, title, subtitle, rightContent, goBack }) => (
+  <Header style={styles.header} hasSubtitle={!!subtitle} noShadow>
     <Left>
       <Button
         transparent
@@ -35,6 +39,7 @@ const StandardHeader = ({ navigation, title, rightContent, goBack }) => (
     </Left>
     <Body>
       <Title style={styles.title}>{title}</Title>
+      {subtitle && <Subtitle style={styles.subtitle}>{subtitle}</Subtitle>}
     </Body>
     <Right>{rightContent}</Right>
   </Header>

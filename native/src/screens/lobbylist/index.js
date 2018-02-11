@@ -13,6 +13,9 @@ import {
 } from "native-base";
 import StandardHeader from "../../components/StandardHeader";
 import Meteor, { createContainer } from "react-native-meteor";
+import AcrofeverBG from "../../components/AcrofeverBG";
+
+import styles from "./styles";
 
 class LobbyList extends Component {
   static propTypes = {
@@ -32,25 +35,32 @@ class LobbyList extends Component {
       <Container>
         <StatusBar />
         <StandardHeader navigation={this.props.navigation} title="Lobbies" />
-        <Content>
-          <List>
-            {this.props.lobbies.map(lobby => (
-              <ListItem key={lobby._id} icon onPress={() => this.goToLobby(lobby)}>
-                <Body>
-                  <Text>{lobby.displayName}</Text>
-                </Body>
-                <Right>
-                  {lobby.players.length > 0 ? (
-                    <Text>{lobby.players.length} online</Text>
-                  ) : (
-                    <Text style={{ fontStyle: "italic" }}>No players</Text>
-                  )}
-                  <Icon name="arrow-forward" />
-                </Right>
-              </ListItem>
-            ))}
-          </List>
-        </Content>
+        <AcrofeverBG>
+          <Content>
+            <List>
+              {this.props.lobbies.map(lobby => (
+                <ListItem 
+                  key={lobby._id} 
+                  icon
+                  style={styles.listItem}
+                  onPress={() => this.goToLobby(lobby)}
+                >
+                  <Body>
+                    <Text>{lobby.displayName}</Text>
+                  </Body>
+                  <Right>
+                    {lobby.players.length > 0 ? (
+                      <Text style={styles.text}>{lobby.players.length} online</Text>
+                    ) : (
+                      <Text style={styles.textItalic}>No players</Text>
+                    )}
+                    <Icon name="arrow-forward" />
+                  </Right>
+                </ListItem>
+              ))}
+            </List>
+          </Content>
+        </AcrofeverBG>
       </Container>
     );
   }

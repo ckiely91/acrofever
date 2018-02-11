@@ -90,7 +90,6 @@ const GameViewSwitcher = ({ lobby, game, users, user }) => {
 class GameInfoHeader extends PureComponent {
   static propTypes = {
     lobbyId: PropTypes.string.isRequired,
-    isInLobby: PropTypes.bool.isRequired,
     gameActive: PropTypes.bool.isRequired,
     newGameStarting: PropTypes.bool.isRequired,
     currentPhase: PropTypes.string,
@@ -100,7 +99,6 @@ class GameInfoHeader extends PureComponent {
   };
 
   state = {
-    joinLeaveLoading: false,
     componentUpdateBool: false,
     currentPhase: null,
     acronym: null,
@@ -116,24 +114,6 @@ class GameInfoHeader extends PureComponent {
 
   componentWillUnmount() {
     clearInterval(this.componentUpdateInterval);
-  }
-
-  joinOrLeaveLobby = () => {
-    this.setState({ joinLeaveLoading: true });
-    const isInLobby = this.props.isInLobby;
-    Meteor.call('joinOrLeaveOfficialLobby', this.props.lobbyId, !isInLobby, (err) => {
-      this.setState({ joinLeaveLoading: false });
-      if (err) {
-        console.log("error joining/leaving lobby", err);
-        Toast.show({
-          type: "danger",
-          text: isInLobby ? "Failed to leave lobby" : "Failed to join lobby",
-          position: "bottom",
-          buttonText: "Okay",
-          duration: 5000
-        });
-      }
-    });
   }
 
   timeDiff = () => {
@@ -178,15 +158,6 @@ class GameInfoHeader extends PureComponent {
         <Item>
           <Left><Text>{statusText}</Text></Left>
           <Body><Text>{countdown}</Text></Body>
-          <Right>
-              <Button 
-                transparent
-                disabled={this.state.joinLeaveLoading}
-                onPress={this.joinOrLeaveLobby}
-              >
-                <Text>{this.props.isInLobby ? "Leave" : "Join"} game</Text>
-              </Button>
-          </Right>
         </Item>
         {showAcronym && (
           <Item>
@@ -232,10 +203,6 @@ class LobbyGame extends Component {
     users: PropTypes.array.isRequired
   };
 
-  isInLobby = () => {
-    return (this.props.lobby.players && this.props.lobby.players.indexOf(this.props.user._id) > -1);
-  }
-
   render() {
     if (!this.props.lobby || !this.props.game) {
       return <Content><Spinner /></Content>;
@@ -245,7 +212,6 @@ class LobbyGame extends Component {
       <View style={{ flex: 1 }}>
         <GameInfoHeader
           lobbyId={this.props.lobby._id}
-          isInLobby={this.isInLobby()}
           gameActive={this.props.game.active}
           newGameStarting={this.props.lobby.newGameStarting}
           countdownTime={this.props.game.active ? this.props.game.endTime : this.props.lobby.endTime}

@@ -8,28 +8,29 @@ import {
   Left,
   Body,
   Right,
-  Thumbnail
+  Thumbnail,
+  Badge
 } from "native-base";
 
 import { getUserById, profilePicture, displayName } from "../../helpers";
-import styles from "./styles";
+import { lobbyScoresStyles as styles } from "./styles";
 
 const LobbyScoreItem = ({ id, user, score, active }) => {
   const pic = profilePicture(user, 100);
   const name = displayName(user);
 
-  console.log("score", score);
-
   return (
-    <ListItem avatar style={active ? {} : styles.disabledItem}>
-      <Left>
+    <ListItem style={active ? styles.listItem : { ...styles.listItem, ...styles.disabledItem}}>
+      <Left style={{ flex: 0 }}>
         <Thumbnail small source={{ uri: pic }} />
       </Left>
       <Body>
-        <Text>{name}</Text>
+        <Text style={styles.text}>{name}</Text>
       </Body>
       <Right>
-        <Text>{score}</Text>
+        <Badge style={styles.badge}>
+          <Text style={styles.scoreText}>{score}</Text>
+        </Badge>
       </Right>
     </ListItem>
   )

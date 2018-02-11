@@ -6,18 +6,15 @@ import {
   Form,
   Item,
   Input,
-  Label,
   Button,
   Text,
   Spinner,
   Toast
 } from "native-base";
 
-import ImageBackgroundRepeat from "../../components/ImageBackgroundRepeat";
+import AcrofeverBG from "../../components/AcrofeverBG";
 
 import styles from "./styles";
-
-const launchscreenBg = require("../../../assets/acro-bg-pattern.png");
 
 class LoginSignup extends Component {
   state = {
@@ -69,7 +66,7 @@ If you have previously signed up with Facebook, Google, or Twitter, log in to ac
     return (
       <Container>
         <StatusBar />
-        <ImageBackgroundRepeat source={launchscreenBg} style={styles.imageContainer}>
+        <AcrofeverBG>
           <KeyboardAvoidingView behavior="padding" style={{ flex: 1, justifyContent: "flex-end" }}>
             <View style={styles.logoContainer}>
               <Text style={styles.logoText}>Acrofever!</Text>
@@ -116,7 +113,7 @@ If you have previously signed up with Facebook, Google, or Twitter, log in to ac
               </Button>
             </View>
           </KeyboardAvoidingView>
-        </ImageBackgroundRepeat>
+        </AcrofeverBG>
       </Container>
     );
   }

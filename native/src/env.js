@@ -3,7 +3,7 @@ import { Constants } from "expo";
 const ENV = {
   dev: {
     protocol: "http",
-    host: "192.168.0.16:3000"
+    host: "localhost:3000"
   },
   beta: {
     protocol: "https",

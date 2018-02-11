@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Meteor, { createContainer } from "react-native-meteor";
 import PropTypes from "prop-types";
 import { uniq as _uniq, difference as _difference } from "lodash";
+import { StatusBar } from "react-native";
 import {
   Container,
   Text,
@@ -9,13 +10,18 @@ import {
   Footer,
   FooterTab,
   Button,
-  Badge
+  Badge,
+  Toast
 } from "native-base";
 import StandardHeader from "../../components/StandardHeader";
 import LobbyGame from "./LobbyGame";
 import LobbyChat from "./LobbyChat";
 import LobbyScores from "./LobbyScores";
 import LobbySettings from "./LobbySettings";
+
+import { colors } from "../../styles/base";
+import styles from "./styles";
+import AcrofeverBG from "../../components/AcrofeverBG";
 
 const getUserChatIds = (chats) => {
   const ids = [];
@@ -40,7 +46,8 @@ class Lobby extends Component {
     super(props);
     this.state = {
       currentTab: "game",
-      newChats: 0
+      newChats: 0,
+      joinLeaveLoading: false
     }
   }
 
@@ -57,12 +64,43 @@ class Lobby extends Component {
     }
   }
 
+  isInLobby = () => {
+    return (this.props.lobby && this.props.lobby.players && this.props.lobby.players.indexOf(this.props.user._id) > -1);
+  }
+
+  joinOrLeaveLobby = () => {
+    this.setState({ joinLeaveLoading: true });
+    const isInLobby = this.isInLobby();
+    Meteor.call('joinOrLeaveOfficialLobby', this.props.lobby._id, !isInLobby, (err) => {
+      this.setState({ joinLeaveLoading: false });
+      if (err) {
+        console.log("error joining/leaving lobby", err);
+        Toast.show({
+          type: "danger",
+          text: isInLobby ? "Failed to leave lobby" : "Failed to join lobby",
+          position: "bottom",
+          buttonText: "Okay",
+          duration: 5000
+        });
+      }
+    });
+  }
+
   switchTab = (tab) => {
     const newState = { currentTab: tab };
     if (tab === "chat") {
       newState.newChats = 0;
     }
     this.setState(newState);
+  }
+
+  numPlayers = () => {
+    const num = this.props.lobby ? this.props.lobby.players.length : 0;
+    if (num === 1) {
+      return `1 player`;
+    }
+
+    return `${num} players`;
   }
 
   render() {
@@ -86,29 +124,46 @@ class Lobby extends Component {
 
     return (
       <Container>
-        <StandardHeader goBack navigation={this.props.navigation} title={lobbyName} />
-        {content}
-        <Footer>
-          <FooterTab>
-            <Button vertical active={this.state.currentTab === "game"} onPress={() => this.switchTab("game")}>
-              <Icon name="flash" />
-              <Text>Game</Text>
+        <StatusBar barStyle="light-content" backgroundColor={colors.red} />
+        <StandardHeader 
+          goBack 
+          navigation={this.props.navigation} 
+          title={lobbyName}
+          subtitle={this.numPlayers()}
+          rightContent={(
+            <Button 
+              transparent
+              disabled={this.state.joinLeaveLoading}
+              onPress={this.joinOrLeaveLobby}
+            >
+              <Text style={styles.headerButtonText}>{this.isInLobby() ? "Leave" : "Join"}</Text>
             </Button>
-            <Button vertical active={this.state.currentTab === "scores"} onPress={() => this.switchTab("scores")}>
-              <Icon active name="list" />
-              <Text>Scores</Text>
-            </Button>
-            <Button badge={(this.state.newChats > 0)} vertical active={this.state.currentTab === "chat"} onPress={() => this.switchTab("chat")}>
-              {(this.state.newChats > 0) && <Badge><Text>{this.state.newChats}</Text></Badge>}
-              <Icon name="chatbubbles" />
-              <Text>Chat</Text>
-            </Button>
-            <Button vertical active={this.state.currentTab === "settings"} onPress={() => this.switchTab("settings")}>
-              <Icon name="settings" />
-              <Text>Settings</Text>
-            </Button>
-          </FooterTab>
-        </Footer>
+          )}
+        />
+        <AcrofeverBG>
+          {content}
+          <Footer>
+            <FooterTab>
+              <Button vertical active={this.state.currentTab === "game"} onPress={() => this.switchTab("game")}>
+                <Icon name="flash" />
+                <Text>Game</Text>
+              </Button>
+              <Button vertical active={this.state.currentTab === "scores"} onPress={() => this.switchTab("scores")}>
+                <Icon active name="list" />
+                <Text>Scores</Text>
+              </Button>
+              <Button badge={(this.state.newChats > 0)} vertical active={this.state.currentTab === "chat"} onPress={() => this.switchTab("chat")}>
+                {(this.state.newChats > 0) && <Badge><Text>{this.state.newChats}</Text></Badge>}
+                <Icon name="chatbubbles" />
+                <Text>Chat</Text>
+              </Button>
+              <Button vertical active={this.state.currentTab === "settings"} onPress={() => this.switchTab("settings")}>
+                <Icon name="information-circle" />
+                <Text>Info</Text>
+              </Button>
+            </FooterTab>
+          </Footer>
+        </AcrofeverBG>
       </Container>
     );
   }

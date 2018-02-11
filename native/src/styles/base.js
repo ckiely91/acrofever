@@ -25,7 +25,8 @@ export let colors = {
   red: "#dc3522",
   grey: "#2a2c2b",
   white: "#FFFFFF",
-  lightgrey: "#e0e1e2"
+  lightgrey: "#e0e1e2",
+  mediumgrey: "rgba(0,0,0,.4)"
 };
 
 colors = {
@@ -39,6 +40,12 @@ export const text = {
   fontFamily: "OpenSansRegular",
   color: colors.black,
   fontSize: baseFontSize
+};
+
+export const noteText = {
+  ...text,
+  color: colors.mediumgrey,
+  fontSize: 13
 };
 
 export const logo = {

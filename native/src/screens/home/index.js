@@ -2,17 +2,15 @@ import React, { Component } from "react";
 import { View, StatusBar } from "react-native";
 import { Container, Button, Text, H3 } from "native-base";
 
-import ImageBackgroundRepeat from "../../components/ImageBackgroundRepeat";
+import AcrofeverBG from "../../components/AcrofeverBG";
 import styles from "./styles";
-
-const launchscreenBg = require("../../../assets/acro-bg-pattern.png");
 
 class Home extends Component {
   render() {
     return (
       <Container>
         <StatusBar />
-        <ImageBackgroundRepeat source={launchscreenBg} style={styles.imageContainer}>
+        <AcrofeverBG>
           <View style={styles.logoContainer}>
             <Text style={styles.logoText}>Acrofever!</Text>
           </View>
@@ -33,7 +31,7 @@ class Home extends Component {
               <Text style={styles.buttonText}>Lets Go!</Text>
             </Button>
           </View>
-        </ImageBackgroundRepeat>
+        </AcrofeverBG>
       </Container>
     );
   }

@@ -4,11 +4,6 @@ import * as base from "../../styles/base";
 const deviceHeight = Dimensions.get("window").height;
 
 export default {
-  imageContainer: {
-    flex: 1,
-    width: null,
-    height: null
-  },
   logoContainer: {
     flex: 1,
     marginTop: deviceHeight / 8,

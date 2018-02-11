@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Meteor from "react-native-meteor";
-import { ScrollView } from "react-native";
+import { ScrollView, FlatList, KeyboardAvoidingView } from "react-native";
 import {
   View,
   Text,
@@ -20,6 +20,8 @@ import moment from "moment";
 
 import { displayName, profilePicture, getUserById } from "../../helpers";
 
+import { lobbyChatStyles as styles } from "./styles";
+
 class SingleChat extends Component {
   static propTypes = {
       user: PropTypes.string,
@@ -35,22 +37,22 @@ class SingleChat extends Component {
       return <Thumbnail small source={{ uri: profilePicture(this.props.userObj, 100) }} />
     }
 
-    return <Icon name="information" />
+    return <Icon name="information-circle" style={styles.icon} />
   }
 
   render() {
     return (
-      <ListItem avatar>
-        <Left>
+      <ListItem style={styles.listItem}>
+        <Left style={styles.listItemLeft}>
           {this.thumbOrIcon()}
         </Left>
         <Body>
-          <Text>{this.props.user ? displayName(this.props.userObj) : this.props.summary}</Text>
-          <Text note>{this.props.detail}</Text>
+          <View style={styles.listItemBody}>
+            <Text style={styles.listItemHeader}>{this.props.user ? displayName(this.props.userObj) : this.props.summary}</Text>
+            <Text note style={styles.timeText}>{moment(this.props.timestamp).fromNow()}</Text>
+          </View>
+          {this.props.detail && <Text note style={styles.detailText}>{this.props.detail}</Text>}
         </Body>
-        <Right>
-          <Text note>{moment(this.props.timestamp).fromNow()}</Text>
-        </Right>
       </ListItem>
     );
   }
@@ -64,13 +66,14 @@ class LobbyChatList extends Component {
 
   render() {
     return (
-      <ScrollView style={{ flex: 1 }}>
-        <List>
-          {this.props.chats.map((chat) => (
-            <SingleChat key={chat._id} userObj={getUserById(this.props.users, chat.user)} {...chat} />
-          ))}
-        </List>
-      </ScrollView>
+      <View style={{ flex: 1 }}>
+        <FlatList
+          inverted
+          data={this.props.chats}
+          keyExtractor={chat => chat._id}
+          renderItem={({ item }) => <SingleChat userObj={getUserById(this.props.users, item.user)} {...item} />}
+        />
+      </View>
     );
   }
 }
@@ -106,8 +109,15 @@ class LobbyChat extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
-        <Item regular>
+      <KeyboardAvoidingView style={{ flex: 1 }} keyboardVerticalOffset={88} behavior="padding">
+        <FlatList
+          inverted
+          style={{ flex: 1 }}
+          data={this.props.chats}
+          keyExtractor={chat => chat._id}
+          renderItem={({ item }) => <SingleChat userObj={getUserById(this.props.users, item.user)} {...item} />}
+        />
+        <Item regular style={{ marginLeft: 0 }}>
           <Icon active name="quote"/>
           <Input 
             placeholder="Send chat message"
@@ -116,8 +126,7 @@ class LobbyChat extends Component {
             onSubmitEditing={this.sendChatMessage}
           />
         </Item>
-        <LobbyChatList chats={this.props.chats} users={this.props.users} />
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }

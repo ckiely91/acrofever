@@ -10,6 +10,8 @@ import {
 } from "native-base";
 import moment from "moment";
 
+import styles from "./styles";
+
 class LobbySettings extends PureComponent {
   static propTypes = {
     timeouts: PropTypes.object,
@@ -58,12 +60,12 @@ class LobbySettings extends PureComponent {
       <Content padded>
         <List>
           {data.map(d => (
-            <ListItem key={d.name}>
+            <ListItem key={d.name} style={styles.listItem}>
               <Body>
-                <Text>{d.name}</Text>
+                <Text style={styles.text}>{d.name}</Text>
               </Body>
               <Right>
-                <Text>{d.value}</Text>
+                <Text style={styles.text}>{d.value}</Text>
               </Right>
             </ListItem>
           ))}
