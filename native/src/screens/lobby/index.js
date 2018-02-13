@@ -35,11 +35,14 @@ const getUserChatIds = (chats) => {
 
 class Lobby extends Component {
   static propTypes = {
+    lobbyId: PropTypes.string.isRequired,
+    lobbyName: PropTypes.string.isRequired,
     lobby: PropTypes.object,
     chats: PropTypes.array.isRequired,
     game: PropTypes.object,
     users: PropTypes.array.isRequired,
-    user: PropTypes.object.isRequired
+    user: PropTypes.object.isRequired,
+    getMoreChats: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -104,15 +107,13 @@ class Lobby extends Component {
   }
 
   render() {
-    const { id: lobbyId, name: lobbyName } = this.props.navigation.state.params;
-
     let content;
     switch(this.state.currentTab) {
       case "game":
         content = <LobbyGame lobby={this.props.lobby} game={this.props.game} user={this.props.user} users={this.props.users} />;
         break;
       case "chat":
-        content = <LobbyChat lobbyId={lobbyId} chats={this.props.chats} users={this.props.users} />;
+        content = <LobbyChat lobbyId={this.props.lobbyId} chats={this.props.chats} users={this.props.users} getMoreChats={this.props.getMoreChats} />;
         break;
       case "scores":
         content = <LobbyScores scores={this.props.game ? this.props.game.scores : {}} users={this.props.users} players={this.props.lobby.players || []} />;
@@ -128,7 +129,7 @@ class Lobby extends Component {
         <StandardHeader 
           goBack 
           navigation={this.props.navigation} 
-          title={lobbyName}
+          title={this.props.lobbyName}
           subtitle={this.numPlayers()}
           rightContent={(
             <Button 
@@ -169,10 +170,9 @@ class Lobby extends Component {
   }
 }
 
-export default createContainer(({ navigation }) => {
-  const lobbyId = navigation.state.params.id;
+const LobbyContainer = createContainer(({ lobbyId, feedLimit }) => {
   Meteor.subscribe("lobbies");
-  Meteor.subscribe("lobbyFeed", lobbyId, 20);
+  Meteor.subscribe("lobbyFeed", lobbyId, feedLimit);
   let playerIds = [];
 
   const data = { 
@@ -205,3 +205,38 @@ export default createContainer(({ navigation }) => {
 
   return data;
 }, Lobby);
+
+export default class extends Component {
+  static propTypes = {
+    navigation: PropTypes.object.isRequired
+  };
+
+  state = {
+    feedLimit: 20
+  };
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.navigation.state.params.id !== this.props.navigation.state.params.id) {
+      this.setState({ feedLimit: 20 });
+    }
+  }
+
+  getMoreChats = () => {
+    console.log("getting more chats");
+    if (this.state.feedLimit <= 180) {
+      this.setState(state => ({ feedLimit: state.feedLimit + 20 }));
+    }
+  }
+  
+  render() {
+    console.log("feedLimit", this.state.feedLimit);
+    return (
+      <LobbyContainer 
+        lobbyId={this.props.navigation.state.params.id}
+        lobbyName={this.props.navigation.state.params.name}
+        getMoreChats={this.getMoreChats} 
+        feedLimit={this.state.feedLimit} 
+      />
+    )
+  }
+}

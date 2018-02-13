@@ -1,15 +1,13 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Meteor from "react-native-meteor";
-import { ScrollView, FlatList, KeyboardAvoidingView } from "react-native";
+import { FlatList, KeyboardAvoidingView, Dimensions } from "react-native";
 import {
   View,
   Text,
-  List,
   ListItem,
   Left,
   Body,
-  Right,
   Thumbnail,
   Icon,
   Item,
@@ -17,72 +15,49 @@ import {
   Toast
 } from "native-base";
 import moment from "moment";
+import { debounce } from "lodash";
 
 import { displayName, profilePicture, getUserById } from "../../helpers";
 
 import { lobbyChatStyles as styles } from "./styles";
 
-class SingleChat extends Component {
-  static propTypes = {
-      user: PropTypes.string,
-      icon: PropTypes.string,
-      timestamp: PropTypes.instanceOf(Date).isRequired,
-      summary: PropTypes.string,
-      detail: PropTypes.string,
-      userObj: PropTypes.object
-  };
-
-  thumbOrIcon = () => {
-    if (this.props.user) {
-      return <Thumbnail small source={{ uri: profilePicture(this.props.userObj, 100) }} />
-    }
-
-    return <Icon name="information-circle" style={styles.icon} />
+const SingleChat = ({
+  user,
+  icon,
+  timestamp,
+  summary,
+  detail,
+  userObj
+}) => {
+  let thumb;
+  if (user) {
+    thumb = <Thumbnail small source={{ uri: profilePicture(userObj, 100) }} />
+  } else {
+    thumb = <Icon name="information-circle" style={styles.icon} />;
   }
 
-  render() {
-    return (
-      <ListItem style={styles.listItem}>
-        <Left style={styles.listItemLeft}>
-          {this.thumbOrIcon()}
-        </Left>
-        <Body>
-          <View style={styles.listItemBody}>
-            <Text style={styles.listItemHeader}>{this.props.user ? displayName(this.props.userObj) : this.props.summary}</Text>
-            <Text note style={styles.timeText}>{moment(this.props.timestamp).fromNow()}</Text>
-          </View>
-          {this.props.detail && <Text note style={styles.detailText}>{this.props.detail}</Text>}
-        </Body>
-      </ListItem>
-    );
-  }
-}
-
-class LobbyChatList extends Component {
-  static propTypes = {
-    chats: PropTypes.array.isRequired,
-    users: PropTypes.array.isRequired
-  };
-
-  render() {
-    return (
-      <View style={{ flex: 1 }}>
-        <FlatList
-          inverted
-          data={this.props.chats}
-          keyExtractor={chat => chat._id}
-          renderItem={({ item }) => <SingleChat userObj={getUserById(this.props.users, item.user)} {...item} />}
-        />
-      </View>
-    );
-  }
+  return (
+    <ListItem style={styles.listItem}>
+      <Left style={styles.listItemLeft}>
+        {thumb}
+      </Left>
+      <Body>
+        <View style={styles.listItemBody}>
+          <Text style={styles.listItemHeader}>{user ? displayName(userObj) : summary}</Text>
+          <Text note style={styles.timeText}>{moment(timestamp).fromNow()}</Text>
+        </View>
+        {detail && <Text note style={styles.detailText}>{detail}</Text>}
+      </Body>
+    </ListItem>
+  );
 }
 
 class LobbyChat extends Component {
   static propTypes = {
     lobbyId: PropTypes.string.isRequired,
     chats: PropTypes.array.isRequired,
-    users: PropTypes.array.isRequired
+    users: PropTypes.array.isRequired,
+    getMoreChats: PropTypes.func.isRequired
   }
 
   state = {
@@ -106,12 +81,26 @@ class LobbyChat extends Component {
       }
     });
   }
+  
+  onScroll = debounce(({ nativeEvent }) => {
+    const windowHeight = Dimensions.get('window').height,
+      height = nativeEvent.contentSize.height,
+      offset = nativeEvent.contentOffset.y;
+
+    if ((windowHeight + offset) >= height && !this.isRefreshing){
+      this.props.getMoreChats();
+
+      // Give it a few seconds to fetch
+      setTimeout(() => (this.isRefreshing = false), 2000);
+    }
+  }, 300)
 
   render() {
     return (
       <KeyboardAvoidingView style={{ flex: 1 }} keyboardVerticalOffset={88} behavior="padding">
         <FlatList
           inverted
+          onScroll={(evt) => { evt.persist(); this.onScroll(evt) }}
           style={{ flex: 1 }}
           data={this.props.chats}
           keyExtractor={chat => chat._id}
