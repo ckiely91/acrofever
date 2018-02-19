@@ -13,6 +13,8 @@ import {
   Right
 } from "native-base";
 
+import { lobbyGameStyles as styles } from "./styles";
+
 class GameAcroPhase extends Component {
   static propTypes = {
     gameId: PropTypes.string.isRequired,
@@ -47,7 +49,17 @@ class GameAcroPhase extends Component {
       if (err) {
         console.log("error submitting acro", err);
       }
-   });
+      this.setState({ loading: false, editMode: false });
+    });
+  }
+
+  setEditMode = () => {
+    this.setState({ editMode: true });
+    setTimeout(() => {
+      if (this.textInput) {
+        this.textInput._root.focus();
+      }
+    }, 100);
   }
 
   render() {
@@ -62,25 +74,30 @@ class GameAcroPhase extends Component {
     return (
       <View style={{ padding: 10 }}>
         {this.state.editMode ? (
-          <Item disabled>
+          <Item>
             <Icon name="create" />
-            <Input 
-              regular
+            <Input
+              style={styles.text}
               disabled={this.state.loading}
               placeholder="Write your acro"
               value={this.state.writtenAcro}
               onChangeText={writtenAcro => this.setState({ writtenAcro })}
               onSubmitEditing={this.submitAcro}
+              ref={ref => (this.textInput = ref)}
             />
           </Item>
         ) : (
           <Item>
-            <Body><Text>{this.props.submittedAcro}</Text></Body>
+            <Body><Text style={styles.multilineText}>{this.props.submittedAcro}</Text></Body>
             <Right>
-              <Button transparent onPress={() => this.setState({ editMode: true })}><Icon name="create" /></Button>
+              <Button transparent onPress={this.setEditMode}><Icon name="create" /></Button>
             </Right>
           </Item>
         )}
+        <Text style={styles.acroInfoText}>
+          Some text will be placed here to explain how to write a great acro.
+          Please review this text and update it to be better.
+        </Text>
       </View>
     );
   }

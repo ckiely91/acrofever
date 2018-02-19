@@ -7,11 +7,13 @@ import { get as _get } from "lodash";
 import {
   View,
   Text,
-  Card,
-  CardItem,
-  Right,
-  Radio
+  ListItem,
+  CheckBox,
+  Body
 } from "native-base";
+
+import { lobbyGameStyles as styles } from "./styles";
+import { colors } from "../../styles/base";
 
 class GameVotingPhase extends Component {
   static propTypes = {
@@ -80,27 +82,19 @@ class GameVotingPhase extends Component {
   render() {
     const acros = this.getAcros();
 
-    return(
-      <View style={{ padding: 10 }}>
-        <Card>
-          <CardItem header>
-            <Text>{this.props.currentUserIsInRound ? "Pick your favourite acro" : "Players are picking their favourite acro..."}</Text>
-          </CardItem>
-          {acros.map(a => (
-            <CardItem 
-              key={a.id} 
-              button 
-              onPress={this.props.currentUserIsInRound ? () => this.voteForAcro(a.id) : null}
-            >
-              <Text>{a.acro}</Text>
-              {this.props.currentUserIsInRound && (
-                <Right>
-                  <Radio selected={a.id === this.state.votedFor} />
-                </Right>
-              )}
-            </CardItem>
-          ))}
-        </Card>
+    return (
+      <View>
+        <Text style={styles.phaseHeader}>
+          {this.props.currentUserIsInRound ? "Pick your favourite acro" : "Players are picking their favourite acro"}
+        </Text>
+        {acros.map(a => (
+          <ListItem key={a.id} onPress={this.props.currentUserIsInRound ? () => this.voteForAcro(a.id) : null}>
+            {this.props.currentUserIsInRound && <CheckBox checked={a.id === this.state.votedFor} color={colors.red} />}
+            <Body>
+              <Text style={styles.text}>{a.acro}</Text>
+            </Body>
+          </ListItem>
+        ))}
       </View>
     );
   }

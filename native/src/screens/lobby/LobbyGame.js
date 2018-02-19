@@ -17,7 +17,9 @@ import {
   Card,
   CardItem,
   H2,
-  Thumbnail
+  Thumbnail,
+  List,
+  ListItem
 } from "native-base";
 import moment from "moment";
 
@@ -29,6 +31,8 @@ import GameEndGamePhase from "./GameEndGamePhase";
 
 import { now } from "../../timesync";
 import { getUserById, profilePicture, displayName } from "../../helpers";
+
+import { lobbyGameStyles as styles } from "./styles";
 
 const GameViewSwitcher = ({ lobby, game, users, user }) => {
   const currentRound = game.rounds[game.currentRound - 1];
@@ -147,7 +151,7 @@ class GameInfoHeader extends PureComponent {
         default:
       }
     } else if (this.props.newGameStarting) {
-      statusText = "New game starting soon";
+      statusText = "New game starting soon!";
       countdown = this.timeDiff();
     } else {
       statusText = "Waiting for players";
@@ -155,18 +159,25 @@ class GameInfoHeader extends PureComponent {
 
     return (
       <View>
-        <Item>
-          <Left><Text>{statusText}</Text></Left>
-          <Body><Text>{countdown}</Text></Body>
+        <Item style={styles.gameInfoHeader}>
+          {showAcronym ? (
+            <Left style={{ alignSelf: "flex-start" }}>
+              <Text style={styles.acronymText}>
+                {(this.props.acronym || []).join(". ") + "."}
+              </Text>
+              {showCategory && (
+                <Text style={styles.categoryText}>{this.props.category}</Text>
+              )}
+            </Left>
+          ) : (
+            <Left>
+              <Text style={styles.gameInfoHeaderText}>
+                {statusText}
+              </Text>
+            </Left>
+          )}
+          <Right style={{ alignSelf: "flex-start" }}><Text style={styles.countdownText}>{countdown}</Text></Right>
         </Item>
-        {showAcronym && (
-          <Item>
-            <Text>
-              {(this.props.acronym || []).join(". ") + "."}
-              {showCategory && " - " + this.props.category}
-            </Text>
-          </Item>
-        )}
       </View>
     )
   }
@@ -208,6 +219,8 @@ class LobbyGame extends Component {
       return <Content><Spinner /></Content>;
     }
 
+    const playerIds = this.props.lobby.players;
+
     return (
       <View style={{ flex: 1 }}>
         <GameInfoHeader
@@ -229,9 +242,27 @@ class LobbyGame extends Component {
               users={this.props.users}
             />
           ) : (
-            <View style={{ padding: 10 }}>
-              <H2>Players in lobby</H2>
-              <LobbyPlayerList playerIds={this.props.lobby.players} users={this.props.users} />
+            <View>
+              <Text style={styles.phaseHeader}>Players in lobby</Text>
+              {playerIds.length > 0 ? (
+                <List>
+                  {playerIds.map((playerId) => {
+                    const user = getUserById(this.props.users, playerId);
+                    return (
+                      <ListItem style={styles.listItem} key={playerId}>
+                        <Left style={{ flex: 0 }}>
+                          <Thumbnail small source={{ uri: profilePicture(user, 100) }} />
+                        </Left>
+                        <Body>
+                          <Text style={styles.text}>{displayName(user)}</Text>
+                        </Body>
+                      </ListItem>
+                    );
+                  })}
+                </List>
+              ) : (
+                <Text style={{ ...styles.italicText, marginLeft: 10 }}>No players in lobby</Text>
+              )}
             </View>
           )}
         </ScrollView>

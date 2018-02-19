@@ -15,8 +15,15 @@ import {
   Right,
   Icon,
   Spinner,
-  Input
+  Input,
+  List,
+  ListItem,
+  CheckBox,
+  Item
 } from "native-base";
+
+import { lobbyGameStyles as styles } from "./styles";
+import { colors } from "../../styles/base";
 
 class ChooseCategory extends Component {
   static propTypes = {
@@ -26,6 +33,7 @@ class ChooseCategory extends Component {
   state = {
     loading: true,
     customCategory: "",
+    selectedCategory: null,
     categories: []
   }
 
@@ -42,7 +50,7 @@ class ChooseCategory extends Component {
   }
 
   pickCategory = (category) => {
-    this.setState({ loading: true });
+    this.setState({ loading: true, selectedCategory: category });
     Meteor.call('acrofeverChooseCategory', this.props.gameId, category, (err) => {
         if (err) {
             console.log("error choosing category", err);
@@ -52,34 +60,35 @@ class ChooseCategory extends Component {
 
   render() {
     return (
-      <Card>
-        <CardItem header>
-          <Text>Pick a category</Text>
-        </CardItem>
+      <View style={{ marginTop: 10 }}>
+        <Text style={styles.phaseHeader}>Pick a category</Text>
         {this.state.loading ? (
-          <CardItem>
-            <Body>
-              <Spinner />
-            </Body>
-          </CardItem>
-        ) : this.state.categories.map(c => (
-          <CardItem key={c._id} button onPress={() => this.pickCategory(c.category)}>
-            <Body><Text>{c.category}</Text></Body>
-            <Right>
-              <Icon name="arrow-forward" />
-            </Right>
-          </CardItem>
-        ))}
-        <CardItem>
-          <Icon name="create" />
-          <Input 
-            placeholder="Write a custom category"
-            value={this.state.customCategory} 
-            onChangeText={customCategory => this.setState({ customCategory })}
-            onSubmitEditing={() => this.pickCategory(this.state.customCategory)}
-          />
-        </CardItem>
-      </Card>
+          <Spinner color={colors.grey} />
+        ) : (
+          <View>
+            <Item style={{ marginBottom: 10, paddingLeft: 10 }}>
+              <Icon name="create" />
+              <Input
+                style={styles.text}
+                placeholder="Write a custom category"
+                value={this.state.customCategory} 
+                onChangeText={customCategory => this.setState({ customCategory })}
+                onSubmitEditing={() => this.pickCategory(this.state.customCategory)}
+              />
+            </Item>
+            <List>
+              {this.state.categories.map(c => (
+                <ListItem key={c._id} onPress={() => this.pickCategory(c.category)}>
+                  <CheckBox checked={c.category === this.state.selectedCategory} color={colors.red} />
+                  <Body>
+                    <Text style={styles.text}>{c.category}</Text>
+                  </Body>
+                </ListItem>
+              ))}
+            </List>
+          </View>
+        )}
+      </View>
     );
   }
 }
@@ -99,22 +108,22 @@ class GameCategoryPhase extends Component {
   }
 
   render() {
-    const isCategoryCooser = this.props.userId === this.props.categoryChooserUser._id;
+    const isCategoryChooser = this.props.userId === this.props.categoryChooserUser._id;
 
     return (
-      <View style={{ padding: 10 }}>
-        <Card>
-          <CardItem >
-            <Left>
-              <Thumbnail source={{ uri: profilePicture(this.props.categoryChooserUser, 100) }} />
-              <Body>
-                <Text>{displayName(this.props.categoryChooserUser)}</Text>
-                <Text note>is picking a category</Text>
-              </Body>
+      <View>
+        <List>
+          <ListItem style={styles.listItem}>
+            <Left style={{ flex: 0 }}>
+              <Thumbnail small source={{ uri: profilePicture(this.props.categoryChooserUser, 100) }} />
             </Left>
-          </CardItem>
-        </Card>
-        {isCategoryCooser && (
+            <Body>
+              <Text style={styles.text}>{displayName(this.props.categoryChooserUser)}</Text>
+              <Text style={styles.italicText}>{isCategoryChooser ? "You're picking the category!" : "is picking a category..."}</Text>
+            </Body>
+          </ListItem>
+        </List>
+        {isCategoryChooser && (
           <ChooseCategory gameId={this.props.gameId} />
         )}
       </View>

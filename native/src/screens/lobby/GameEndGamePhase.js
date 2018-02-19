@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { sample } from "lodash";
 
+import ScrollableTabView, { DefaultTabBar } from "react-native-scrollable-tab-view";
+
 import {
   View,
   Text,
@@ -12,11 +14,17 @@ import {
   Thumbnail,
   Body,
   Icon,
-  Right
+  Right,
+  Tabs,
+  Tab,
+  Badge
 } from "native-base";
 
 import { RoundResults } from "./GameEndRoundPhase";
 import { getUserById, profilePicture, displayName } from "../../helpers";
+
+import { lobbyGameStyles as styles} from "./styles";
+import { colors, fonts } from "../../styles/base";
 
 const EndGamePlayerCard = ({
   user,
@@ -26,27 +34,28 @@ const EndGamePlayerCard = ({
   bestAcro,
   fastestSubmitter
 }) => (
-  <Card>
-    <CardItem>
-      <Left>
-        <Thumbnail source={{ uri: profilePicture(user, 150) }} />
-        <Body>
-          {winner && <Icon active name="star" />}
-          <Text>{displayName(user)}</Text>
-          {fastestSubmitter && <Text note>Fastest average submitter</Text>}
-        </Body>
-      </Left>
-    </CardItem>
-    <CardItem>
-      <Left>
-        <Icon active name="thumbs-up" />
-        <Text>{numVotes} votes</Text>
-      </Left>
-      <Right>
-        <Text>{score}</Text>
-      </Right>
-      </CardItem>
-  </Card>
+  <View style={{ ...styles.resultsRow }}>
+    <View style={styles.resultsRowHeader}>
+      <Thumbnail small source={{ uri: profilePicture(user, 150) }} style={styles.resultsRowThumbnail} />
+      <View style={styles.resultsRowNameContainer}>
+        <Text style={styles.resultsRowName}>
+          {winner && <Icon active name="star" style={styles.resultsRowNameIcon} />}&nbsp;
+          {displayName(user)}
+        </Text>
+        {fastestSubmitter && <Text style={styles.resultsRowNameAccolades}>Fastest average submitter</Text>}
+      </View>
+      <View style={styles.resultsRowVotes}>
+        <Text style={styles.resultsRowText}>
+          <Icon active name="thumbs-up" style={styles.resultsRowVotesIcon} /> {numVotes}
+        </Text>
+      </View>
+      <View>
+        <Badge style={styles.badge}>
+          <Text style={styles.scoreText}>{score}</Text>
+        </Badge>
+      </View>
+    </View>
+  </View>
 );
 
 class GameEndGamePhase extends Component {
@@ -141,20 +150,31 @@ class GameEndGamePhase extends Component {
 
   render() {
     return (
-      <View style={{ padding: 10 }}>
-        <H2>Game results</H2>
-        {this.gameResults().map(res => (
-          <EndGamePlayerCard 
-            key={res.playerId}
-            user={getUserById(this.props.users, res.playerId)}
-            numVotes={res.totalVotes}
-            score={res.score}
-            winner={res.winner}
-            bestAcro={res.bestAcro}
-            fastestSubmitter={res.fastestSubmitter}
-          />
-        ))}
-        <RoundResults title="Last round results" currentRound={this.props.currentRound} users={this.props.users} userId={this.props.userId} />
+      <View>
+        <ScrollableTabView
+          tabBarTextStyle={{ fontFamily: fonts.openSans.regular, fontSize: 16 }}
+          tabBarActiveTextColor={colors.red}
+          tabBarInactiveTextColor={colors.grey}
+          tabBarUnderlineStyle={{ backgroundColor: colors.red }}
+          renderTabBar={() => <DefaultTabBar />}
+        >
+          <View tabLabel="Game results">
+            {this.gameResults().map(res => (
+              <EndGamePlayerCard 
+                key={res.playerId}
+                user={getUserById(this.props.users, res.playerId)}
+                numVotes={res.totalVotes}
+                score={res.score}
+                winner={res.winner}
+                bestAcro={res.bestAcro}
+                fastestSubmitter={res.fastestSubmitter}
+              />
+            ))}
+          </View>
+          <View tabLabel="Last round results">
+            <RoundResults title="" currentRound={this.props.currentRound} users={this.props.users} userId={this.props.userId} />
+          </View>
+        </ScrollableTabView>
       </View>
     );
   }

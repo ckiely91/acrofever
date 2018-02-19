@@ -32,6 +32,7 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-25.0.0.tar.gz",
     "react-native-keyboard-aware-scroll-view": "^0.4.3",
     "react-native-meteor": "^1.2.0",
+    "react-native-scrollable-tab-view": "^0.8.0",
     "react-navigation": "^1.0.0-beta.27"
   }
 }

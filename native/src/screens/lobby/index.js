@@ -222,16 +222,15 @@ export default class extends Component {
   }
 
   getMoreChats = () => {
-    console.log("getting more chats");
     if (this.state.feedLimit <= 180) {
       this.setState(state => ({ feedLimit: state.feedLimit + 20 }));
     }
   }
   
   render() {
-    console.log("feedLimit", this.state.feedLimit);
     return (
-      <LobbyContainer 
+      <LobbyContainer
+        navigation={this.props.navigation}
         lobbyId={this.props.navigation.state.params.id}
         lobbyName={this.props.navigation.state.params.name}
         getMoreChats={this.getMoreChats} 

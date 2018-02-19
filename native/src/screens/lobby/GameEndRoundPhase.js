@@ -3,18 +3,15 @@ import PropTypes from "prop-types";
 
 import {
   View,
-  H2,
-  Card,
-  CardItem,
-  Left,
   Thumbnail,
-  Body,
   Text,
   Icon,
-  Right
+  Badge
 } from "native-base";
 
 import { getUserById, profilePicture, displayName } from "../../helpers";
+
+import { lobbyGameStyles as styles } from "./styles";
 
 const EndRoundPlayerCard = ({
   user,
@@ -24,34 +21,35 @@ const EndRoundPlayerCard = ({
   numVotes,
   numPoints
 }) => (
-  <Card>
-    <CardItem>
-      <Left>
-        <Thumbnail source={{ uri: profilePicture(user, 150) }} />
-        <Body>
-          {winner && <Icon name="star" />}
-          <Text>{displayName(user)}</Text>
-          {accolades.length > 0 && <Text note>{accolades.join(", ")}</Text>}
-        </Body>
-      </Left>
-    </CardItem>
-    <CardItem body>
+  <View style={styles.resultsRow}>
+    <View style={styles.resultsRowHeader}>
+      <Thumbnail small source={{ uri: profilePicture(user, 150) }} style={styles.resultsRowThumbnail} />
+      <View style={styles.resultsRowNameContainer}>
+        <Text style={styles.resultsRowName}>
+          {winner && <Icon name="star" style={styles.resultsRowNameIcon} />}&nbsp;
+          {displayName(user)}
+        </Text>
+        {accolades.length > 0 && <Text style={styles.resultsRowNameAccolades}>{accolades.join(", ")}</Text>}
+      </View>
+      <View style={styles.resultsRowVotes}>
+        <Text style={styles.resultsRowText}>
+          <Icon active name="thumbs-up" style={styles.resultsRowVotesIcon} /> {numVotes}
+        </Text>
+      </View>
+      <View>
+        <Badge style={styles.badge}>
+          <Text style={styles.scoreText}>{numPoints < 0 ? "-" : "+"}{numPoints}</Text>
+        </Badge>
+      </View>
+    </View>
+    <View style={{ marginTop: 10 }}>
       {acro ? (
-        <Text>{acro}</Text>
+        <Text style={styles.text}>{acro}</Text>
       ) : (
-        <Text style={{ fontStyle: "italic" }}>No acro submitted</Text>
+        <Text style={styles.italicText}>No acro submitted</Text>
       )}
-    </CardItem>
-    <CardItem>
-      <Left>
-        <Icon active name="thumbs-up" />
-        <Text>{numVotes} votes</Text>
-      </Left>
-      <Right>
-        <Text>{numPoints < 0 ? "-" : "+"}{numPoints}</Text>
-      </Right>
-      </CardItem>
-  </Card>
+    </View>
+  </View>
 );
 
 EndRoundPlayerCard.propTypes = {
@@ -117,8 +115,8 @@ export class RoundResults extends Component {
   
   render() {
     return (
-      <View style={{ padding: 10 }}>
-        <H2>{this.props.title}</H2>
+      <View>
+        {this.props.title.length > 0 && <Text style={styles.phaseHeader}>{this.props.title}</Text>}
         {this.roundAcros().map(a => (
           <EndRoundPlayerCard
             key={a.playerId}
@@ -136,7 +134,7 @@ export class RoundResults extends Component {
 }
 
 const GameEndRoundPhase = ({ currentRound, users, userId }) => (
-  <View style={{ padding: 10 }}>
+  <View>
     <RoundResults title="Round results" currentRound={currentRound} users={users} userId={userId} />
   </View>
 );
