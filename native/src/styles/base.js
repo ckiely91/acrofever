@@ -21,10 +21,10 @@ export const fonts = {
 }
 
 export let colors = {
-  black: "#1e1e20",
-  red: "#dc3522",
+  black: "#0C2238",
+  red: "#CF5A28",
   grey: "#2a2c2b",
-  white: "#FFFFFF",
+  white: "#F8E7BF",
   lightgrey: "#e0e1e2",
   mediumgrey: "rgba(0,0,0,.4)"
 };

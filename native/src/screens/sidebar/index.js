@@ -28,8 +28,8 @@ const listData = [
   }
 ];
 
-const drawerCover = require("../../../assets/drawer-cover.png");
-const drawerImage = require("../../../assets/drawer-logo.png");
+const drawerCover = require("../../../assets/acro-bg-pattern.png");
+const drawerImage = require("../../../assets/acrofever-logo-new.png");
 class SideBar extends Component {
   render() {
     return (

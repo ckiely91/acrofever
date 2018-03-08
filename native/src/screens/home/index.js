@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { View, StatusBar } from "react-native";
+import { View, StatusBar, ImageBackground } from "react-native";
 import { Container, Button, Text, H3 } from "native-base";
 
 import AcrofeverBG from "../../components/AcrofeverBG";
+import AcrofeverLogo from "../../../assets/acrofever-logo-new.png";
 import styles from "./styles";
 
 class Home extends Component {
@@ -12,7 +13,7 @@ class Home extends Component {
         <StatusBar />
         <AcrofeverBG>
           <View style={styles.logoContainer}>
-            <Text style={styles.logoText}>Acrofever!</Text>
+            <ImageBackground source={AcrofeverLogo} style={styles.logo} />
           </View>
           <View
             style={{
