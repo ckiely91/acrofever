@@ -33,7 +33,7 @@ colors = {
   ...colors,
 
   primaryColor: colors.red,
-  secondaryColor: colors.lightgrey
+  secondaryColor: colors.black
 };
 
 export const text = {
@@ -87,5 +87,5 @@ export const buttonSecondary = {
 
 export const buttonSecondaryText = {
   ...buttonText,
-  color: colors.black
+  color: colors.white
 };

@@ -19,10 +19,12 @@ export default {
   logoText: {
     ...base.logo
   },
-  text: {
+  betaText: {
     ...base.text,
-    bottom: 6,
-    marginTop: 5
+    fontSize: 16
+  },
+  text: {
+    ...base.text
   },
   button: {
     ...base.buttonPrimary,

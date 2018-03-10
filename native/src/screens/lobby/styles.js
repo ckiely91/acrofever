@@ -161,7 +161,7 @@ export const lobbyChatStyles = {
     width: 36,
     fontSize: 36,
     textAlign: "center",
-    color: base.colors.lightgrey
+    color: base.colors.mediumgrey
   }
 };
 

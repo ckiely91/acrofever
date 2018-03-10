@@ -1,5 +1,4 @@
 import React, { Component, PureComponent } from "react";
-import Meteor from "react-native-meteor";
 import PropTypes from "prop-types";
 import { get as _get } from "lodash";
 import { ScrollView } from "react-native";
@@ -8,15 +7,10 @@ import {
   Content,
   Spinner,
   Text,
-  Button,
   Item,
   Left,
   Body,
   Right,
-  Toast,
-  Card,
-  CardItem,
-  H2,
   Thumbnail,
   List,
   ListItem
@@ -33,6 +27,7 @@ import { now } from "../../timesync";
 import { getUserById, profilePicture, displayName } from "../../helpers";
 
 import { lobbyGameStyles as styles } from "./styles";
+import { colors } from "../../styles/base";
 
 const GameViewSwitcher = ({ lobby, game, users, user }) => {
   const currentRound = game.rounds[game.currentRound - 1];
@@ -184,26 +179,21 @@ class GameInfoHeader extends PureComponent {
 }
 
 const LobbyPlayerList = ({ playerIds, users }) => (
-  <Card>
-    {playerIds.length > 0 ? playerIds.map((playerId) => {
+  <List>
+    {playerIds.map((playerId) => {
       const user = getUserById(users, playerId);
       return (
-        <CardItem key={playerId}>
-          <Left>
-            <Thumbnail source={{ uri: profilePicture(user, 100) }} />
-            <Body>
-              <Text>{displayName(user)}</Text>
-              <Text note>Additional note here...</Text>
-            </Body>
+        <ListItem style={styles.listItem} key={playerId}>
+          <Left style={{ flex: 0 }}>
+            <Thumbnail small source={{ uri: profilePicture(user, 100) }} />
           </Left>
-        </CardItem>
+          <Body>
+            <Text style={styles.text}>{displayName(user)}</Text>
+          </Body>
+        </ListItem>
       );
-    }) : (
-      <CardItem>
-        <Text note>No players in lobby</Text>
-      </CardItem>
-    )}
-  </Card>
+    })}
+  </List>
 );
 
 class LobbyGame extends Component {
@@ -216,7 +206,7 @@ class LobbyGame extends Component {
 
   render() {
     if (!this.props.lobby || !this.props.game) {
-      return <Content><Spinner /></Content>;
+      return <Content><Spinner color={colors.red} /></Content>;
     }
 
     const playerIds = this.props.lobby.players;
@@ -245,21 +235,7 @@ class LobbyGame extends Component {
             <View>
               <Text style={styles.phaseHeader}>Players in lobby</Text>
               {playerIds.length > 0 ? (
-                <List>
-                  {playerIds.map((playerId) => {
-                    const user = getUserById(this.props.users, playerId);
-                    return (
-                      <ListItem style={styles.listItem} key={playerId}>
-                        <Left style={{ flex: 0 }}>
-                          <Thumbnail small source={{ uri: profilePicture(user, 100) }} />
-                        </Left>
-                        <Body>
-                          <Text style={styles.text}>{displayName(user)}</Text>
-                        </Body>
-                      </ListItem>
-                    );
-                  })}
-                </List>
+                <LobbyPlayerList users={this.props.users} playerIds={playerIds} />
               ) : (
                 <Text style={{ ...styles.italicText, marginLeft: 10 }}>No players in lobby</Text>
               )}

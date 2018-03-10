@@ -7,16 +7,8 @@ import ScrollableTabView, { DefaultTabBar } from "react-native-scrollable-tab-vi
 import {
   View,
   Text,
-  H2,
-  Card,
-  CardItem,
-  Left,
   Thumbnail,
-  Body,
   Icon,
-  Right,
-  Tabs,
-  Tab,
   Badge
 } from "native-base";
 

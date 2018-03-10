@@ -6,13 +6,10 @@ import { profilePicture, displayName } from "../../helpers";
 
 import {
   View,
-  Card,
-  CardItem,
   Left,
   Thumbnail,
   Body,
   Text,
-  Right,
   Icon,
   Spinner,
   Input,
@@ -63,7 +60,7 @@ class ChooseCategory extends Component {
       <View style={{ marginTop: 10 }}>
         <Text style={styles.phaseHeader}>Pick a category</Text>
         {this.state.loading ? (
-          <Spinner color={colors.grey} />
+          <Spinner color={colors.red} />
         ) : (
           <View>
             <Item style={{ marginBottom: 10, paddingLeft: 10 }}>

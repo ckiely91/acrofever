@@ -9,14 +9,12 @@ import { colors } from "./styles/base";
 import Home from "./screens/home";
 import LobbyList from "./screens/lobbylist";
 import Lobby from "./screens/lobby";
-import Other from "./screens/other";
 import SideBar from "./screens/sidebar";
 
 const Drawer = DrawerNavigator(
   {
     Home: { screen: Home },
-    LobbyList: { screen: LobbyList },
-    Other: { screen: Other }
+    LobbyList: { screen: LobbyList }
   },
   {
     initialRouteName: "Home",

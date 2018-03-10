@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Meteor, { createContainer } from "react-native-meteor";
 import { Root } from "native-base";
+import Sentry from "sentry-expo";
 
 import App from "../App";
 import LoginSignup from "../screens/loginsignup";
@@ -13,6 +14,9 @@ import { fonts } from "../styles/base";
 import env from "../env";
 
 Meteor.connect(`ws://${env.host}/websocket`);
+
+Sentry.enableInExpoDevelopment = true;
+Sentry.config("https://558ee9c279d14a7a9798208f9511c04c:df9b198b53c24cc49ec9fcb182a10f61@sentry.io/301656").install();
 
 class Setup extends Component {
   static propTypes = {
