@@ -27,7 +27,6 @@ class LoginSignup extends Component {
     this.setState({ loggingIn: true });
     Meteor.loginWithPassword(this.state.username, this.state.password, (err) => {
       if (err) {
-        console.log("error logging in", err);
         Toast.show({
           type: "warning",
           text: "Incorrect username or password entered",

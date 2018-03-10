@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Meteor from "react-native-meteor";
+import Sentry from "sentry-expo";
 import { FlatList, KeyboardAvoidingView, Dimensions } from "react-native";
 import {
   View,
@@ -68,7 +69,7 @@ class LobbyChat extends Component {
     if (this.state.chatMessage === "") return;
     Meteor.call('addLobbyFeedChat', this.props.lobbyId, this.state.chatMessage, (err) => {
       if (err) {
-        console.log("error sending chat", err);
+        Sentry.captureException(new Error("error in addLobbyFeedChat: " + err.message));
         Toast.show({
           type: "danger",
           text: "Failed to send message",

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Meteor, { createContainer } from "react-native-meteor";
 import PropTypes from "prop-types";
+import Sentry from "sentry-expo";
 import { uniq as _uniq, difference as _difference } from "lodash";
 import { StatusBar } from "react-native";
 import {
@@ -77,7 +78,7 @@ class Lobby extends Component {
     Meteor.call('joinOrLeaveOfficialLobby', this.props.lobby._id, !isInLobby, (err) => {
       this.setState({ joinLeaveLoading: false });
       if (err) {
-        console.log("error joining/leaving lobby", err);
+        Sentry.captureException(new Error("error in joinOrLeaveOfficialLobby: " + err.message));
         Toast.show({
           type: "danger",
           text: isInLobby ? "Failed to leave lobby" : "Failed to join lobby",

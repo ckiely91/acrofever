@@ -14,6 +14,7 @@ import {
 } from "native-base";
 
 import { lobbyGameStyles as styles } from "./styles";
+import Sentry from "sentry-expo";
 
 class GameAcroPhase extends Component {
   static propTypes = {
@@ -47,7 +48,7 @@ class GameAcroPhase extends Component {
 
     Meteor.call('acrofeverSubmitAcro', this.props.gameId, this.state.writtenAcro, (err) => {
       if (err) {
-        console.log("error submitting acro", err);
+        Sentry.captureException(new Error("error in acrofeverSubmitAcro" + err.message));
       }
       this.setState({ loading: false, editMode: false });
     });

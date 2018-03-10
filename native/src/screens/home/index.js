@@ -9,6 +9,7 @@ import AcrofeverLogo from "../../../assets/acrofever-logo-new.png";
 import styles from "./styles";
 
 import { displayName, profilePicture } from "../../helpers";
+import Sentry from "sentry-expo";
 
 class Home extends Component {
   static propTypes = {

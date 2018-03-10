@@ -45,6 +45,9 @@ class Setup extends Component {
     if (nextProps.loggingIn === false && this.state.initialLoggingIn) {
       this.setState({ initialLoggingIn: false });
     }
+    if (nextProps.user && !this.props.user) {
+      Sentry.setUserContext({ id: nextProps.user.id });
+    }
   }
 
   async loadFonts() {

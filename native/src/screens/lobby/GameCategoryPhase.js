@@ -21,6 +21,7 @@ import {
 
 import { lobbyGameStyles as styles } from "./styles";
 import { colors } from "../../styles/base";
+import Sentry from "sentry-expo";
 
 class ChooseCategory extends Component {
   static propTypes = {
@@ -37,7 +38,7 @@ class ChooseCategory extends Component {
   componentWillMount() {
     Meteor.call('getRandomCategories', 4, (err, res) => {
       if (err) {
-          console.log("error getting categories", err);
+          Sentry.captureException(new Error("error in getRandomCategories: " + err.message));
           this.setState({ loading: false });
           return;
       }
@@ -50,7 +51,7 @@ class ChooseCategory extends Component {
     this.setState({ loading: true, selectedCategory: category });
     Meteor.call('acrofeverChooseCategory', this.props.gameId, category, (err) => {
         if (err) {
-            console.log("error choosing category", err);
+          Sentry.captureException(new Error("error in acrofeverChooseCategory: " + err.message));
         }
     });
   }

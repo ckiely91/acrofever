@@ -1,3 +1,5 @@
+import Sentry from "sentry-expo";
+
 const delay = 1000;
 let timesyncUrl;
 let timesyncInterval;
@@ -33,7 +35,7 @@ const syncOffset = async () => {
 
       results.push({ roundtrip, offset: thisOffset });
     } catch(e) {
-      console.log("error fetching time", e);
+      Sentry.captureException(new Error("error fetching time: " + e.message));
     }
 
     await sleep;

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Meteor from "react-native-meteor";
+import Sentry from "sentry-expo";
 
 import { get as _get } from "lodash";
 
@@ -73,7 +74,7 @@ class GameVotingPhase extends Component {
 
     Meteor.call("acrofeverVoteForAcro", this.props.gameId, id, (err) => {
       if (err) {
-        console.log("error voting for acro, setting to previous state", err);
+        Sentry.captureException(new Error("error in acrofeverVoteForAcro: " + err.message));
         this.setState({ votedFor: prevVotedFor });
       }
     });
