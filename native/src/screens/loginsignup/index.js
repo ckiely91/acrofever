@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Meteor from "react-native-meteor";
-import { Alert, View, KeyboardAvoidingView, StatusBar, Linking, ImageBackground } from "react-native";
+import { Alert, View, KeyboardAvoidingView, StatusBar, Linking, Image } from "react-native";
 import { 
   Container,
   Form,
@@ -69,7 +69,9 @@ If you have previously signed up with Facebook, Google, or Twitter, log in to ac
         <AcrofeverBG>
           <KeyboardAvoidingView behavior="padding" style={{ flex: 1, justifyContent: "flex-end" }}>
             <View style={styles.formContainer}>
-              <ImageBackground source={AcrofeverLogo} style={styles.logo} />
+              <View style={{ justifyContent: "center", alignItems: "center", marginBottom: 20 }}>
+                <Image source={AcrofeverLogo} style={{ width: 280, height: 70 }} />
+              </View>
               <Form style={styles.form}>
                 <Item>
                   <Input

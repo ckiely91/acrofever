@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { View, StatusBar, ImageBackground } from "react-native";
+import { View, StatusBar, Image } from "react-native";
 import { Container, Button, Text, H3, Thumbnail } from "native-base";
 import Meteor, { createContainer } from "react-native-meteor";
 
@@ -9,7 +9,6 @@ import AcrofeverLogo from "../../../assets/acrofever-logo-new.png";
 import styles from "./styles";
 
 import { displayName, profilePicture } from "../../helpers";
-import Sentry from "sentry-expo";
 
 class Home extends Component {
   static propTypes = {
@@ -22,7 +21,7 @@ class Home extends Component {
         <StatusBar />
         <AcrofeverBG>
           <View style={styles.logoContainer}>
-            <ImageBackground source={AcrofeverLogo} style={styles.logo} />
+            <Image source={AcrofeverLogo} style={styles.logo} />
           </View>
           <View
             style={{
