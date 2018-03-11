@@ -38,7 +38,7 @@ class Setup extends Component {
 
   componentWillMount() {
     this.loadFonts();
-    startTimesync(`${env.protocol}://${env.host}/timesync`, 20000);
+    startTimesync(`${env.protocol}://${env.host}/timesync`, 20000, env.timesyncEnabled);
   }
 
   componentWillReceiveProps(nextProps) {

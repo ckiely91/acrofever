@@ -35,6 +35,7 @@ const syncOffset = async () => {
 
       results.push({ roundtrip, offset: thisOffset });
     } catch(e) {
+      console.log(e);
       Sentry.captureException(new Error("error fetching time: " + e.message));
     }
 
@@ -60,9 +61,11 @@ export const now = () => {
   return Date.now() + offset;
 };
 
-export const startTimesync = (url, interval) => {
+export const startTimesync = (url, interval, enabled) => {
   timesyncUrl = url;
-  timesyncInterval = setInterval(syncOffset, interval);
+  if (enabled) {
+    timesyncInterval = setInterval(syncOffset, interval);
+  }
 };
 
 export const stopTimesync = () => {

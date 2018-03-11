@@ -16,6 +16,8 @@
     "android": "react-native-scripts android",
     "ios": "react-native-scripts ios",
     "test": "node node_modules/jest/bin/jest.js",
+    "build-android": "exp build:android --release-channel beta",
+    "build-ios": "exp build:ios --release-channel beta",
     "exp-publish": "exp publish --release-channel beta"
   },
   "jest": {
