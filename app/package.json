@@ -20,7 +20,7 @@
     "react-addons-pure-render-mixin": "^15.0.1",
     "react-autolink": "^0.2.1",
     "react-dom": "^15.0.1",
-    "react-emojione": "^1.1.1",
+    "react-emojione": "^5.0.0",
     "react-highcharts": "^9.0.0",
     "react-mounter": "^1.1.0",
     "react-slick": "^0.14.5",
