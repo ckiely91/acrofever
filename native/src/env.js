@@ -9,7 +9,7 @@ const ENV = {
   beta: {
     protocol: "https",
     host: "acrofever.com",
-    timesyncEnabled: false
+    timesyncEnabled: true
   }
 }
 
