@@ -1,27 +1,35 @@
+import PropTypes from 'prop-types';
 import React from 'react';
+
+import createReactClass from 'create-react-class';
 
 import {CountdownHeader} from '../Countdown';
 
 import {profilePicture, displayName} from '../../helpers';
 
-const RoundResultsRow = React.createClass({
+const RoundResultsRow = createReactClass({
+    displayName: 'RoundResultsRow',
     mixins: [ReactMeteorData],
+
     propTypes: {
-        result: React.PropTypes.object.isRequired,
-        totalPoints: React.PropTypes.func.isRequired,
-        accolades: React.PropTypes.func.isRequired
+        result: PropTypes.object.isRequired,
+        totalPoints: PropTypes.func.isRequired,
+        accolades: PropTypes.func.isRequired
     },
+
     componentDidMount() {
         $(this.label).popup({
             inline: true
         });
     },
+
     getMeteorData() {
         return {
             profilePicture: profilePicture(this.props.result.id, 35),
             displayName: displayName(this.props.result.id)
         };
     },
+
     getPopupHtml() {
         const points = this.props.totalPoints(this.props.result),
             spanStyle = {display: 'block', whiteSpace: 'nowrap'};
@@ -40,6 +48,7 @@ const RoundResultsRow = React.createClass({
             </div>
         );
     },
+
     render() {
         return (
             <tr>
@@ -64,13 +73,13 @@ const RoundResultsRow = React.createClass({
                 </td>
             </tr>
         )
-    }
+    },
 });
 
-export const RoundResultsTable = React.createClass({
-    propTypes: {
-        round: React.PropTypes.object.isRequired
-    },
+export class RoundResultsTable extends React.Component {
+    static propTypes = {
+        round: PropTypes.object.isRequired
+    };
 
     // All this just to implement that cool little fade on the scrollTable
     componentDidMount() {
@@ -85,17 +94,18 @@ export const RoundResultsTable = React.createClass({
                 'opacity': (1 - (scrollLeft / (tableWidth - divWidth)))
             });
         });
-    },
+    }
+
     componentDidUpdate() {
         if (this.$scrollTable.prop('scrollWidth') <= this.$scrollTable.width()) {
             this.$scrollTableOuter.find('.scrollTable-fade').css({
                 'opacity': 0
             });
         }
-    },
+    }
 
     /* HELPERS */
-    roundAcros() {
+    roundAcros = () => {
         const players = this.props.round.players;
         let roundAcros = [];
 
@@ -110,12 +120,13 @@ export const RoundResultsTable = React.createClass({
         });
 
         return roundAcros;
-    },
-    totalPoints(results) {
-        return results.votePoints + results.votedForWinnerPoints - results.notVotedNegativePoints + results.winnerPoints;
-    },
+    };
 
-    accolades(result) {
+    totalPoints = (results) => {
+        return results.votePoints + results.votedForWinnerPoints - results.notVotedNegativePoints + results.winnerPoints;
+    };
+
+    accolades = (result) => {
         let accolades = [];
 
         // round winner
@@ -145,7 +156,7 @@ export const RoundResultsTable = React.createClass({
         } else {
             return false;
         }
-    },
+    };
 
     render() {
         const tableStyle = {minWidth: '500px'};
@@ -170,25 +181,19 @@ export const RoundResultsTable = React.createClass({
             </div>
         );
     }
-});
+}
 
-export const AcrofeverEndRoundPhase = React.createClass({
-    propTypes: {
-        round: React.PropTypes.object.isRequired,
-        endTime: React.PropTypes.instanceOf(Date).isRequired
-    },
-    componentDidMount() {
-        if (Meteor.isCordova && AdMob) {
-            Meteor.setTimeout(() => {
-                AdMob.showInterstitial();
-            }, 10000);
-        }
-    },
+export class AcrofeverEndRoundPhase extends React.Component {
+    static propTypes = {
+        round: PropTypes.object.isRequired,
+        endTime: PropTypes.instanceOf(Date).isRequired
+    };
 
-    currentAcro() {
+    currentAcro = () => {
         var acro = this.props.round.acronym;
         return acro.join('. ');
-    },
+    };
+
     render() {
         const dividerStyle = {marginBottom: '2em'};
         return (
@@ -208,4 +213,4 @@ export const AcrofeverEndRoundPhase = React.createClass({
             </div>
         );
     }
-});
+}

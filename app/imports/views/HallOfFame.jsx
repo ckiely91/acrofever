@@ -1,25 +1,32 @@
+import PropTypes from 'prop-types';
 import React from 'react';
+
+import createReactClass from 'create-react-class';
 
 import {profilePicture, displayName} from '../helpers';
 import {HallOfFame} from '../collections';
 
-const HallOfFameAcroCard = React.createClass({
+const HallOfFameAcroCard = createReactClass({
+    displayName: 'HallOfFameAcroCard',
     mixins: [ReactMeteorData],
+
     propTypes: {
-        acro: React.PropTypes.shape({
-            userId: React.PropTypes.string.isRequired,
-            acronym: React.PropTypes.array.isRequired,
-            acro: React.PropTypes.string.isRequired,
-            category: React.PropTypes.string.isRequired,
-            created: React.PropTypes.instanceOf(Date).isRequired
+        acro: PropTypes.shape({
+            userId: PropTypes.string.isRequired,
+            acronym: PropTypes.array.isRequired,
+            acro: PropTypes.string.isRequired,
+            category: PropTypes.string.isRequired,
+            created: PropTypes.instanceOf(Date).isRequired
         })
     },
+
     getMeteorData() {
         return {
             profilePicture: profilePicture(this.props.acro.userId, 35),
             username: displayName(this.props.acro.userId)
         }
     },
+
     render() {
         return (
             <div className="ui card">
@@ -41,17 +48,20 @@ const HallOfFameAcroCard = React.createClass({
                 </div>
             </div>
         )
-    }
+    },
 });
 
-export const HallOfFameAcros = React.createClass({
+export const HallOfFameAcros = createReactClass({
+    displayName: 'HallOfFameAcros',
     mixins: [ReactMeteorData],
+
     getInitialState() {
         return {
             limit: new ReactiveVar(this.props.limit || 18),
             totalAcros: new ReactiveVar()
         };
     },
+
     getMeteorData() {
         var data = {
             limit: this.state.limit.get(),
@@ -81,12 +91,14 @@ export const HallOfFameAcros = React.createClass({
 
         return data;
     },
+
     getMore(evt) {
         evt.preventDefault();
         var limit = this.state.limit.get();
         limit += 18;
         this.state.limit.set(limit);
     },
+
     render() {
         var getMoreButton = (
             <button className={"ui labeled icon" + (this.data.ready ? "" : " loading") + " button"} onClick={this.getMore}>
@@ -108,7 +120,7 @@ export const HallOfFameAcros = React.createClass({
                 {(this.data.limit < this.data.totalAcros) ? getMoreButton : null}
             </div>
         );
-    }
+    },
 });
 
 export class HallOfFameView extends React.Component {

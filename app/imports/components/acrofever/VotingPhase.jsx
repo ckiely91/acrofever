@@ -1,18 +1,21 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import {CountdownHeader} from '../Countdown';
 
 import {playSound, acrofeverAnalytics} from '../../helpers';
 
-const AcroVoting = React.createClass({
-    propTypes: {
-        round: React.PropTypes.object.isRequired,
-        gameId: React.PropTypes.string.isRequired
-    },
-    getInitialState() {
+class AcroVoting extends React.Component {
+    static propTypes = {
+        round: PropTypes.object.isRequired,
+        gameId: PropTypes.string.isRequired
+    };
+
+    constructor(props) {
+        super(props);
         let roundAcros = [];
         const userId = Meteor.userId(),
-            round = this.props.round;
+            round = props.round;
 
         for (var playerId in round.players) {
             if (round.players.hasOwnProperty(playerId) && playerId !== userId && round.players[playerId].submission) {
@@ -23,25 +26,27 @@ const AcroVoting = React.createClass({
             }
         }
 
-        return {roundAcros};
-    },
+        this.state = {roundAcros};
+    }
 
     /* HANDLERS */
-    handleVote(evt, id) {
+    handleVote = (evt, id) => {
         evt.preventDefault();
         Meteor.call('acrofeverVoteForAcro', this.props.gameId, id);
         playSound('select');
         acrofeverAnalytics.track('voteForAcro');
-    },
+    };
 
     /* HELPERS */
-    isInRound() {
+    isInRound = () => {
         return (this.props.round.players[Meteor.userId()]);
-    },
-    votedForThisAcro(id) {
+    };
+
+    votedForThisAcro = (id) => {
         return (this.props.round.players[Meteor.userId()].vote === id);
-    },
-    renderItem(acro, index) {
+    };
+
+    renderItem = (acro, index) => {
         const votedForThis = this.votedForThisAcro(acro.id);
         let className = 'item';
 
@@ -55,10 +60,11 @@ const AcroVoting = React.createClass({
                 </div>
             </div>
         )
-    },
-    renderDisabledItem(acro, index) {
+    };
+
+    renderDisabledItem = (acro, index) => {
         return <div key={index} className="item">{acro.acro}</div>
-    },
+    };
 
     render() {
         let acroList;
@@ -90,18 +96,20 @@ const AcroVoting = React.createClass({
             </div>
         );
     }
-});
+}
 
-export const AcrofeverVotingPhase = React.createClass({
-    propTypes: {
-        round: React.PropTypes.object.isRequired,
-        endTime: React.PropTypes.instanceOf(Date).isRequired,
-        gameId: React.PropTypes.string.isRequired
-    },
-    currentAcro() {
+export class AcrofeverVotingPhase extends React.Component {
+    static propTypes = {
+        round: PropTypes.object.isRequired,
+        endTime: PropTypes.instanceOf(Date).isRequired,
+        gameId: PropTypes.string.isRequired
+    };
+
+    currentAcro = () => {
         var acro = this.props.round.acronym;
         return acro.join('. ');
-    },
+    };
+
     render() {
         const dividerStyle = {marginBottom: '2em'};
         return (
@@ -117,4 +125,4 @@ export const AcrofeverVotingPhase = React.createClass({
             </div>
         );
     }
-});
+}

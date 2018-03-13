@@ -1,10 +1,15 @@
+import PropTypes from 'prop-types';
 import React from 'react';
+
+import createReactClass from 'create-react-class';
 
 import {HallOfFame, Nags, Events, Categories} from '../collections';
 import {PlayerLabel} from '../components/OnlinePlayers';
 
-export const AdminEvents = React.createClass({
+export const AdminEvents = createReactClass({
+    displayName: 'AdminEvents',
     mixins: [ReactMeteorData],
+
     getMeteorData() {
         Meteor.subscribe('adminEvents');
         const events = Events.find().fetch().sort(function(a, b) {
@@ -26,10 +31,12 @@ export const AdminEvents = React.createClass({
 
         return {pastEvents, futureEvents};
     },
+
     deleteEvent(evt, event) {
         evt.preventDefault();
         Meteor.call('adminDeleteEvent', event._id);
     },
+
     adminEventRow(event, key) {
         return (
             <tr key={key}>
@@ -44,6 +51,7 @@ export const AdminEvents = React.createClass({
             </tr>
         );
     },
+
     submitForm(evt, fields) {
         evt.preventDefault();
 
@@ -64,6 +72,7 @@ export const AdminEvents = React.createClass({
             }
         });
     },
+
     componentDidMount() {
         $(this.form).form({
             onSuccess: (evt, fields) => {
@@ -73,6 +82,7 @@ export const AdminEvents = React.createClass({
 
         $(this.form).find('.checkbox').checkbox();
     },
+
     render() {
         return (
             <div>
@@ -146,7 +156,7 @@ export const AdminEvents = React.createClass({
                 </table>
             </div>
         )
-    }
+    },
 });
 
 class AdminNagRow extends React.Component {
@@ -191,8 +201,10 @@ class AdminNagRow extends React.Component {
     }
 }
 
-export const AdminNags = React.createClass({
+export const AdminNags = createReactClass({
+    displayName: 'AdminNags',
     mixins: [ReactMeteorData],
+
     getMeteorData() {
         Meteor.subscribe('adminNags');
 
@@ -276,17 +288,15 @@ export const AdminNags = React.createClass({
                 </table>
             </div>
         )
-    }
+    },
 });
 
-const AdminHallOfFameRow = React.createClass({
-    getInitialState() {
-        return {
-            loading: false
-        };
-    },
+class AdminHallOfFameRow extends React.Component {
+    state = {
+        loading: false
+    };
 
-    editEntry(evt, action) {
+    editEntry = (evt, action) => {
         evt.preventDefault();
         this.setState({loading: true});
         let opts = {};
@@ -300,7 +310,7 @@ const AdminHallOfFameRow = React.createClass({
                 console.error(err);
             }
         });
-    },
+    };
 
     render() {
         let button;
@@ -333,13 +343,16 @@ const AdminHallOfFameRow = React.createClass({
             </tr>
         )
     }
-});
+}
 
-export const AdminHallOfFame = React.createClass({
+export const AdminHallOfFame = createReactClass({
+    displayName: 'AdminHallOfFame',
     mixins: [ReactMeteorData],
+
     getInitialState() {
         return {limit: 50};
     },
+
     getMeteorData() {
         Meteor.subscribe('adminHallOfFame', this.state.limit);
 
@@ -353,11 +366,13 @@ export const AdminHallOfFame = React.createClass({
 
         return data;
     },
+
     getMore() {
         this.setState({
             limit: this.state.limit + 50
         });
     },
+
     render() {
         return (
             <div>
@@ -382,17 +397,15 @@ export const AdminHallOfFame = React.createClass({
                 <button className="ui button" onClick={this.getMore}>Get more</button>
             </div>
         );
-    }
+    },
 });
 
-const AdminCategoryRow = React.createClass({
-    getInitialState() {
-        return {
-            loading: false
-        };
-    },
+class AdminCategoryRow extends React.Component {
+    state = {
+        loading: false
+    };
 
-    editEntry(evt, action) {
+    editEntry = (evt, action) => {
         evt.preventDefault();
         this.setState({loading: true});
         let opts = {};
@@ -406,9 +419,9 @@ const AdminCategoryRow = React.createClass({
                 console.error(err);
             }
         });
-    },
+    };
 
-    editCategory(evt) {
+    editCategory = (evt) => {
         evt.preventDefault();
         const $btn = $(evt.currentTarget);
         $btn.addClass('loading');
@@ -417,7 +430,7 @@ const AdminCategoryRow = React.createClass({
             $btn.removeClass('loading');
             if (err) alert(err);
         });
-    },
+    };
 
     render() {
         let button;
@@ -452,16 +465,20 @@ const AdminCategoryRow = React.createClass({
             </tr>
         )
     }
-});
+}
 
-export const AdminCategories = React.createClass({
+export const AdminCategories = createReactClass({
+    displayName: 'AdminCategories',
     mixins: [ReactMeteorData],
+
     getInitialState() {
         return {limit: 50}
     },
+
     componentDidMount() {
         $("#category_tabs .item").tab();
     },
+
     getMeteorData() {
         Meteor.subscribe('adminCategories', this.state.limit);
         Meteor.subscribe('adminActiveCategories');
@@ -477,17 +494,20 @@ export const AdminCategories = React.createClass({
 
         return data;
     },
+
     getMore() {
         this.setState({
            limit: this.state.limit + 50
         });
     },
+
     deleteActiveCategory(evt, itemId) {
         evt.preventDefault();
         Meteor.call('adminEditCategory', itemId, { delete: true }, (err) => {
             if (err) alert(err);
         });
     },
+
     addCategory(evt) {
         evt.preventDefault();
         const $btn = $(evt.currentTarget);
@@ -502,6 +522,7 @@ export const AdminCategories = React.createClass({
             $btn.removeClass('loading');
         });
     },
+
     render() {
         return (
             <div>
@@ -550,7 +571,7 @@ export const AdminCategories = React.createClass({
                 </div>
             </div>
         );
-    }
+    },
 });
 
 export const AdminHome = () => (
@@ -562,20 +583,21 @@ export const AdminHome = () => (
     </div>
 );
 
-export const AdminMain = React.createClass({
-    propTypes: {
-        subContent: React.PropTypes.element.isRequired
-    },
-    getInitialState() {
-        return {
-            isAdminUser: false
-        };
-    },
+export class AdminMain extends React.Component {
+    static propTypes = {
+        subContent: PropTypes.element.isRequired
+    };
+
+    state = {
+        isAdminUser: false
+    };
+
     componentDidMount() {
         Meteor.call('isAdminUser', (err, res) => {
             this.setState({isAdminUser: res});
         });
-    },
+    }
+
     render() {
         if (this.state.isAdminUser) {
             return this.props.subContent;
@@ -583,4 +605,4 @@ export const AdminMain = React.createClass({
             return <div>You don't have permission to access this page.</div>;
         }
     }
-});
+}

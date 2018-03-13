@@ -1,4 +1,7 @@
+import PropTypes from 'prop-types';
 import React from 'react';
+
+import createReactClass from 'create-react-class';
 
 import {GlobalFeedComponent} from '../components/Feeds';
 import {MomentFromNow} from '../components/Countdown';
@@ -9,22 +12,27 @@ import {profilePicture, displayName} from '../helpers';
 import {Lobbies} from '../collections';
 import {lobbySubs} from '../subsManagers';
 
-const PlayerAvatar = React.createClass({
+const PlayerAvatar = createReactClass({
+    displayName: 'PlayerAvatar',
     mixins: [ReactMeteorData],
+
     getMeteorData() {
         return {
             profilePicture: profilePicture(this.props.id, 35),
             displayName: displayName(this.props.id)
         }
     },
+
     propTypes: {
-        id: React.PropTypes.string.isRequired
+        id: PropTypes.string.isRequired
     },
+
     componentDidMount() {
         $(this.popupImg).popup({
             inline: true
         });
     },
+
     render() {
         const thisStyle = {
             display: 'inline-block',
@@ -41,16 +49,18 @@ const PlayerAvatar = React.createClass({
                 </div>
             </div>
         );
-    }
+    },
 });
 
-const LobbyRow = React.createClass({
-    propTypes: {
-        lobby: React.PropTypes.object.isRequired
-    },
-    goToLobby(evt) {
+class LobbyRow extends React.Component {
+    static propTypes = {
+        lobby: PropTypes.object.isRequired
+    };
+
+    goToLobby = (evt) => {
         FlowRouter.go(FlowRouter.path('lobby', {lobbyId: this.props.lobby._id}));
-    },
+    };
+
     render() {
         var playerAvatars;
 
@@ -70,10 +80,12 @@ const LobbyRow = React.createClass({
             </tr>
         )
     }
-});
+}
 
-export const PlayView = React.createClass({
+export const PlayView = createReactClass({
+    displayName: 'PlayView',
     mixins: [ReactMeteorData],
+
     getMeteorData() {
         lobbySubs.subscribe('lobbies');
 
@@ -95,6 +107,7 @@ export const PlayView = React.createClass({
 
         return data;
     },
+
     componentWillMount() {
         //SEO stuff
         var title = 'Find Lobbies - Acrofever';
@@ -112,6 +125,7 @@ export const PlayView = React.createClass({
             DocHead.addMeta({name: name, content: content})
         });
     },
+
     render() {
         let lobbyTable;
 
@@ -161,5 +175,5 @@ export const PlayView = React.createClass({
                 </div>
             </div>
         )
-    }
+    },
 });

@@ -1,4 +1,7 @@
+import PropTypes from 'prop-types';
 import React from 'react';
+
+import createReactClass from 'create-react-class';
 
 import {Nags} from '../collections';
 import {acrofeverAnalytics} from '../helpers';
@@ -36,11 +39,13 @@ class SingleNag extends React.Component {
 }
 
 SingleNag.propTypes = {
-    nag: React.PropTypes.object.isRequired
+    nag: PropTypes.object.isRequired
 };
 
-export const NagsComponent = React.createClass({
+export const NagsComponent = createReactClass({
+    displayName: 'NagsComponent',
     mixins: [ReactMeteorData],
+
     getMeteorData() {
         var user = Meteor.user();
         var closedNags = [];
@@ -58,6 +63,7 @@ export const NagsComponent = React.createClass({
             nags: Nags.find({active: true, _id: {$not: {$in: closedNags}}}, {sort: {timestamp: -1}}).fetch()
         };
     },
+
     render() {
         if (this.data.nags.length > 0) {
             return (
@@ -68,5 +74,5 @@ export const NagsComponent = React.createClass({
         } else {
             return false;
         }
-    }
+    },
 });

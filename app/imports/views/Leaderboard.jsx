@@ -1,5 +1,7 @@
 import React from 'react';
 
+import createReactClass from 'create-react-class';
+
 import {profilePicture, displayName} from '../helpers';
 
 class LeaderboardTableRow extends React.Component {
@@ -104,14 +106,17 @@ class LeaderboardInfoModal extends React.Component {
     }
 }
 
-export const LeaderboardView = React.createClass({
+export const LeaderboardView = createReactClass({
+    displayName: 'LeaderboardView',
     mixins: [ReactMeteorData],
+
     getInitialState() {
         return {
             limit: 25,
             total: null
         };
     },
+
     componentWillMount() {
         Meteor.call('getTotalRankedCount', (err, res) => {
             if (err) {
@@ -122,6 +127,7 @@ export const LeaderboardView = React.createClass({
             }
         });
     },
+
     getMeteorData() {
         const handle = Meteor.subscribe('playerRankings', this.state.limit);
         const cursor = Meteor.users.find({
@@ -135,14 +141,17 @@ export const LeaderboardView = React.createClass({
             players: cursor.fetch()
         }
     },
+
     getMore(evt) {
         evt.preventDefault();
         this.setState({limit: this.state.limit + 25});
     },
+
     openInfoModal(evt) {
         evt.preventDefault();
         $('#leaderboardInfoModal').modal('show');
     },
+
     render() {
         return (
             <div>
@@ -163,5 +172,5 @@ export const LeaderboardView = React.createClass({
                 <LeaderboardInfoModal/>
             </div>
         );
-    }
+    },
 });

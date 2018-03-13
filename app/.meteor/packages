@@ -46,7 +46,6 @@ lbee:moment-helpers
 momentjs:moment
 react-meteor-data
 useraccounts:flow-routing-ck
-mizzao:timesync
 gadicohen:sitemaps
 mrt:jquery-color-animation
 shell-server@0.3.1

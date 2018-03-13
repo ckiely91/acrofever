@@ -1,5 +1,6 @@
 import {CronJob} from 'cron';
 import prerenderio from 'prerender-node';
+import timesyncServer from 'timesync/server';
 
 import AcrofeverGameManager from './imports/AcrofeverGameManager';
 import LobbyManager from './imports/LobbyManager';
@@ -111,3 +112,5 @@ const decayRankingsJob = new CronJob({
 	onTick: Meteor.bindEnvironment(DecayUserSigmaForMonth),
 	start: true
 });
+
+WebApp.connectHandlers.use("/timesync", timesyncServer.requestHandler);

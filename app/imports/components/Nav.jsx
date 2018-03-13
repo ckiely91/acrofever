@@ -1,5 +1,7 @@
 import React from 'react';
 
+import createReactClass from 'create-react-class';
+
 import {profilePicture, displayName, acrofeverAnalytics} from '../helpers';
 
 const BrandHeader = () => <a href={FlowRouter.path('home')} id="brandHeader" className="header item">Acrofever!</a>;
@@ -18,20 +20,24 @@ const HeaderItem = (props) => {
     )
 };
 
-const UserNavDropdown = React.createClass({
+const UserNavDropdown = createReactClass({
+    displayName: 'UserNavDropdown',
     mixins: [ReactMeteorData],
+
     getMeteorData() {
         return {
             profilePicture: profilePicture(this.props._id, 30),
             displayName: displayName(this.props._id)
         };
     },
+
     componentDidMount() {
         $(this.dropdown).dropdown();
 
         if (typeof Notification !== 'undefined')
             setTimeout(this.startComputation(), 0);
     },
+
     startComputation() {
         this.tracker = Tracker.autorun(() => {
             let permission = this.props.profile.notificationsEnabled;
@@ -42,13 +48,16 @@ const UserNavDropdown = React.createClass({
             }
         });
     },
+
     componentWillUnmount() {
         if (this.tracker)
             this.tracker.stop();
     },
+
     notificationsSupported() {
         return (typeof Notification !== 'undefined');
     },
+
     toggleAudio(evt) {
         evt.preventDefault();
         if (this.props.profile.soundsEnabled === false) {
@@ -59,6 +68,7 @@ const UserNavDropdown = React.createClass({
             acrofeverAnalytics.track('turnOffSounds');
         }
     },
+
     toggleNotifications(evt) {
         evt.preventDefault();
         if (this.props.profile.notificationsEnabled) {
@@ -87,10 +97,12 @@ const UserNavDropdown = React.createClass({
             });
         }
     },
+
     logout(evt) {
         evt.preventDefault();
         Meteor.logout();
     },
+
     render() {
         const menuItemStyle = {fontSize: '1.2em', paddingLeft: '10px', paddingRight: '10px'},
             menuIconStyle = {marginRight:0},
@@ -127,16 +139,19 @@ const UserNavDropdown = React.createClass({
                 </div>
             </div>
         );
-    }
+    },
 });
 
-const UserNavWrapper = React.createClass({
+const UserNavWrapper = createReactClass({
+    displayName: 'UserNavWrapper',
     mixins: [ReactMeteorData],
+
     getMeteorData() {
         return {
             user: Meteor.user()
         }
     },
+
     render() {
         const signInItem = <HeaderItem href="/sign-in" icon="sign in">Sign in / Register</HeaderItem>;
         let signIn = signInItem;
@@ -144,10 +159,10 @@ const UserNavWrapper = React.createClass({
             signIn = <div id="rightNav" className="right menu">{signInItem}</div>;
 
         return (this.data.user ? <UserNavDropdown desktop={this.props.desktop} {...this.data.user} /> : signIn);
-    }
+    },
 });
 
-export const NavComponent = React.createClass({
+export class NavComponent extends React.Component {
     componentDidMount() {
         $('#mobileNav a').click(() => {
             const $slideMenu = $(this.slideMenu);
@@ -161,8 +176,9 @@ export const NavComponent = React.createClass({
                 return (screenWidth >= 768 && screenWidth < 1200);
             }
         });
-    },
-    playNow(evt) {
+    }
+
+    playNow = (evt) => {
         evt.preventDefault();
 
         if (FlowRouter.getRouteName() === 'lobby')
@@ -178,20 +194,24 @@ export const NavComponent = React.createClass({
                 FlowRouter.go(FlowRouter.path('lobby', {lobbyId: res}));
         });
         acrofeverAnalytics.track('playNowButton');
-    },
-    howToPlay(evt) {
+    };
+
+    howToPlay = (evt) => {
         evt.preventDefault();
         $('#howToPlayModal').modal('show');
         acrofeverAnalytics.page('/howToPlay');
-    },
-    blog(evt) {
+    };
+
+    blog = (evt) => {
         evt.preventDefault();
         location.assign('https://acrofever.com/blog');
-    },
-    toggleMobileMenu(evt) {
+    };
+
+    toggleMobileMenu = (evt) => {
         evt.preventDefault();
         $(this.slideMenu).transition('slide down');
-    },
+    };
+
     render() {
         const sidebarStyle = {marginRight: 0};
 
@@ -234,4 +254,4 @@ export const NavComponent = React.createClass({
             </div>
         );
     }
-});
+}

@@ -1,4 +1,6 @@
+import PropTypes from 'prop-types';
 import React from 'react';
+import createReactClass from 'create-react-class';
 import Highchart from 'react-highcharts';
 
 import {HallOfFameAcros} from './HallOfFame';
@@ -328,17 +330,21 @@ class EditProfileModal extends React.Component {
     }
 }
 
-const InviteModal = React.createClass({
+const InviteModal = createReactClass({
+    displayName: 'InviteModal',
     mixins: [ReactMeteorData],
+
     propTypes: {
-        displayName: React.PropTypes.string.isRequired,
-        userId: React.PropTypes.string.isRequired
+        displayName: PropTypes.string.isRequired,
+        userId: PropTypes.string.isRequired
     },
+
     getInitialState() {
         return {
             hasInvited: false
         };
     },
+
     getMeteorData() {
         lobbySubs.subscribe('lobbies');
         const lobbies = Lobbies.find().fetch(),
@@ -346,12 +352,14 @@ const InviteModal = React.createClass({
 
         return {lobbies, ready};
     },
+
     componentDidMount() {
         $(this.modal).modal({
             detachable: false,
             observeChanges: true
         });
     },
+
     openModal(evt) {
         evt.preventDefault();
         if (Meteor.userId()) {
@@ -360,9 +368,11 @@ const InviteModal = React.createClass({
             FlowRouter.go('/sign-in');
         }
     },
+
     closeModal() {
         $(this.modal).modal('hide');
     },
+
     renderLobbyItem(lobby, index) {
         return (
             <div key={index} className="item" onClick={(evt) => this.inviteToPlay(evt, lobby._id)}>
@@ -370,6 +380,7 @@ const InviteModal = React.createClass({
             </div>
         );
     },
+
     inviteToPlay(evt, lobbyId) {
         evt.preventDefault();
         this.setState({hasInvited: true});
@@ -385,6 +396,7 @@ const InviteModal = React.createClass({
             }, 500);
         });
     },
+
     render() {
         const styles = {
             list: {
@@ -415,14 +427,17 @@ const InviteModal = React.createClass({
                 </div>
             </div>
         )
-    }
+    },
 });
 
-export const ProfileView = React.createClass({
+export const ProfileView = createReactClass({
+    displayName: 'ProfileView',
     mixins: [ReactMeteorData],
+
     propTypes: {
-        userId: React.PropTypes.string.isRequired
+        userId: PropTypes.string.isRequired
     },
+
     getInitialState() {
         let numberOfHallOfFame = new ReactiveVar();
         let gamesPlayedStats = null;
@@ -434,6 +449,7 @@ export const ProfileView = React.createClass({
             isModerator: false
         };
     },
+
     getMeteorData() {
         var data = {
             numberOfHallOfFame: this.state.numberOfHallOfFame.get()
@@ -456,11 +472,13 @@ export const ProfileView = React.createClass({
 
         return data;
     },
+
     componentWillMount() {
         this.refreshStats();
 
         Meteor.call('isAdminUserOrModerator', (err, res) => (this.setState({isModerator: res})));
     },
+
     refreshStats() {
         Meteor.call('getUserStat', this.props.userId, 'gamesPlayed', (err, res) => {
             if (err) return console.error(err);
@@ -479,6 +497,7 @@ export const ProfileView = React.createClass({
             this.setState({ranking: res});
         });
     },
+
     clickRefresh(evt) {
         evt.preventDefault();
         if (this.state.gamesPlayedStats === null || this.state.averageScoreStats === null)
@@ -488,6 +507,7 @@ export const ProfileView = React.createClass({
 
         this.refreshStats();
     },
+
     addFriend(evt) {
         evt.preventDefault();
         if (!Meteor.userId()) {
@@ -502,6 +522,7 @@ export const ProfileView = React.createClass({
                 console.error(err);
         });
     },
+
     removeFriend(evt) {
         evt.preventDefault();
         const $btn = $(evt.currentTarget);
@@ -512,6 +533,7 @@ export const ProfileView = React.createClass({
                 console.error(err);
         });
     },
+
     lastStat() {
         const keys = Object.keys(this.state.gamesPlayedStats);
         if (keys.length > 0) {
@@ -524,6 +546,7 @@ export const ProfileView = React.createClass({
             };
         }
     },
+
     onlineLabel() {
         if (this.data.user.status && this.data.user.status.online) {
             return <div className="ui green right ribbon label">ONLINE</div>;
@@ -531,15 +554,18 @@ export const ProfileView = React.createClass({
             return <div className="ui red basic right ribbon label">OFFLINE</div>;
         }
     },
+
     specialTagLabel(specialTag, index) {
         const className = `ui small basic ${specialTag.color ? specialTag.color : 'red'} label`;
         return <div className={className} key={index}>{specialTag.tag}</div>;
     },
+
     countryLabel() {
         if (this.data.user && this.data.user.profile && this.data.user.profile.country) {
             return <i className={this.data.user.profile.country + " flag"}></i>;
         }
     },
+
     isFriend() {
         if (this.data.thisUser && this.data.thisUser.profile && this.data.thisUser.profile.friends) {
             return (this.data.thisUser.profile.friends.indexOf(this.props.userId) > -1);
@@ -547,15 +573,18 @@ export const ProfileView = React.createClass({
             return false;
         }
     },
+
     banUser() {
         const reason = prompt("Why do you want to shadowban this user? Please provide details.");
         if (reason && reason.length > 0) {
             Meteor.call('adminShadowbanUser', this.props.userId, true, reason);
         }
     },
+
     unbanUser() {
         Meteor.call('adminShadowbanUser', this.props.userId, false);
     },
+
     render() {
         let body;
         const styles = {
@@ -717,5 +746,5 @@ export const ProfileView = React.createClass({
         }
 
         return body;
-    }
+    },
 });

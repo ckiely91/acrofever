@@ -1,19 +1,22 @@
+import PropTypes from 'prop-types';
 import React from 'react';
+
+import createReactClass from 'create-react-class';
 
 import {CountdownHeader} from '../Countdown';
 
 import {playSound, displayName,acrofeverAnalytics} from '../../helpers';
 
-const ChooseCategory = React.createClass({
-    propTypes: {
-        gameId: React.PropTypes.string.isRequired
-    },
-    getInitialState() {
-        return {
-            hasPickedCategory: false,
-            randomCategories: null
-        };
-    },
+class ChooseCategory extends React.Component {
+    static propTypes = {
+        gameId: PropTypes.string.isRequired
+    };
+
+    state = {
+        hasPickedCategory: false,
+        randomCategories: null
+    };
+
     componentWillMount() {
         Meteor.call('getRandomCategories', 4, (err, res) => {
             if (err) {
@@ -23,7 +26,8 @@ const ChooseCategory = React.createClass({
                 this.setState({randomCategories: res});
             }
         });
-    },
+    }
+
     componentDidMount() {
         const form = $(this.form);
         form.form({
@@ -46,8 +50,9 @@ const ChooseCategory = React.createClass({
                 this.pickCategory(evt, fields.customCategory, true);
             }
         });
-    },
-    pickCategory(evt, category, isCustom) {
+    }
+
+    pickCategory = (evt, category, isCustom) => {
         evt.preventDefault();
         this.setState({hasPickedCategory: true});
         playSound('select');
@@ -59,7 +64,8 @@ const ChooseCategory = React.createClass({
 
             acrofeverAnalytics.track('chooseCategory', {category: category, custom: isCustom});
         });
-    },
+    };
+
     render() {
         const gridStyle = {position: 'relative'};
         if (this.state.hasPickedCategory) {
@@ -101,30 +107,36 @@ const ChooseCategory = React.createClass({
             );
         }
     }
-});
+}
 
-export const AcrofeverCategoryPhase = React.createClass({
+export const AcrofeverCategoryPhase = createReactClass({
+    displayName: 'AcrofeverCategoryPhase',
     mixins: [ReactMeteorData],
+
     propTypes: {
-        round: React.PropTypes.object.isRequired,
-        endTime: React.PropTypes.instanceOf(Date).isRequired,
-        gameId: React.PropTypes.string.isRequired,
-        config: React.PropTypes.object
+        round: PropTypes.object.isRequired,
+        endTime: PropTypes.instanceOf(Date).isRequired,
+        gameId: PropTypes.string.isRequired,
+        config: PropTypes.object
     },
+
     getMeteorData() {
         return {
             categoryChooserDisplayName: displayName(this.props.round.categoryChooser)
         };
     },
+
     getInitialState() {
         return {
             showAcro: !(this.props.config && this.props.config.hideAcroInCategoryPhase)
         }
     },
+
     currentAcro() {
         var acro = this.props.round.acronym;
         return acro.join('. ');
     },
+
     render() {
         const dividerStyle = {marginBottom: '2em'};
         return (
@@ -139,5 +151,5 @@ export const AcrofeverCategoryPhase = React.createClass({
                 <div className="ui hidden divider"></div>
             </div>
         );
-    }
+    },
 });
