@@ -1,4 +1,6 @@
+import PropTypes from 'prop-types';
 import React from 'react';
+import createReactClass from 'create-react-class';
 import {autolink} from 'react-autolink';
 import {emojify} from 'react-emojione';
 import EmojiPicker from 'emojione-picker';
@@ -81,7 +83,7 @@ class ChatInput extends React.Component {
 }
 
 ChatInput.propTypes = {
-    lobbyId: React.PropTypes.string
+    lobbyId: PropTypes.string
 };
 
 const UserSpecialTag = (props) => {
@@ -91,15 +93,18 @@ const UserSpecialTag = (props) => {
     return <div className={className} style={style}>{props.tag}</div>;
 };
 
-const SingleEvent = React.createClass({
+const SingleEvent = createReactClass({
+    displayName: 'SingleEvent',
     mixins: [ReactMeteorData],
+
     propTypes: {
-        user: React.PropTypes.string,
-        icon: React.PropTypes.string,
-        timestamp: React.PropTypes.instanceOf(Date).isRequired,
-        summary: React.PropTypes.string,
-        detail: React.PropTypes.string
+        user: PropTypes.string,
+        icon: PropTypes.string,
+        timestamp: PropTypes.instanceOf(Date).isRequired,
+        summary: PropTypes.string,
+        detail: PropTypes.string
     },
+
     getMeteorData() {
         const user = Meteor.users.findOne(this.props.user);
 
@@ -110,6 +115,7 @@ const SingleEvent = React.createClass({
             profile: user ? user.profile : null
         }
     },
+
     renderProfilePicOrIcon(user, icon) {
         if (user) {
             return (
@@ -121,6 +127,7 @@ const SingleEvent = React.createClass({
             return <i className={(icon ? icon : 'info') + ' icon'}></i>;
         }
     },
+
     renderUsername(user, summary) {
         if (user) {
             const flag = this.data.profile && this.data.profile.country ? <i className={this.data.profile.country + " flag"}></i> : null;
@@ -139,6 +146,7 @@ const SingleEvent = React.createClass({
             return <span>{summary}</span>;
         }
     },
+
     emojisAndLinks(string) {
         let arr = autolink(string, {
             target: '_blank',
@@ -155,6 +163,7 @@ const SingleEvent = React.createClass({
         //newString = emojify(newString[0]);
         return arr;
     },
+
     render() {
         return (
             <div className="event">
@@ -172,11 +181,13 @@ const SingleEvent = React.createClass({
                 </div>
             </div>
         );
-    }
+    },
 });
 
-export const GlobalFeedComponent = React.createClass({
+export const GlobalFeedComponent = createReactClass({
+    displayName: 'GlobalFeedComponent',
     mixins: [ReactMeteorData],
+
     getMeteorData() {
         if (!Session.get('globalFeedLimit'))
             Session.set('globalFeedLimit', 20);
@@ -205,6 +216,7 @@ export const GlobalFeedComponent = React.createClass({
 
         return data;
     },
+
     componentDidMount() {
         var feedOuter = $('.feedChatDiv');
         var feed = feedOuter.find('.feedInner');
@@ -237,12 +249,15 @@ export const GlobalFeedComponent = React.createClass({
             }
         });
     },
+
     renderEvent(event, index) {
         return <SingleEvent key={index} {...event} />;
     },
+
     showGetMoreDiv(events) {
         return (events.length === this.data.globalFeedLimit);
     },
+
     render() {
         return (
             <div>
@@ -260,14 +275,17 @@ export const GlobalFeedComponent = React.createClass({
                 </div>
             </div>
         );
-    }
+    },
 });
 
-export const LobbyFeedComponent = React.createClass({
+export const LobbyFeedComponent = createReactClass({
+    displayName: 'LobbyFeedComponent',
     mixins: [ReactMeteorData],
+
     propTypes: {
-        lobbyId: React.PropTypes.string.isRequired
+        lobbyId: PropTypes.string.isRequired
     },
+
     getMeteorData() {
         if (!Session.get('lobbyFeedLimit'))
             Session.set('lobbyFeedLimit', 20);
@@ -296,6 +314,7 @@ export const LobbyFeedComponent = React.createClass({
 
         return data;
     },
+
     componentDidMount() {
         $(window).scroll(function() {
             var getMoreDiv = $('.getMoreDiv');
@@ -309,9 +328,11 @@ export const LobbyFeedComponent = React.createClass({
 
         setTimeout(this.startComputation, 0);
     },
+
     componentWillUnmount() {
         this.tracker.stop();
     },
+
     startComputation() {
         this.tracker = Tracker.autorun(() => {
             LobbyFeed.find({lobbyId: this.props.lobbyId}).observeChanges({
@@ -323,12 +344,15 @@ export const LobbyFeedComponent = React.createClass({
             });
         });
     },
+
     renderEvent(event, index) {
         return <SingleEvent key={index} {...event} />;
     },
+
     showGetMoreDiv(events) {
         return (events.length === this.data.lobbyFeedLimit);
     },
+
     render() {
         return (
             <div>
@@ -340,5 +364,5 @@ export const LobbyFeedComponent = React.createClass({
                 </div>
             </div>
         );
-    }
+    },
 });

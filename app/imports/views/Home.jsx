@@ -33,7 +33,7 @@ class GoogleAd extends React.Component {
     }
 }
 
-export const HomeView = React.createClass({
+export class HomeView extends React.Component {
     componentWillMount() {
         lobbySubs.subscribe('lobbies');
 
@@ -52,8 +52,9 @@ export const HomeView = React.createClass({
         _.each(metadata, function(content, name) {
             DocHead.addMeta({name: name, content: content})
         });
-    },
-    playNow(evt) {
+    }
+
+    playNow = (evt) => {
         evt.preventDefault();
         var dimmer = $('.ui.page.dimmer');
         dimmer.dimmer('show');
@@ -65,12 +66,14 @@ export const HomeView = React.createClass({
                 FlowRouter.go(FlowRouter.path('lobby', {lobbyId: res}));
         });
         acrofeverAnalytics.track("playNowButton");
-    },
-    howToPlay(evt) {
+    };
+
+    howToPlay = (evt) => {
         evt.preventDefault();
         $('#howToPlayModal').modal('show');
         acrofeverAnalytics.page('/howToPlay');
-    },
+    };
+
     render() {
         const buttonStyle = {
             clear: 'both'
@@ -152,4 +155,4 @@ export const HomeView = React.createClass({
             </div>
         )
     }
-});
+}

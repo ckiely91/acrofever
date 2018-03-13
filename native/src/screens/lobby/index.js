@@ -42,7 +42,7 @@ class Lobby extends Component {
     chats: PropTypes.array.isRequired,
     game: PropTypes.object,
     users: PropTypes.array.isRequired,
-    user: PropTypes.object.isRequired,
+    user: PropTypes.object,
     getMoreChats: PropTypes.func.isRequired
   };
 

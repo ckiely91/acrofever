@@ -1,4 +1,6 @@
+import PropTypes from 'prop-types';
 import React from 'react';
+import createReactClass from 'create-react-class';
 import classNames from 'classnames';
 
 import {LobbyFeedComponent} from '../components/Feeds';
@@ -121,20 +123,23 @@ class GameWindowInner extends React.Component {
 }
 
 GameWindowInner.propTypes = {
-  game: React.PropTypes.object.isRequired,
-  endTime: React.PropTypes.instanceOf(Date),
-  config: React.PropTypes.object
+  game: PropTypes.object.isRequired,
+  endTime: PropTypes.instanceOf(Date),
+  config: PropTypes.object
 };
 
 
-const LobbyPlayerCard = React.createClass({
+const LobbyPlayerCard = createReactClass({
+  displayName: 'LobbyPlayerCard',
   mixins: [ReactMeteorData],
+
   getMeteorData() {
     return {
       profilePicture: profilePicture(this.props.id, 400),
       displayName: displayName(this.props.id)
     }
   },
+
   render() {
     return (
       <a href={FlowRouter.path('profile', {userId: this.props.id})} target="_blank" className="userProfilePicture card">
@@ -146,7 +151,7 @@ const LobbyPlayerCard = React.createClass({
           </div>
       </a>
     );
-  }
+  },
 });
 
 const LobbyPlayerCards = (props) => {
@@ -157,15 +162,16 @@ const LobbyPlayerCards = (props) => {
   );
 };
 
-const GameWindow = React.createClass({
-  propTypes: {
-    game: React.PropTypes.object,
-    newGameStarting: React.PropTypes.bool,
-    players: React.PropTypes.array,
-    endTime: React.PropTypes.instanceOf(Date),
-    lobbyEndTime: React.PropTypes.instanceOf(Date),
-    config: React.PropTypes.object
-  },
+class GameWindow extends React.Component {
+  static propTypes = {
+    game: PropTypes.object,
+    newGameStarting: PropTypes.bool,
+    players: PropTypes.array,
+    endTime: PropTypes.instanceOf(Date),
+    lobbyEndTime: PropTypes.instanceOf(Date),
+    config: PropTypes.object
+  };
+
   render() {
     if (this.props.game.active) {
       return <GameWindowInner game={this.props.game} endTime={this.props.endTime} config={this.props.config}/>;
@@ -189,23 +195,27 @@ const GameWindow = React.createClass({
       )
     }
   }
-});
+}
 
-const ScoresTableRow = React.createClass({
+const ScoresTableRow = createReactClass({
+  displayName: 'ScoresTableRow',
   mixins: [ReactMeteorData],
+
   getMeteorData() {
     return {
       profilePicture: profilePicture(this.props.score.id, 35),
       displayName: displayName(this.props.score.id)
     }
   },
+
   propTypes: {
-    score: React.PropTypes.shape({
-      id: React.PropTypes.string.isRequired,
-      score: React.PropTypes.number.isRequired,
-      active: React.PropTypes.bool.isRequired
+    score: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      score: PropTypes.number.isRequired,
+      active: PropTypes.bool.isRequired
     })
   },
+
   render() {
     return (
       <tr className={this.props.score.active ? null : 'disabled'}>
@@ -222,7 +232,7 @@ const ScoresTableRow = React.createClass({
           <td>{this.props.score.score}</td>
       </tr>
     );
-  }
+  },
 });
 
 class ScoresTable extends React.Component {
@@ -259,8 +269,8 @@ class ScoresTable extends React.Component {
 }
 
 ScoresTable.propTypes = {
-  scores: React.PropTypes.object,
-  players: React.PropTypes.array
+  scores: PropTypes.object,
+  players: PropTypes.array
 };
 
 const Beggar = () => {
@@ -346,11 +356,14 @@ const LobbySettings = (props) => {
   );
 };
 
-export const LobbyView = React.createClass({
+export const LobbyView = createReactClass({
+  displayName: 'LobbyView',
   mixins: [ReactMeteorData],
+
   propTypes: {
-    lobbyId: React.PropTypes.string.isRequired
+    lobbyId: PropTypes.string.isRequired
   },
+
   getMeteorData() {
     lobbySubs.subscribe('lobbies');
 
@@ -373,6 +386,7 @@ export const LobbyView = React.createClass({
 
     return data;
   },
+
   componentWillMount() {
     this.notifications = Lobbies.find({_id: this.props.lobbyId}).observeChanges({
       changed: function(id, fields) {
@@ -404,11 +418,12 @@ export const LobbyView = React.createClass({
       DocHead.addMeta({name: name, content: content})
     });
   },
+
   componentWillUnmount() {
     this.notifications.stop();
   },
 
-    /* HELPERS */
+  /* HELPERS */
   isInLobby() {
     return (this.data.lobby.players && this.data.lobby.players.indexOf(Meteor.userId()) > -1);
   },
@@ -417,7 +432,7 @@ export const LobbyView = React.createClass({
     return isUserBanned(Meteor.userId());
   },
 
-    /* EVENTS */
+  /* EVENTS */
   joinOrLeaveLobby(evt) {
     const btn = $(evt.currentTarget),
       isInLobby = this.isInLobby();
@@ -448,7 +463,7 @@ export const LobbyView = React.createClass({
                 <div className="ui raised segments">
                     <div className="ui segment">
                         <button
-                          className={classNames('ui', 'fluid', 'button', { primary: this.isInLobby() }, { disabled: this.isBanned() } )}
+                          className={classNames('ui', 'fluid', 'button', { primary: !this.isInLobby() }, { disabled: this.isBanned() } )}
                           onClick={this.joinOrLeaveLobby}>
                           {this.isInLobby() ? 'Leave' : 'Join'} lobby
                         </button>
@@ -492,5 +507,5 @@ export const LobbyView = React.createClass({
     } else {
       return <div className="ui active loader"></div>;
     }
-  }
+  },
 });

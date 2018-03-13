@@ -96,8 +96,7 @@ class GameAcroPhase extends Component {
           </Item>
         )}
         <Text style={styles.acroInfoText}>
-          Some text will be placed here to explain how to write a great acro.
-          Please review this text and update it to be better.
+          Note: Creative use of punctuation and words like 'and', 'of', 'the' etc are allowed outside the required letters. Just don't go too crazy.
         </Text>
       </View>
     );

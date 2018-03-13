@@ -1,11 +1,13 @@
+import PropTypes from 'prop-types';
 import React from 'react';
+import createReactClass from 'create-react-class';
 import Slider from 'react-slick';
 
 import {Lobbies, Events} from '../collections';
 import {PlayerUsername, PlayerImage} from './OnlinePlayers';
 import {CountdownSpan} from './Countdown';
 
-const SetEmailModal = React.createClass({
+class SetEmailModal extends React.Component {
     componentDidMount() {
         $(this.modal).modal({
             detachable: false,
@@ -39,7 +41,8 @@ const SetEmailModal = React.createClass({
                 });
             }
         });
-    },
+    }
+
     render() {
         return (
             <div className="ui small basic modal" id="setEmailModal" ref={(ref) => this.modal = ref}>
@@ -63,24 +66,26 @@ const SetEmailModal = React.createClass({
             </div>
         )
     }
-});
+}
 
-const SingleEvent = React.createClass({
-    propTypes: {
-        _id: React.PropTypes.string.isRequired,
-        name: React.PropTypes.string.isRequired,
-        date: React.PropTypes.instanceOf(Date).isRequired,
-        creator: React.PropTypes.string,
-        lobbyId: React.PropTypes.string.isRequired,
-        recurring: React.PropTypes.bool,
-        description: React.PropTypes.string.isRequired,
-        region: React.PropTypes.string
-    },
-    joinEvent(evt) {
+class SingleEvent extends React.Component {
+    static propTypes = {
+        _id: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+        date: PropTypes.instanceOf(Date).isRequired,
+        creator: PropTypes.string,
+        lobbyId: PropTypes.string.isRequired,
+        recurring: PropTypes.bool,
+        description: PropTypes.string.isRequired,
+        region: PropTypes.string
+    };
+
+    joinEvent = (evt) => {
         evt.preventDefault();
         FlowRouter.go(FlowRouter.path('lobby', {lobbyId: this.props.lobbyId}));
-    },
-    remindMe(evt) {
+    };
+
+    remindMe = (evt) => {
         evt.preventDefault();
         if (!Meteor.userId()) {
             FlowRouter.go('/sign-in');
@@ -114,8 +119,9 @@ const SingleEvent = React.createClass({
                 });
             }
         }
-    },
-    dontRemindMe(evt) {
+    };
+
+    dontRemindMe = (evt) => {
         evt.preventDefault();
         const button = $(this.button);
         button.addClass('loading');
@@ -123,11 +129,13 @@ const SingleEvent = React.createClass({
             button.removeClass('loading');
             if (err) console.error(err.reason);
         });
-    },
-    isInReminderList() {
+    };
+
+    isInReminderList = () => {
         const userId = Meteor.userId();
         return (userId && this.props.users && this.props.users.indexOf(userId) > -1);
-    },
+    };
+
     render() {
         let label, button, labelShown;
         const now = moment(),
@@ -185,10 +193,12 @@ const SingleEvent = React.createClass({
             </div>
         );
     }
-});
+}
 
-export const UpcomingEvents = React.createClass({
+export const UpcomingEvents = createReactClass({
+    displayName: 'UpcomingEvents',
     mixins: [ReactMeteorData],
+
     getMeteorData() {
         const handle1 = Meteor.subscribe('events'),
             handle2 = Meteor.subscribe('lobbies'),
@@ -203,6 +213,7 @@ export const UpcomingEvents = React.createClass({
             events: sortedEvents
         };
     },
+
     render() {
         let events;
 
@@ -230,7 +241,7 @@ export const UpcomingEvents = React.createClass({
                 <SetEmailModal />
             </div>
         );
-    }
+    },
 });
 
 const slickSettings = {
@@ -302,11 +313,14 @@ class HofBanner extends React.Component {
 }
 
 
-export const EventBanner = React.createClass({
+export const EventBanner = createReactClass({
+    displayName: 'EventBanner',
     mixins: [ReactMeteorData],
+
     getInitialState() {
         return {show: true};
     },
+
     getMeteorData() {
         Meteor.subscribe('events');
         const events = Events.find().fetch(),
@@ -331,15 +345,18 @@ export const EventBanner = React.createClass({
             currentRoute: FlowRouter.getRouteName()
         };
     },
+
     joinEvent(evt) {
         evt.preventDefault();
         const lobbyId = this.data.currentEvent ? this.data.currentEvent.lobbyId : this.data.futureEvent.lobbyId;
         FlowRouter.go(FlowRouter.path('lobby', {lobbyId: lobbyId}));
     },
+
     hideBanner(evt) {
         evt.preventDefault();
         this.setState({show: false});
     },
+
     render() {
         if (!this.state.show || this.data.currentRoute === 'lobby')
             return false;
@@ -376,5 +393,5 @@ export const EventBanner = React.createClass({
                 <a id="hideEventBanner" href="#" onClick={this.hideBanner} className="hiddenOnMobile"></a>
             </div>
         );
-    }
+    },
 });

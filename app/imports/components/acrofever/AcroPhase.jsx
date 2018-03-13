@@ -1,14 +1,16 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import {CountdownHeader} from '../Countdown';
 
 import {playSound, acrofeverAnalytics} from '../../helpers';
 
-const SubmitAcroForm = React.createClass({
-    propTypes: {
-        chosenAcro: React.PropTypes.string,
-        submitAcro: React.PropTypes.func.isRequired
-    },
+class SubmitAcroForm extends React.Component {
+    static propTypes = {
+        chosenAcro: PropTypes.string,
+        submitAcro: PropTypes.func.isRequired
+    };
+
     componentDidMount() {
         const $forms = $([this.desktopForm, this.mobileForm]);
 
@@ -41,7 +43,8 @@ const SubmitAcroForm = React.createClass({
                 return false;
             }
         });
-    },
+    }
+
     render() {
         return (
             <div>
@@ -65,30 +68,34 @@ const SubmitAcroForm = React.createClass({
             </div>
         )
     }
-});
+}
 
-const SubmitAcro = React.createClass({
-    propTypes: {
-        round: React.PropTypes.object.isRequired,
-        gameId: React.PropTypes.string.isRequired
-    },
-    getInitialState() {
+class SubmitAcro extends React.Component {
+    static propTypes = {
+        round: PropTypes.object.isRequired,
+        gameId: PropTypes.string.isRequired
+    };
+
+    constructor(props) {
+        super(props);
         let chosenAcro,
             hasChosenAcro = false,
             userId = Meteor.userId();
 
-        if (this.props.round.players[userId] && this.props.round.players[userId].submission) {
-            chosenAcro = this.props.round.players[userId].submission.acro;
+        if (props.round.players[userId] && props.round.players[userId].submission) {
+            chosenAcro = props.round.players[userId].submission.acro;
             hasChosenAcro = true;
         }
 
-        return {chosenAcro, hasChosenAcro};
-    },
-    changeAcro(evt) {
+        this.state = {chosenAcro, hasChosenAcro};
+    }
+
+    changeAcro = (evt) => {
         evt.preventDefault();
         this.setState({hasChosenAcro: false});
-    },
-    submitAcro(evt, fields) {
+    };
+
+    submitAcro = (evt, fields) => {
         evt.preventDefault();
         var form = $(evt.currentTarget),
             btn = form.find('button');
@@ -108,7 +115,8 @@ const SubmitAcro = React.createClass({
                 acrofeverAnalytics.track('submitAcro', {acroLength: fields.acro.length});
             }
         });
-    },
+    };
+
     render() {
         const submittedAcro = (
             <p>
@@ -128,21 +136,24 @@ const SubmitAcro = React.createClass({
             </div>
         )
     }
-});
+}
 
-export const AcrofeverAcroPhase = React.createClass({
-    propTypes: {
-        round: React.PropTypes.object.isRequired,
-        endTime: React.PropTypes.instanceOf(Date).isRequired,
-        gameId: React.PropTypes.string.isRequired
-    },
-    currentAcro() {
+export class AcrofeverAcroPhase extends React.Component {
+    static propTypes = {
+        round: PropTypes.object.isRequired,
+        endTime: PropTypes.instanceOf(Date).isRequired,
+        gameId: PropTypes.string.isRequired
+    };
+
+    currentAcro = () => {
         var acro = this.props.round.acronym;
         return acro.join('. ');
-    },
-    isInRound() {
+    };
+
+    isInRound = () => {
         return (this.props.round.players[Meteor.userId()]);
-    },
+    };
+
     render() {
         const dividerStyle = {marginBottom: '2em'};
         return (
@@ -158,4 +169,4 @@ export const AcrofeverAcroPhase = React.createClass({
             </div>
         );
     }
-});
+}

@@ -1,4 +1,7 @@
+import PropTypes from 'prop-types';
 import React from 'react';
+
+import createReactClass from 'create-react-class';
 
 import {CountdownHeader} from '../Countdown';
 import {RoundResultsTable} from './EndRoundPhase';
@@ -6,24 +9,29 @@ import {RoundResultsTable} from './EndRoundPhase';
 import {profilePicture, displayName, acrofeverAnalytics} from '../../helpers';
 import {Lobbies} from '../../collections';
 
-const BestAcroCard = React.createClass({
-    propTypes: {
-        result: React.PropTypes.object.isRequired
-    },
-    getInitialState() {
+class BestAcroCard extends React.Component {
+    static propTypes = {
+        result: PropTypes.object.isRequired
+    };
+
+    constructor(props) {
+        super(props);
         let hasVotedForHOF = false;
-        return {hasVotedForHOF};
-    },
+        this.state = {hasVotedForHOF};
+    }
+
     componentDidMount() {
         if (this.voteLabel) {
             $(this.voteLabel).popup({inline: true});
         }
         $(this.description).popup({inline: true});
-    },
-    isOwnAcro() {
+    }
+
+    isOwnAcro = () => {
         return (this.props.result.id === Meteor.userId());
-    },
-    voteForHOF(evt) {
+    };
+
+    voteForHOF = (evt) => {
         evt.preventDefault();
 
         if (this.state.hasVotedForHOF)
@@ -34,7 +42,8 @@ const BestAcroCard = React.createClass({
         const gameId = Lobbies.findOne(FlowRouter.getParam('lobbyId')).currentGame;
         Meteor.call('voteForHallOfFame', gameId, this.props.result);
         acrofeverAnalytics.track('voteForHallOfFame');
-    },
+    };
+
     render() {
         let headerContent;
 
@@ -71,22 +80,27 @@ const BestAcroCard = React.createClass({
             </div>
         )
     }
-});
+}
 
-const GameResultsRow = React.createClass({
+const GameResultsRow = createReactClass({
+    displayName: 'GameResultsRow',
     mixins: [ReactMeteorData],
+
     propTypes: {
-        result: React.PropTypes.object.isRequired
+        result: PropTypes.object.isRequired
     },
+
     getMeteorData() {
         return {
             profilePicture: profilePicture(this.props.result.id, 80),
             displayName: displayName(this.props.result.id)
         };
     },
+
     isThisUser() {
         return (this.props.result.id === Meteor.userId());
     },
+
     render() {
         const spanStyle = {display: 'block'};
         return (
@@ -121,15 +135,16 @@ const GameResultsRow = React.createClass({
                 </td>
             </tr>
         );
-    }
+    },
 });
 
-const GameResultsTable = React.createClass({
-    propTypes: {
-        scores: React.PropTypes.object.isRequired,
-        rounds: React.PropTypes.array.isRequired,
-        winner: React.PropTypes.string
-    },
+class GameResultsTable extends React.Component {
+    static propTypes = {
+        scores: PropTypes.object.isRequired,
+        rounds: PropTypes.array.isRequired,
+        winner: PropTypes.string
+    };
+
     componentDidMount() {
         this.$scrollTableOuter = $(this.scrollTableOuter);
         this.$scrollTable = this.$scrollTableOuter.find('.scrollTable');
@@ -142,15 +157,17 @@ const GameResultsTable = React.createClass({
                 'opacity': (1 - (scrollLeft / (tableWidth - divWidth)))
             });
         });
-    },
+    }
+
     componentDidUpdate() {
         if (this.$scrollTable.prop('scrollWidth') <= this.$scrollTable.width()) {
             this.$scrollTableOuter.find('.scrollTable-fade').css({
                 'opacity': 0
             });
         }
-    },
-    gameResults() {
+    }
+
+    gameResults = () => {
         let results = [];
         const scores = this.props.scores,
             rounds = this.props.rounds;
@@ -233,7 +250,8 @@ const GameResultsTable = React.createClass({
         });
 
         return results;
-    },
+    };
+
     render() {
         const tableStyle = {minWidth: '500px'};
         return (
@@ -255,22 +273,26 @@ const GameResultsTable = React.createClass({
             </div>
         );
     }
-});
+}
 
-export const AcrofeverEndGamePhase = React.createClass({
+export const AcrofeverEndGamePhase = createReactClass({
+    displayName: 'AcrofeverEndGamePhase',
     mixins: [ReactMeteorData],
+
     propTypes: {
-        scores: React.PropTypes.object.isRequired,
-        rounds: React.PropTypes.array.isRequired,
-        currentRound: React.PropTypes.number.isRequired,
-        winner: React.PropTypes.string,
-        endTime: React.PropTypes.instanceOf(Date).isRequired
+        scores: PropTypes.object.isRequired,
+        rounds: PropTypes.array.isRequired,
+        currentRound: PropTypes.number.isRequired,
+        winner: PropTypes.string,
+        endTime: PropTypes.instanceOf(Date).isRequired
     },
+
     getMeteorData() {
         return {
             winnerDisplayName: displayName(this.props.winner)
         }
     },
+
     render() {
         const dividerStyle = {marginBottom: '2em'};
         return (
@@ -295,5 +317,5 @@ export const AcrofeverEndGamePhase = React.createClass({
                 </div>
             </div>
         )
-    }
+    },
 });

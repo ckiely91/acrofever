@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import {NavComponent} from '../components/Nav';
@@ -65,5 +66,5 @@ export class Layout extends React.Component {
 }
 
 Layout.propTypes = {
-    content: React.PropTypes.any.isRequired
+    content: PropTypes.any.isRequired
 };

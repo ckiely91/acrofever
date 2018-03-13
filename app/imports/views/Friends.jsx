@@ -1,18 +1,25 @@
+import PropTypes from 'prop-types';
 import React from 'react';
+
+import createReactClass from 'create-react-class';
 
 import {profilePicture, displayName} from '../helpers';
 
-const SingleFriend = React.createClass({
+const SingleFriend = createReactClass({
+    displayName: 'SingleFriend',
     mixins: [ReactMeteorData],
+
     propTypes: {
-        user: React.PropTypes.object.isRequired
+        user: PropTypes.object.isRequired
     },
+
     getMeteorData() {
         return {
             displayName: displayName(this.props.user._id),
             profilePicture: profilePicture(this.props.user._id, 28)
         }
     },
+
     onlineLabel() {
         if (this.props.user.status && this.props.user.status.online) {
             return <div className="ui small basic green label">Online</div>;
@@ -20,6 +27,7 @@ const SingleFriend = React.createClass({
             return <div className="ui small basic red label">Offline</div>;
         }
     },
+
     render() {
         return (
             <a className="item" href={FlowRouter.path('profile', {userId: this.props.user._id})}>
@@ -29,11 +37,13 @@ const SingleFriend = React.createClass({
                 </div>
             </a>
         )
-    }
+    },
 });
 
-export const FriendsView = React.createClass({
+export const FriendsView = createReactClass({
+    displayName: 'FriendsView',
     mixins: [ReactMeteorData],
+
     getMeteorData() {
         const user = Meteor.user(),
             data = {user, ready: false};
@@ -75,5 +85,5 @@ export const FriendsView = React.createClass({
                 })()}
             </div>
         );
-    }
+    },
 });

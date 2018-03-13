@@ -1,15 +1,21 @@
+import PropTypes from 'prop-types';
 import React from 'react';
+
+import createReactClass from 'create-react-class';
 
 import {profilePicture, displayName} from '../helpers';
 
-export const PlayerUsername = React.createClass({
+export const PlayerUsername = createReactClass({
+    displayName: 'PlayerUsername',
     mixins: [ReactMeteorData],
+
     propTypes: {
-        id: React.PropTypes.string.isRequired,
-        beforeText: React.PropTypes.string,
-        afterText: React.PropTypes.string,
-        linkToProfile: React.PropTypes.bool
+        id: PropTypes.string.isRequired,
+        beforeText: PropTypes.string,
+        afterText: PropTypes.string,
+        linkToProfile: PropTypes.bool
     },
+
     getMeteorData() {
         const data = {
             displayName: displayName(this.props.id)
@@ -17,6 +23,7 @@ export const PlayerUsername = React.createClass({
 
         return data;
     },
+
     render() {
         if (!this.data.displayName) {
             return false;
@@ -27,15 +34,18 @@ export const PlayerUsername = React.createClass({
                 {this.props.afterText}
             </span>
         }
-    }
+    },
 });
 
-export const PlayerImage = React.createClass({
+export const PlayerImage = createReactClass({
+    displayName: 'PlayerImage',
     mixins: [ReactMeteorData],
+
     propTypes: {
-        id: React.PropTypes.string.isRequired,
-        size: React.PropTypes.number
+        id: PropTypes.string.isRequired,
+        size: PropTypes.number
     },
+
     getMeteorData() {
         const data = {
             profilePicture: profilePicture(this.props.id, this.props.size || 50)
@@ -43,18 +53,22 @@ export const PlayerImage = React.createClass({
 
         return data;
     },
+
     render() {
         return <img src={this.data.profilePicture} />
-    }
+    },
 });
 
-export const PlayerLabel = React.createClass({
+export const PlayerLabel = createReactClass({
+    displayName: 'PlayerLabel',
     mixins: [ReactMeteorData],
+
     propTypes: {
-        id: React.PropTypes.string.isRequired,
-        size: React.PropTypes.string,
-        hideCountry: React.PropTypes.bool
+        id: PropTypes.string.isRequired,
+        size: PropTypes.string,
+        hideCountry: PropTypes.bool
     },
+
     getMeteorData() {
         const data = {
             profilePicture: profilePicture(this.props.id, 50),
@@ -75,11 +89,13 @@ export const PlayerLabel = React.createClass({
 
         return data;
     },
+
     userFlag() {
         if (this.data.profile && this.data.profile.country) {
             return <i className={this.data.profile.country + ' flag'}></i>;
         }
     },
+
     render() {
         if (this.data.ready) {
             const labelClass = `ui ${this.props.isFriend ? "green" : ""} ${this.props.size ? this.props.size : ""} image label userProfilePicture`;
@@ -94,41 +110,45 @@ export const PlayerLabel = React.createClass({
         } else {
             return <div className="ui label"><div className="ui inline active mini loader"></div></div>;
         }
-    }
+    },
 });
 
-export const OnlinePlayers = React.createClass({
-   mixins: [ReactMeteorData],
-   getMeteorData() {
-       var handle = Meteor.subscribe('allOnlinePlayers');
+export const OnlinePlayers = createReactClass({
+    displayName: 'OnlinePlayers',
+    mixins: [ReactMeteorData],
 
-       var data = {
-           ready: handle.ready(),
-           onlinePlayers: Meteor.users.find({'status.online':true}).fetch(),
-           thisUser: Meteor.user()
-       };
+    getMeteorData() {
+        var handle = Meteor.subscribe('allOnlinePlayers');
 
-       data.playerCount = data.onlinePlayers.length;
+        var data = {
+            ready: handle.ready(),
+            onlinePlayers: Meteor.users.find({'status.online':true}).fetch(),
+            thisUser: Meteor.user()
+        };
 
-       return data;
-   },
-   isFriend(id) {
-       if (this.data.thisUser && this.data.thisUser.profile && this.data.thisUser.profile.friends) {
-           return (this.data.thisUser.profile.friends.indexOf(id) > -1);
-       } else {
-           return false;
-       }
-   },
-   render() {
-       if (this.data.ready) {
-           return (
-               <div>
-                   <h3 className="ui header">{this.data.playerCount + ((this.data.playerCount === 1) ? ' player ' : ' players ') + ' online'}</h3>
-                   {this.data.onlinePlayers.map((player, index) => <PlayerLabel key={index} id={player._id} isFriend={this.isFriend(player._id)} />)}
-               </div>
-           )
-       } else {
-           return <div className="ui active inline centered loader"></div>
-       }
-   }
+        data.playerCount = data.onlinePlayers.length;
+
+        return data;
+    },
+
+    isFriend(id) {
+        if (this.data.thisUser && this.data.thisUser.profile && this.data.thisUser.profile.friends) {
+            return (this.data.thisUser.profile.friends.indexOf(id) > -1);
+        } else {
+            return false;
+        }
+    },
+
+    render() {
+        if (this.data.ready) {
+            return (
+                <div>
+                    <h3 className="ui header">{this.data.playerCount + ((this.data.playerCount === 1) ? ' player ' : ' players ') + ' online'}</h3>
+                    {this.data.onlinePlayers.map((player, index) => <PlayerLabel key={index} id={player._id} isFriend={this.isFriend(player._id)} />)}
+                </div>
+            )
+        } else {
+            return <div className="ui active inline centered loader"></div>
+        }
+    },
 });

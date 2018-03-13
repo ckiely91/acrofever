@@ -1,4 +1,7 @@
+import PropTypes from 'prop-types';
 import React from 'react';
+
+import createReactClass from 'create-react-class';
 
 const getDiff = (endTime) => {
     return Math.max(0, moment(endTime).diff(TimeSync.now()));
@@ -73,12 +76,13 @@ export class CountdownIconHeader extends React.Component {
     }
 }
 
-export const CountdownHeader = React.createClass({
-    propTypes: {
-        endTime: React.PropTypes.instanceOf(Date).isRequired,
-        header: React.PropTypes.string.isRequired,
-        subheader: React.PropTypes.string
-    },
+export class CountdownHeader extends React.Component {
+    static propTypes = {
+        endTime: PropTypes.instanceOf(Date).isRequired,
+        header: PropTypes.string.isRequired,
+        subheader: PropTypes.string
+    };
+
     render() {
         return (
             <div className="ui stackable grid">
@@ -92,14 +96,17 @@ export const CountdownHeader = React.createClass({
             </div>
         );
     }
-});
+}
 
 /* Reactively returns a simple span with moment fromNow time, updated every second */
-export const MomentFromNow = React.createClass({
+export const MomentFromNow = createReactClass({
+    displayName: 'MomentFromNow',
     mixins: [ReactMeteorData],
+
     propTypes: {
-        time: React.PropTypes.instanceOf(Date).isRequired
+        time: PropTypes.instanceOf(Date).isRequired
     },
+
     getMeteorData() {
         //ensure this thing reruns every minute
         Session.get('minuteUpdater');
@@ -108,8 +115,9 @@ export const MomentFromNow = React.createClass({
             time: timeFromNow
         }
     },
+
     render() {
         return <span>{this.data.time}</span>;
-    }
+    },
 });
 
