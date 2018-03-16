@@ -22,3 +22,5 @@ node_modules/
 config/
 /app/mobile-config.js
 /app/buildandroid.sh
+
+yarn-error.log
