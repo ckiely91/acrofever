@@ -2,7 +2,6 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { Meteor } from "meteor/meteor";
 import { withTracker } from "meteor/react-meteor-data";
-import createReactClass from "create-react-class";
 import Highchart from "react-highcharts";
 
 import { HallOfFameAcrosContainer } from "./HallOfFame";
