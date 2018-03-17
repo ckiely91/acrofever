@@ -6,10 +6,10 @@ import { mount } from "react-mounter";
 import { Layout } from "../imports/views/Layout";
 import { HomeView } from "../imports/views/Home";
 import { PlayViewContainer } from "../imports/views/Play";
-import { LobbyView } from "../imports/views/Lobby";
+import { LobbyViewContainer } from "../imports/views/Lobby";
 import { HallOfFameView } from "../imports/views/HallOfFame";
 import { LeaderboardViewContainer } from "../imports/views/Leaderboard";
-import { ProfileView } from "../imports/views/Profile";
+import { ProfileViewContainer } from "../imports/views/Profile";
 import { FriendsViewContainer } from "../imports/views/Friends";
 import { PageNotFound } from "../imports/views/PageNotFound";
 import {
@@ -50,7 +50,7 @@ lobbyRoutes.route("/:lobbyId", {
   triggersEnter: [AccountsTemplates.ensureSignedIn],
   action: function(params) {
     mount(Layout, {
-      content: () => <LobbyView lobbyId={params.lobbyId} />
+      content: () => <LobbyViewContainer lobbyId={params.lobbyId} />
     });
   }
 });
@@ -77,7 +77,7 @@ FlowRouter.route("/profile/:userId", {
   name: "profile",
   action: function(params) {
     mount(Layout, {
-      content: () => <ProfileView userId={params.userId} />
+      content: () => <ProfileViewContainer userId={params.userId} />
     });
   }
 });

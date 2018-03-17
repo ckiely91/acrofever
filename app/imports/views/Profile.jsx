@@ -1,5 +1,7 @@
 import PropTypes from "prop-types";
-import React from "react";
+import React, { Component } from "react";
+import { Meteor } from "meteor/meteor";
+import { withTracker } from "meteor/react-meteor-data";
 import createReactClass from "create-react-class";
 import Highchart from "react-highcharts";
 
@@ -9,209 +11,173 @@ import { lobbySubs } from "../subsManagers";
 import { Lobbies } from "../collections";
 import { countryTags } from "../statics";
 
-class UserStats extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+const Statistic = ({ value, label }) => (
+  <div className="statistic">
+    <div className="value">{value}</div>
+    <div className="label">{label}</div>
+  </div>
+);
 
-  gamesPlayed() {
-    return this.props.stats.played;
-  }
+Statistic.propTypes = {
+  value: PropTypes.any,
+  label: PropTypes.string.isRequired
+};
 
-  gamesWon() {
-    return this.props.stats.won;
-  }
+const UserStats = ({ stats, user, halloffame }) => {
+  const formattedStats = [
+    {
+      label: "Ranked games",
+      value: stats.played
+    },
+    {
+      label: "Games won",
+      value: stats.won
+    },
+    {
+      label: "Skill",
+      value: _.has(user, "profile.trueskill.skillEstimate")
+        ? Math.floor(user.profile.trueskill.skillEstimate * 100) / 100
+        : "N/A"
+    },
+    {
+      label: "HOF Entries",
+      value: halloffame ? halloffame : "0"
+    }
+  ];
 
-  winRate() {
-    return this.props.stats.winRate;
-  }
+  return (
+    <div className="ui two statistics">
+      {formattedStats.map(stat => <Statistic key={stat.label} {...stat} />)}
+    </div>
+  );
+};
 
-  skill() {
-    return _.has(this.props.user, "profile.trueskill.skillEstimate")
-      ? Math.floor(this.props.user.profile.trueskill.skillEstimate * 100) / 100
-      : "N/A";
-  }
+UserStats.propTypes = {
+  stats: PropTypes.object,
+  user: PropTypes.object
+};
 
-  renderStatistic(stat, index) {
-    return (
-      <div key={index} className="statistic">
-        <div className="value">{stat.value}</div>
-        <div className="label">{stat.label}</div>
-      </div>
-    );
-  }
-
-  render() {
-    const stats = [
-      {
-        label: "Ranked games",
-        value: this.gamesPlayed()
-      },
-      {
-        label: "Games won",
-        value: this.gamesWon()
-      },
-      {
-        label: "Skill",
-        value: this.skill()
-      },
-      {
-        label: "HOF Entries",
-        value: this.props.halloffame ? this.props.halloffame : "0"
+const UserStatChartGamesPlayed = ({ stats }) => {
+  const config = {
+    chart: {
+      zoomType: "x"
+    },
+    title: {
+      text: "Games played"
+    },
+    xAxis: {
+      type: "datetime",
+      title: {
+        text: "Date"
       }
-    ].map((stat, index) => this.renderStatistic(stat, index));
-
-    return <div className="ui two statistics">{stats}</div>;
-  }
-}
-
-class UserStatChartGamesPlayed extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  formatChartData(inputData) {
-    const config = {
-      chart: {
-        zoomType: "x"
-      },
-      title: {
-        text: "Games played"
-      },
-      xAxis: {
-        type: "datetime",
+    },
+    yAxis: [
+      {
         title: {
-          text: "Date"
-        }
-      },
-      yAxis: [
-        {
-          title: {
-            text: "Games"
-          },
-          min: 0
-        },
-        {
-          title: {
-            text: "Win rate"
-          },
-          labels: {
-            format: "{value}%"
-          },
-          opposite: true,
-          min: 0,
-          max: 100
-        }
-      ],
-      tooltip: {
-        shared: true
-      },
-      series: [
-        {
-          name: "Games played",
-          type: "spline",
-          tooltip: {
-            valueSuffix: " games"
-          },
-          data: []
-        },
-        {
-          name: "Games won",
-          type: "spline",
-          tooltip: {
-            valueSuffix: " games"
-          },
-          data: []
-        },
-        {
-          name: "Win rate",
-          type: "spline",
-          tooltip: {
-            valueSuffix: "%"
-          },
-          data: [],
-          yAxis: 1
-        }
-      ]
-    };
-
-    _.each(inputData, function(value, date) {
-      config.series[0].data.push([parseInt(date), value.played]);
-      config.series[1].data.push([parseInt(date), value.won]);
-      config.series[2].data.push([parseInt(date), value.winRate]);
-    });
-
-    return config;
-  }
-
-  render() {
-    return <Highchart config={this.formatChartData(this.props.stats)} />;
-  }
-}
-
-class UserStatChartAverageScore extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  formatChartData(inputData) {
-    const config = {
-      chart: {
-        zoomType: "x"
-      },
-      title: {
-        text: "Scores / Player Skill"
-      },
-      xAxis: {
-        type: "datetime",
-        title: {
-          text: "Date"
-        }
-      },
-      yAxis: {
-        title: {
-          text: "Score / Skill"
+          text: "Games"
         },
         min: 0
       },
-      tooltip: {
-        shared: true
+      {
+        title: {
+          text: "Win rate"
+        },
+        labels: {
+          format: "{value}%"
+        },
+        opposite: true,
+        min: 0,
+        max: 100
+      }
+    ],
+    tooltip: {
+      shared: true
+    },
+    series: [
+      {
+        name: "Games played",
+        type: "spline",
+        tooltip: {
+          valueSuffix: " games"
+        },
+        data: []
       },
-      series: [
-        {
-          name: "Score",
-          type: "area",
-          step: true,
-          data: inputData.scoresArr
+      {
+        name: "Games won",
+        type: "spline",
+        tooltip: {
+          valueSuffix: " games"
         },
-        {
-          name: "Average score",
-          type: "spline",
-          data: inputData.averageArr
+        data: []
+      },
+      {
+        name: "Win rate",
+        type: "spline",
+        tooltip: {
+          valueSuffix: "%"
         },
-        {
-          name: "Skill",
-          type: "spline",
-          data: inputData.ratingArr
-        }
-      ]
-    };
+        data: [],
+        yAxis: 1
+      }
+    ]
+  };
 
-    return config;
-  }
+  _.each(stats, function(value, date) {
+    config.series[0].data.push([parseInt(date), value.played]);
+    config.series[1].data.push([parseInt(date), value.won]);
+    config.series[2].data.push([parseInt(date), value.winRate]);
+  });
 
-  render() {
-    return <Highchart config={this.formatChartData(this.props.stats)} />;
-  }
-}
+  return <Highchart config={config} />;
+};
 
-class EditProfileModal extends React.Component {
-  constructor(props) {
-    super(props);
-    this.openModal = this.openModal.bind(this);
-    this.changePassword = this.changePassword.bind(this);
-  }
+const UserStatChartAverageScore = ({ stats }) => {
+  const config = {
+    chart: {
+      zoomType: "x"
+    },
+    title: {
+      text: "Scores / Player Skill"
+    },
+    xAxis: {
+      type: "datetime",
+      title: {
+        text: "Date"
+      }
+    },
+    yAxis: {
+      title: {
+        text: "Score / Skill"
+      },
+      min: 0
+    },
+    tooltip: {
+      shared: true
+    },
+    series: [
+      {
+        name: "Score",
+        type: "area",
+        step: true,
+        data: stats.scoresArr
+      },
+      {
+        name: "Average score",
+        type: "spline",
+        data: stats.averageArr
+      },
+      {
+        name: "Skill",
+        type: "spline",
+        data: stats.ratingArr
+      }
+    ]
+  };
 
+  return <Highchart config={config} />;
+};
+
+class EditProfileModal extends Component {
   componentDidMount() {
     const $modal = $(this.modal),
       $usernameForm = $(this.usernameForm),
@@ -270,16 +236,16 @@ class EditProfileModal extends React.Component {
     });
   }
 
-  openModal(evt) {
+  openModal = evt => {
     evt.preventDefault();
     $(this.modal).modal("show");
-  }
+  };
 
-  changePassword(evt) {
+  changePassword = evt => {
     evt.preventDefault();
     $(this.modal).modal("hide");
     FlowRouter.go("/change-password");
-  }
+  };
 
   render() {
     return (
@@ -343,10 +309,7 @@ class EditProfileModal extends React.Component {
           </div>
         </div>
         <div className="actions">
-          <div
-            className="ui left floated button"
-            onClick={evt => this.changePassword(evt)}
-          >
+          <div className="ui left floated button" onClick={this.changePassword}>
             Change password
           </div>
           <div className="ui cancel button">Close</div>
@@ -356,74 +319,45 @@ class EditProfileModal extends React.Component {
   }
 }
 
-const InviteModal = createReactClass({
-  displayName: "InviteModal",
-  mixins: [ReactMeteorData],
-
-  propTypes: {
+class InviteModal extends Component {
+  static propTypes = {
     displayName: PropTypes.string.isRequired,
-    userId: PropTypes.string.isRequired
-  },
+    userId: PropTypes.string.isRequired,
+    lobbies: PropTypes.array.isRequired,
+    ready: PropTypes.bool.isRequired
+  };
 
-  getInitialState() {
-    return {
-      hasInvited: false
-    };
-  },
-
-  getMeteorData() {
-    lobbySubs.subscribe("lobbies");
-    const lobbies = Lobbies.find().fetch(),
-      ready = lobbySubs.ready();
-
-    return { lobbies, ready };
-  },
+  state = {
+    hasInvited: false
+  };
 
   componentDidMount() {
     $(this.modal).modal({
       detachable: false,
       observeChanges: true
     });
-  },
-
-  openModal(evt) {
-    evt.preventDefault();
-    if (Meteor.userId()) {
-      $(this.modal).modal("show");
-    } else {
-      FlowRouter.go("/sign-in");
-    }
-  },
+  }
 
   closeModal() {
     $(this.modal).modal("hide");
-  },
+  }
 
-  renderLobbyItem(lobby, index) {
-    return (
-      <div
-        key={index}
-        className="item"
-        onClick={evt => this.inviteToPlay(evt, lobby._id)}
-      >
-        <div className="content">{lobby.displayName}</div>
-      </div>
-    );
-  },
-
-  inviteToPlay(evt, lobbyId) {
+  inviteToPlay = (evt, lobbyId) => {
     evt.preventDefault();
     this.setState({ hasInvited: true });
     Meteor.call("inviteToPlay", this.props.userId, lobbyId, err => {
-      if (err) alert(err.reason);
-      else alert("Invite sent");
+      if (err) {
+        alert(err.reason);
+      } else {
+        alert("Invite sent");
+      }
 
       this.closeModal();
       Meteor.setTimeout(() => {
         this.setState({ hasInvited: false });
       }, 500);
     });
-  },
+  };
 
   render() {
     const styles = {
@@ -433,7 +367,11 @@ const InviteModal = createReactClass({
     };
 
     return (
-      <div className="ui small basic modal" ref={ref => (this.modal = ref)}>
+      <div
+        className="ui small basic modal"
+        id="user_invite_modal"
+        ref={ref => (this.modal = ref)}
+      >
         <div className="ui icon header">
           <i className="mail outline icon" />
           Invite {this.props.displayName} to play
@@ -442,13 +380,21 @@ const InviteModal = createReactClass({
         <div className="content">
           <h3 className="ui centered inverted header">Pick a lobby</h3>
           {(() => {
-            if (this.data.ready && !this.state.hasInvited) {
+            if (this.props.ready && !this.state.hasInvited) {
               return (
                 <div
                   style={styles.list}
                   className="ui middle aligned inverted selection list"
                 >
-                  {this.data.lobbies.map(this.renderLobbyItem)}
+                  {this.props.lobbies.map(lobby => (
+                    <div
+                      key={lobby._id}
+                      className="item"
+                      onClick={evt => this.inviteToPlay(evt, lobby._id)}
+                    >
+                      <div className="content">{lobby.displayName}</div>
+                    </div>
+                  ))}
                 </div>
               );
             } else {
@@ -461,50 +407,31 @@ const InviteModal = createReactClass({
       </div>
     );
   }
-});
+}
 
-export const ProfileView = createReactClass({
-  displayName: "ProfileView",
-  mixins: [ReactMeteorData],
+const InviteModalContainer = withTracker(() => {
+  lobbySubs.subscribe("lobbies");
+  const lobbies = Lobbies.find().fetch(),
+    ready = lobbySubs.ready();
 
-  propTypes: {
-    userId: PropTypes.string.isRequired
-  },
+  return { lobbies, ready };
+})(InviteModal);
 
-  getInitialState() {
-    let numberOfHallOfFame = new ReactiveVar();
-    let gamesPlayedStats = null;
-    let averageScoreStats = null;
-    return {
-      numberOfHallOfFame: new ReactiveVar(),
-      gamesPlayedStats: null,
-      averageScoreStats: null,
-      isModerator: false
-    };
-  },
+class ProfileView extends Component {
+  static propTypes = {
+    userId: PropTypes.string.isRequired,
+    ready: PropTypes.bool.isRequired,
+    user: PropTypes.object,
+    thisUser: PropTypes.object,
+    isOwnProfile: PropTypes.bool
+  };
 
-  getMeteorData() {
-    var data = {
-      numberOfHallOfFame: this.state.numberOfHallOfFame.get()
-    };
-
-    var handle = Meteor.subscribe("otherPlayers", [this.props.userId]);
-
-    data.ready = handle.ready();
-    data.user = Meteor.users.findOne(this.props.userId);
-    data.profilePicture = profilePicture(this.props.userId, 250);
-    data.displayName = displayName(this.props.userId);
-    data.specialTags = specialTags(this.props.userId);
-    data.isOwnProfile = this.props.userId === Meteor.userId();
-    data.thisUser = Meteor.user();
-
-    Meteor.call("hallOfFameAcroCount", this.props.userId, (err, res) => {
-      if (err) return console.error(err);
-      this.state.numberOfHallOfFame.set(res);
-    });
-
-    return data;
-  },
+  state = {
+    numberOfHallOfFame: Infinity,
+    gamesPlayedStats: null,
+    averageScoreStats: null,
+    isModerator: false
+  };
 
   componentWillMount() {
     this.refreshStats();
@@ -512,13 +439,12 @@ export const ProfileView = createReactClass({
     Meteor.call("isAdminUserOrModerator", (err, res) =>
       this.setState({ isModerator: res })
     );
-  },
+  }
 
   refreshStats() {
     Meteor.call("getUserStat", this.props.userId, "gamesPlayed", (err, res) => {
       if (err) return console.error(err);
-      const result = res ? res : false;
-      this.setState({ gamesPlayedStats: result });
+      this.setState({ gamesPlayedStats: res || false });
     });
 
     Meteor.call(
@@ -527,8 +453,7 @@ export const ProfileView = createReactClass({
       "averageScoreAndRating",
       (err, res) => {
         if (err) return console.error(err);
-        const result = res ? res : false;
-        this.setState({ averageScoreStats: result });
+        this.setState({ averageScoreStats: res || false });
       }
     );
 
@@ -536,7 +461,12 @@ export const ProfileView = createReactClass({
       if (err) return console.error(err);
       this.setState({ ranking: res });
     });
-  },
+
+    Meteor.call("hallOfFameAcroCount", this.props.userId, (err, res) => {
+      if (err) return console.error(err);
+      this.setState({ numberOfHallOfFame: res });
+    });
+  }
 
   clickRefresh(evt) {
     evt.preventDefault();
@@ -549,7 +479,7 @@ export const ProfileView = createReactClass({
     this.setState({ gamesPlayedStats: null, averageScoreStats: null });
 
     this.refreshStats();
-  },
+  }
 
   addFriend(evt) {
     evt.preventDefault();
@@ -563,7 +493,7 @@ export const ProfileView = createReactClass({
       $btn.removeClass("loading");
       if (err) console.error(err);
     });
-  },
+  }
 
   removeFriend(evt) {
     evt.preventDefault();
@@ -573,7 +503,7 @@ export const ProfileView = createReactClass({
       $btn.removeClass("loading");
       if (err) console.error(err);
     });
-  },
+  }
 
   lastStat() {
     const keys = Object.keys(this.state.gamesPlayedStats);
@@ -586,15 +516,15 @@ export const ProfileView = createReactClass({
         winRate: 0
       };
     }
-  },
+  }
 
   onlineLabel() {
-    if (this.data.user.status && this.data.user.status.online) {
+    if (this.props.user.status && this.props.user.status.online) {
       return <div className="ui green right ribbon label">ONLINE</div>;
     } else {
       return <div className="ui red basic right ribbon label">OFFLINE</div>;
     }
-  },
+  }
 
   specialTagLabel(specialTag, index) {
     const className = `ui small basic ${
@@ -605,29 +535,31 @@ export const ProfileView = createReactClass({
         {specialTag.tag}
       </div>
     );
-  },
+  }
 
   countryLabel() {
     if (
-      this.data.user &&
-      this.data.user.profile &&
-      this.data.user.profile.country
+      this.props.user &&
+      this.props.user.profile &&
+      this.props.user.profile.country
     ) {
-      return <i className={this.data.user.profile.country + " flag"} />;
+      return <i className={this.props.user.profile.country + " flag"} />;
     }
-  },
+  }
 
   isFriend() {
     if (
-      this.data.thisUser &&
-      this.data.thisUser.profile &&
-      this.data.thisUser.profile.friends
+      this.props.thisUser &&
+      this.props.thisUser.profile &&
+      this.props.thisUser.profile.friends
     ) {
-      return this.data.thisUser.profile.friends.indexOf(this.props.userId) > -1;
+      return (
+        this.props.thisUser.profile.friends.indexOf(this.props.userId) > -1
+      );
     } else {
       return false;
     }
-  },
+  }
 
   banUser() {
     const reason = prompt(
@@ -636,11 +568,19 @@ export const ProfileView = createReactClass({
     if (reason && reason.length > 0) {
       Meteor.call("adminShadowbanUser", this.props.userId, true, reason);
     }
-  },
+  }
 
   unbanUser() {
     Meteor.call("adminShadowbanUser", this.props.userId, false);
-  },
+  }
+
+  openInviteModal() {
+    if (Meteor.userId()) {
+      $("#user_invite_modal").modal("show");
+    } else {
+      FlowRouter.go("/sign-in");
+    }
+  }
 
   render() {
     let body;
@@ -665,203 +605,204 @@ export const ProfileView = createReactClass({
       }
     };
 
-    if (this.data.ready) {
-      if (this.data.user) {
-        body = (
-          <div className="ui grid text container">
-            <div className="eight wide column" style={styles.noBottom}>
-              <h1 className="ui header">
-                {this.data.displayName}
-                {this.data.specialTags
-                  ? this.data.specialTags.map(this.specialTagLabel)
-                  : null}
-                <div className="sub header">
-                  {this.countryLabel()}
-                  Member since {moment(this.data.user.createdAt).calendar()}
-                  <br />
-                  {this.state.ranking
-                    ? `Ranked #${this.state.ranking.rank} of ${
-                        this.state.ranking.total
-                      }`
-                    : "Not ranked"}
-                </div>
-              </h1>
-            </div>
-            <div
-              className="eight wide column"
-              style={_.extend(styles.noBottom, styles.top)}
-            >
-              {(() => {
-                if (this.data.isOwnProfile) {
-                  return (
-                    <button
-                      className="ui icon labeled right floated button"
-                      onClick={evt => this.editProfileModal.openModal(evt)}
-                    >
-                      <i className="edit icon" />
-                      Edit
-                    </button>
-                  );
-                } else {
-                  return (
-                    <div>
-                      <button
-                        style={styles.inviteBtn}
-                        className="ui primary icon labeled button"
-                        onClick={evt => this.inviteModal.openModal(evt)}
-                      >
-                        <i className="mail outline icon" />
-                        Invite to play
-                      </button>
-                      {(() => {
-                        if (!this.isFriend()) {
-                          return (
-                            <button
-                              className="ui button"
-                              onClick={evt => this.addFriend(evt)}
-                            >
-                              Add as friend
-                            </button>
-                          );
-                        } else {
-                          return (
-                            <button
-                              className="ui positive icon labeled button"
-                              onClick={evt => this.removeFriend(evt)}
-                            >
-                              <i className="check icon" />
-                              Friends
-                            </button>
-                          );
-                        }
-                      })()}
-                      {(() => {
-                        if (this.state.isModerator) {
-                          return this.data.user.profile.shadowbanned ? (
-                            <button
-                              className="ui button"
-                              onClick={this.unbanUser}
-                            >
-                              Unban user
-                            </button>
-                          ) : (
-                            <button
-                              className="ui button"
-                              onClick={this.banUser}
-                            >
-                              Ban user
-                            </button>
-                          );
-                        }
-                      })()}
-                    </div>
-                  );
-                }
-              })()}
-            </div>
-            <div className="sixteen wide column" style={styles.noTop}>
-              <div className="ui divider" />
-            </div>
-            <div className="five wide column">
-              <div className="ui fluid image">
-                {this.onlineLabel()}
-                <img src={this.data.profilePicture} />
-              </div>
-            </div>
-            <div className="eleven wide column">
-              {(() => {
-                if (
-                  this.state.gamesPlayedStats !== null &&
-                  _.isNumber(this.data.numberOfHallOfFame)
-                ) {
-                  return (
-                    <UserStats
-                      halloffame={this.data.numberOfHallOfFame}
-                      user={this.data.user}
-                      stats={this.lastStat()}
-                    />
-                  );
-                } else {
-                  return <div className="ui inline centered active loader" />;
-                }
-              })()}
-            </div>
-            <div className="sixteen wide column">
-              <div className="ui hidden divider" />
-              <h3 className="ui dividing header">
-                Charts
-                <div className="ui tiny label">BETA</div>
-                <i
-                  className="refresh icon"
-                  style={styles.refreshIcon}
-                  onClick={evt => this.clickRefresh(evt)}
-                />
-              </h3>
-              {(() => {
-                if (this.state.gamesPlayedStats) {
-                  return (
-                    <UserStatChartGamesPlayed
-                      stats={this.state.gamesPlayedStats}
-                    />
-                  );
-                } else if (this.state.gamesPlayedStats === false) {
-                  return <em>No data</em>;
-                } else {
-                  return <div className="ui inline centered active loader" />;
-                }
-              })()}
-              <br />
-              {(() => {
-                if (this.state.averageScoreStats) {
-                  return (
-                    <UserStatChartAverageScore
-                      stats={this.state.averageScoreStats}
-                    />
-                  );
-                } else if (this.state.averageScoreStats === false) {
-                  return <em>No data</em>;
-                } else {
-                  return <div className="ui inline centered active loader" />;
-                }
-              })()}
-            </div>
-            <div className="sixteen wide column">
-              <div className="ui hidden divider" />
-              <h3 className="ui dividing header">
-                {this.data.displayName} in the Hall of Fame
-              </h3>
-              <HallOfFameAcrosContainer userId={this.props.userId} limit={4} />
-            </div>
-            {(() => {
-              if (this.data.isOwnProfile) {
-                return (
-                  <EditProfileModal
-                    userId={this.props.userId}
-                    user={this.data.user}
-                    profilePicture={this.data.profilePicture}
-                    displayName={this.data.displayName}
-                    ref={ref => (this.editProfileModal = ref)}
-                  />
-                );
-              } else {
-                return (
-                  <InviteModal
-                    userId={this.props.userId}
-                    displayName={this.data.displayName}
-                    ref={ref => (this.inviteModal = ref)}
-                  />
-                );
-              }
-            })()}
-          </div>
-        );
-      } else {
-        body = <em>This user does not exist</em>;
-      }
-    } else {
-      body = <div className="ui active loader" />;
+    if (!this.props.ready) {
+      return <div className="ui active loader" />;
     }
 
-    return body;
+    if (!this.props.user) {
+      return <em>This user does not exist</em>;
+    }
+
+    const tags = specialTags(this.props.user);
+    const username = displayName(this.props.user);
+    const profilePic = profilePicture(this.props.user);
+
+    return (
+      <div className="ui grid text container">
+        <div className="eight wide column" style={styles.noBottom}>
+          <h1 className="ui header">
+            {username}
+            {tags && tags.map(this.specialTagLabel)}
+            <div className="sub header">
+              {this.countryLabel()}
+              Member since {moment(this.props.user.createdAt).calendar()}
+              <br />
+              {this.state.ranking
+                ? `Ranked #${this.state.ranking.rank} of ${
+                    this.state.ranking.total
+                  }`
+                : "Not ranked"}
+            </div>
+          </h1>
+        </div>
+        <div
+          className="eight wide column"
+          style={_.extend(styles.noBottom, styles.top)}
+        >
+          {(() => {
+            if (this.props.isOwnProfile) {
+              return (
+                <button
+                  className="ui icon labeled right floated button"
+                  onClick={evt => this.editProfileModal.openModal(evt)}
+                >
+                  <i className="edit icon" />
+                  Edit
+                </button>
+              );
+            } else {
+              return (
+                <div>
+                  <button
+                    style={styles.inviteBtn}
+                    className="ui primary icon labeled button"
+                    onClick={this.openInviteModal}
+                  >
+                    <i className="mail outline icon" />
+                    Invite to play
+                  </button>
+                  {(() => {
+                    if (!this.isFriend()) {
+                      return (
+                        <button
+                          className="ui button"
+                          onClick={evt => this.addFriend(evt)}
+                        >
+                          Add as friend
+                        </button>
+                      );
+                    } else {
+                      return (
+                        <button
+                          className="ui positive icon labeled button"
+                          onClick={evt => this.removeFriend(evt)}
+                        >
+                          <i className="check icon" />
+                          Friends
+                        </button>
+                      );
+                    }
+                  })()}
+                  {(() => {
+                    if (this.state.isModerator) {
+                      return this.props.user.profile.shadowbanned ? (
+                        <button className="ui button" onClick={this.unbanUser}>
+                          Unban user
+                        </button>
+                      ) : (
+                        <button className="ui button" onClick={this.banUser}>
+                          Ban user
+                        </button>
+                      );
+                    }
+                  })()}
+                </div>
+              );
+            }
+          })()}
+        </div>
+        <div className="sixteen wide column" style={styles.noTop}>
+          <div className="ui divider" />
+        </div>
+        <div className="five wide column">
+          <div className="ui fluid image">
+            {this.onlineLabel()}
+            <img src={profilePicture(this.props.user)} />
+          </div>
+        </div>
+        <div className="eleven wide column">
+          {(() => {
+            if (
+              this.state.gamesPlayedStats !== null &&
+              _.isNumber(this.state.numberOfHallOfFame)
+            ) {
+              return (
+                <UserStats
+                  halloffame={this.state.numberOfHallOfFame}
+                  user={this.props.user}
+                  stats={this.lastStat()}
+                />
+              );
+            } else {
+              return <div className="ui inline centered active loader" />;
+            }
+          })()}
+        </div>
+        <div className="sixteen wide column">
+          <div className="ui hidden divider" />
+          <h3 className="ui dividing header">
+            Charts
+            <div className="ui tiny label">BETA</div>
+            <i
+              className="refresh icon"
+              style={styles.refreshIcon}
+              onClick={evt => this.clickRefresh(evt)}
+            />
+          </h3>
+          {(() => {
+            if (this.state.gamesPlayedStats) {
+              return (
+                <UserStatChartGamesPlayed stats={this.state.gamesPlayedStats} />
+              );
+            } else if (this.state.gamesPlayedStats === false) {
+              return <em>No data</em>;
+            } else {
+              return <div className="ui inline centered active loader" />;
+            }
+          })()}
+          <br />
+          {(() => {
+            if (this.state.averageScoreStats) {
+              return (
+                <UserStatChartAverageScore
+                  stats={this.state.averageScoreStats}
+                />
+              );
+            } else if (this.state.averageScoreStats === false) {
+              return <em>No data</em>;
+            } else {
+              return <div className="ui inline centered active loader" />;
+            }
+          })()}
+        </div>
+        <div className="sixteen wide column">
+          <div className="ui hidden divider" />
+          <h3 className="ui dividing header">{username} in the Hall of Fame</h3>
+          <HallOfFameAcrosContainer userId={this.props.userId} limit={4} />
+        </div>
+        {(() => {
+          if (this.props.isOwnProfile) {
+            return (
+              <EditProfileModal
+                userId={this.props.userId}
+                user={this.props.user}
+                profilePicture={profilePic}
+                displayName={username}
+                ref={ref => (this.editProfileModal = ref)}
+              />
+            );
+          } else {
+            return (
+              <InviteModalContainer
+                userId={this.props.userId}
+                displayName={username}
+                ref={ref => (this.inviteModal = ref)}
+              />
+            );
+          }
+        })()}
+      </div>
+    );
   }
-});
+}
+
+export const ProfileViewContainer = withTracker(({ userId }) => {
+  const handle = Meteor.subscribe("otherPlayers", [userId]);
+
+  return {
+    ready: handle.ready(),
+    user: Meteor.users.findOne(userId),
+    isOwnProfile: userId === Meteor.userId(),
+    thisUser: Meteor.user()
+  };
+})(ProfileView);
