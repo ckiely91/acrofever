@@ -1,128 +1,110 @@
-import PropTypes from 'prop-types';
-import React from 'react';
+import PropTypes from "prop-types";
+import React from "react";
+import { Meteor } from "meteor/meteor";
 
-import {CountdownHeader} from '../Countdown';
+import { CountdownHeader } from "../Countdown";
 
-import {playSound, acrofeverAnalytics} from '../../helpers';
+import { playSound, acrofeverAnalytics } from "../../helpers";
 
-class AcroVoting extends React.Component {
-    static propTypes = {
-        round: PropTypes.object.isRequired,
-        gameId: PropTypes.string.isRequired
-    };
+const handleVote = (evt, id, gameId) => {
+  evt.preventDefault();
+  Meteor.call("acrofeverVoteForAcro", gameId, id);
+  playSound("select");
+  acrofeverAnalytics.track("voteForAcro");
+};
 
-    constructor(props) {
-        super(props);
-        let roundAcros = [];
-        const userId = Meteor.userId(),
-            round = props.round;
+const AcroVotingSelectionItem = ({ id, gameId, acro, votedForThis }) => (
+  <div
+    className={`item ${votedForThis ? "active" : ""}`}
+    onClick={evt => this.handleVote(evt, id, gameId)}
+  >
+    <div className="content">
+      {acro} {votedForThis ? <i className="check icon" /> : null}
+    </div>
+  </div>
+);
 
-        for (var playerId in round.players) {
-            if (round.players.hasOwnProperty(playerId) && playerId !== userId && round.players[playerId].submission) {
-                roundAcros.push({
-                    id: playerId,
-                    acro: round.players[playerId].submission.acro
-                })
-            }
-        }
-
-        this.state = {roundAcros};
+const AcroVoting = ({ round, gameId }) => {
+  const roundAcros = [];
+  const roundPlayers = Object.keys(round.players);
+  const userId = Meteor.userId();
+  for (let i = 0; i < roundPlayers.length; i++) {
+    const playerId = roundPlayers[i];
+    if (
+      playerId !== userId &&
+      round.players[playerId] &&
+      round.players[playerId].submission
+    ) {
+      roundAcros.push({
+        id: playerId,
+        acro: round.players[playerId].submission.acro
+      });
     }
+  }
 
-    /* HANDLERS */
-    handleVote = (evt, id) => {
-        evt.preventDefault();
-        Meteor.call('acrofeverVoteForAcro', this.props.gameId, id);
-        playSound('select');
-        acrofeverAnalytics.track('voteForAcro');
-    };
+  const isInRound = !!round.players[userId];
 
-    /* HELPERS */
-    isInRound = () => {
-        return (this.props.round.players[Meteor.userId()]);
-    };
+  const votedForThisAcro = id => {
+    return round.players[userId].vote === id;
+  };
 
-    votedForThisAcro = (id) => {
-        return (this.props.round.players[Meteor.userId()].vote === id);
-    };
-
-    renderItem = (acro, index) => {
-        const votedForThis = this.votedForThisAcro(acro.id);
-        let className = 'item';
-
-        if (votedForThis)
-            className = 'active item';
-
-        return (
-            <div key={index} className={className} onClick={(evt) => this.handleVote(evt, acro.id)}>
-                <div className="content">
-                    {acro.acro} {votedForThis ? <i className="check icon" /> : null}
-                </div>
+  return (
+    <div className="ten wide center aligned column">
+      <h3 className={isInRound ? "ui header" : "ui disabled header"}>
+        {isInRound
+          ? "Vote for your favourite Acro"
+          : "Players are voting for their favourite Acros..."}
+      </h3>
+      {isInRound ? (
+        <div
+          style={{ textAlign: "center" }}
+          className="ui middle aligned selection list"
+        >
+          {roundAcros.map(acro => (
+            <AcroVotingSelectionItem
+              key={acro.id}
+              id={acro.id}
+              acro={acro.acro}
+              gameId={gameId}
+              votedForThis={votedForThisAcro(acro.id)}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="ui relaxed list">
+          {roundAcros.map(acro => (
+            <div key={acro.id} className="item">
+              {acro.acro}
             </div>
-        )
-    };
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
-    renderDisabledItem = (acro, index) => {
-        return <div key={index} className="item">{acro.acro}</div>
-    };
+AcroVoting.propTypes = {
+  round: PropTypes.object.isRequired,
+  gameId: PropTypes.string.isRequired
+};
 
-    render() {
-        let acroList;
-        const selectionList = {
-            textAlign: 'center'
-        };
+export const AcrofeverVotingPhase = ({ round, endTime, gameId }) => {
+  const acro = round.acronym.join(". ");
 
-        if (this.isInRound()) {
-            acroList = (
-                <div style={selectionList} className="ui middle aligned selection list">
-                    {this.state.roundAcros.map(this.renderItem)}
-                </div>
-            );
-        } else {
-            acroList = (
-                <div className="ui relaxed list">
-                    {this.state.roundAcros.map(this.renderDisabledItem)}
-                </div>
-            );
-        }
-
-
-        return (
-            <div className="ten wide center aligned column">
-                <h3 className={this.isInRound() ? 'ui header': 'ui disabled header'}>
-                    {this.isInRound() ? 'Vote for your favourite Acro' : 'Players are voting for their favourite Acros...'}
-                </h3>
-                {acroList}
-            </div>
-        );
-    }
-}
-
-export class AcrofeverVotingPhase extends React.Component {
-    static propTypes = {
-        round: PropTypes.object.isRequired,
-        endTime: PropTypes.instanceOf(Date).isRequired,
-        gameId: PropTypes.string.isRequired
-    };
-
-    currentAcro = () => {
-        var acro = this.props.round.acronym;
-        return acro.join('. ');
-    };
-
-    render() {
-        const dividerStyle = {marginBottom: '2em'};
-        return (
-            <div>
-                <div>
-                    <CountdownHeader endTime={this.props.endTime} header={this.currentAcro()} subheader={this.props.round.category} />
-                </div>
-                <div className="ui divider" style={dividerStyle}></div>
-                <div className="ui ten column centered grid">
-                    <AcroVoting round={this.props.round} gameId={this.props.gameId} />
-                </div>
-                <div className="ui hidden divider"></div>
-            </div>
-        );
-    }
-}
+  return (
+    <div>
+      <div>
+        <CountdownHeader
+          endTime={endTime}
+          header={acro}
+          subheader={round.category}
+        />
+      </div>
+      <div className="ui divider" style={{ marginBottom: "2em" }} />
+      <div className="ui ten column centered grid">
+        <AcroVoting round={round} gameId={gameId} />
+      </div>
+      <div className="ui hidden divider" />
+    </div>
+  );
+};

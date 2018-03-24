@@ -1,78 +1,83 @@
-import PropTypes from 'prop-types';
-import React from 'react';
+import PropTypes from "prop-types";
+import React from "react";
+import { Meteor } from "meteor/meteor";
+import { withTracker } from "meteor/react-meteor-data";
 
-import createReactClass from 'create-react-class';
+import { Nags } from "../collections";
+import { acrofeverAnalytics } from "../helpers";
 
-import {Nags} from '../collections';
-import {acrofeverAnalytics} from '../helpers';
+const closeNag = (evt, nagId) => {
+  evt.preventDefault();
+  $(evt.currentTarget)
+    .closest(".message")
+    .transition("fade", "300ms");
 
-class SingleNag extends React.Component {
-    closeNag(evt) {
-        evt.preventDefault();
-        $(evt.currentTarget).closest('.message').transition('fade', '300ms');
+  Meteor.setTimeout(() => {
+    //allow it to fade out first
+    Meteor.call("markNagAsClosed", nagId);
+  }, 300);
 
-        var self = this;
-        Meteor.setTimeout(() => {
-            //allow it to fade out first
-            Meteor.call('markNagAsClosed', self.props.nag._id);
-        }, 300);
-        
-        acrofeverAnalytics.track('closeNag', {id: this.props.nag._id});
-    }
-
-    render() {
-        const nagHtml = {__html: this.props.nag.message};
-
-        return (
-            <div className="sixteen-wide-tablet ten-wide-computer column">
-                <div className={"ui " + (this.props.nag.icon ? 'icon' : '') + ' ' + (this.props.nag.colour ? this.props.nag.colour : '') + ' message'}>
-                    <i className="close icon" onClick={(evt) => this.closeNag(evt)}></i>
-                    {this.props.nag.icon ? <i className={this.props.nag.icon + ' icon'}></i> : null}
-                    <div className="content">
-                        {this.props.nag.title ? <div className="header">{this.props.nag.title}</div> : null}
-                        <p dangerouslySetInnerHTML={nagHtml}></p>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-}
-
-SingleNag.propTypes = {
-    nag: PropTypes.object.isRequired
+  acrofeverAnalytics.track("closeNag", { id: nagId });
 };
 
-export const NagsComponent = createReactClass({
-    displayName: 'NagsComponent',
-    mixins: [ReactMeteorData],
+const SingleNag = ({ nag }) => {
+  const nagHtml = { __html: nag.message };
 
-    getMeteorData() {
-        var user = Meteor.user();
-        var closedNags = [];
-
-        if (user) {
-            if (user.profile && user.profile.closedNags) {
-                Meteor.subscribe('nags', user.profile.closedNags);
-                closedNags = user.profile.closedNags;
-            } else {
-                Meteor.subscribe('nags');
-            }
+  return (
+    <div className="sixteen-wide-tablet ten-wide-computer column">
+      <div
+        className={
+          "ui " +
+          (nag.icon ? "icon" : "") +
+          " " +
+          (nag.colour ? nag.colour : "") +
+          " message"
         }
+      >
+        <i className="close icon" onClick={evt => closeNag(evt, nag._id)} />
+        {nag.icon ? <i className={nag.icon + " icon"} /> : null}
+        <div className="content">
+          {nag.title ? <div className="header">{nag.title}</div> : null}
+          <p dangerouslySetInnerHTML={nagHtml} />
+        </div>
+      </div>
+    </div>
+  );
+};
 
-        return {
-            nags: Nags.find({active: true, _id: {$not: {$in: closedNags}}}, {sort: {timestamp: -1}}).fetch()
-        };
-    },
+SingleNag.propTypes = {
+  nag: PropTypes.object.isRequired
+};
 
-    render() {
-        if (this.data.nags.length > 0) {
-            return (
-                <div className="ui centered grid">
-                    {this.data.nags.map((nag, index) => <SingleNag key={index} nag={nag} />)}
-                </div>
-            )
-        } else {
-            return false;
-        }
-    },
-});
+const NagsComponent = ({ nags }) => {
+  if (!nags || nags.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="ui centered grid">
+      {nags.map(nag => <SingleNag key={nag._id} nag={nag} />)}
+    </div>
+  );
+};
+
+export const NagsComponentContainer = withTracker(() => {
+  const user = Meteor.user();
+  let closedNags = [];
+
+  if (user) {
+    if (user.profile && user.profile.closedNags) {
+      Meteor.subscribe("nags", user.profile.closedNags);
+      closedNags = user.profile.closedNags;
+    } else {
+      Meteor.subscribe("nags");
+    }
+  }
+
+  return {
+    nags: Nags.find(
+      { active: true, _id: { $not: { $in: closedNags } } },
+      { sort: { timestamp: -1 } }
+    ).fetch()
+  };
+})(NagsComponent);

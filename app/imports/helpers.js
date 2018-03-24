@@ -1,3 +1,4 @@
+import { Meteor } from "meteor/meteor";
 import { Cookies } from "meteor/ostrio:cookies";
 
 export function notify(title, body, image) {
@@ -152,3 +153,11 @@ export function isUserBanned(userId) {
     _.get(user, "profile.permabanned", false)
   );
 }
+
+export const findUserById = (users, userId) => {
+  if (!userId) {
+    return null;
+  }
+
+  return _.find(users, u => u._id === userId) || { _id: userId };
+};

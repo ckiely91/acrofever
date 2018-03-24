@@ -2,14 +2,14 @@ import PropTypes from "prop-types";
 import React, { PureComponent } from "react";
 
 import { NavComponent } from "../components/Nav";
-import { NagsComponent } from "../components/Nags";
+import { NagsComponentContainer } from "../components/Nags";
 import { FooterComponent } from "../components/Footer";
 import {
   HowToPlayModal,
   PageDimmer,
   NotificationInfoModal
 } from "../components/Modals";
-import { EventBanner } from "../components/Events";
+import { EventBannerContainer } from "../components/Events";
 
 import { headerMeta, headerLinks } from "../statics";
 
@@ -64,9 +64,9 @@ export class Layout extends PureComponent {
     return (
       <div>
         <NavComponent />
-        <EventBanner />
+        <EventBannerContainer />
         <div className="ui main container">
-          <NagsComponent />
+          <NagsComponentContainer />
           {_.isFunction(this.props.content)
             ? this.props.content()
             : this.props.content}

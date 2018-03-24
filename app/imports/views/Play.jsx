@@ -3,10 +3,10 @@ import React, { PureComponent } from "react";
 import { Meteor } from "meteor/meteor";
 import { withTracker } from "meteor/react-meteor-data";
 
-import { GlobalFeedComponent } from "../components/Feeds";
+import { GlobalFeedComponentContainer } from "../components/Feeds";
 import { MomentFromNow } from "../components/Countdown";
-import { OnlinePlayers } from "../components/OnlinePlayers";
-import { UpcomingEvents } from "../components/Events";
+import { OnlinePlayersContainer } from "../components/OnlinePlayers";
+import { UpcomingEventsContainer } from "../components/Events";
 
 import { profilePicture, displayName } from "../helpers";
 import { Lobbies } from "../collections";
@@ -141,14 +141,14 @@ class PlayView extends PureComponent {
             {lobbyTable}
             <div className="ui hidden divider" />
             <div className="ui raised segment">
-              <UpcomingEvents />
+              <UpcomingEventsContainer />
             </div>
           </div>
           <div className="eight wide column">
             <div className="ui raised segment">
-              <OnlinePlayers />
+              <OnlinePlayersContainer />
             </div>
-            <GlobalFeedComponent />
+            <GlobalFeedComponentContainer />
           </div>
         </div>
       </div>

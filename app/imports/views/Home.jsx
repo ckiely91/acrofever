@@ -1,9 +1,9 @@
 import React, { PureComponent } from "react";
 import { Meteor } from "meteor/meteor";
 
-import { OnlinePlayers } from "../components/OnlinePlayers";
-import { GlobalFeedComponent } from "../components/Feeds";
-import { UpcomingEvents } from "../components/Events";
+import { OnlinePlayersContainer } from "../components/OnlinePlayers";
+import { GlobalFeedComponentContainer } from "../components/Feeds";
+import { UpcomingEventsContainer } from "../components/Events";
 import { lobbySubs } from "../subsManagers";
 import { acrofeverAnalytics } from "../helpers";
 
@@ -122,14 +122,14 @@ export class HomeView extends PureComponent {
         </div>
         <div className="eight wide column">
           <div className="ui raised segment">
-            <OnlinePlayers />
+            <OnlinePlayersContainer />
           </div>
           <div className="ui raised segment">
-            <UpcomingEvents />
+            <UpcomingEventsContainer />
           </div>
         </div>
         <div className="eight wide column">
-          <GlobalFeedComponent />
+          <GlobalFeedComponentContainer />
         </div>
         {(() => {
           if (Meteor.settings.public.adsEnabled) {

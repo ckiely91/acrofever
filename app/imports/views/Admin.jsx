@@ -4,7 +4,7 @@ import React, { Component, PureComponent } from "react";
 import PropTypes from "prop-types";
 
 import { HallOfFame, Nags, Events, Categories } from "../collections";
-import { PlayerLabel } from "../components/OnlinePlayers";
+import { PlayerLabelContainer } from "../components/OnlinePlayers";
 
 class AdminEvents extends Component {
   static propTypes = {
@@ -413,7 +413,11 @@ class AdminHallOfFameRow extends Component {
       <tr>
         <td>{moment(this.props.created).format("MMMM Do YYYY, h:mm:ss a")}</td>
         <td>
-          <PlayerLabel id={this.props.userId} hideCountry={true} size="mini" />
+          <PlayerLabelContainer
+            id={this.props.userId}
+            hideCountry={true}
+            size="mini"
+          />
         </td>
         <td>{this.props.acronym.join(". ")}</td>
         <td>{this.props.category}</td>
@@ -565,7 +569,11 @@ class AdminCategoryRow extends Component {
       <tr>
         <td>{moment(this.props.created).format("MMMM Do YYYY, h:mm:ss a")}</td>
         <td>
-          <PlayerLabel id={this.props.userId} hideCountry={true} size="mini" />
+          <PlayerLabelContainer
+            id={this.props.userId}
+            hideCountry={true}
+            size="mini"
+          />
         </td>
         <td>
           <div className="ui fluid action input">

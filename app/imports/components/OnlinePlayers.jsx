@@ -1,154 +1,128 @@
-import PropTypes from 'prop-types';
-import React from 'react';
+import PropTypes from "prop-types";
+import React from "react";
+import { Meteor } from "meteor/meteor";
+import { withTracker } from "meteor/react-meteor-data";
 
-import createReactClass from 'create-react-class';
+import { profilePicture, displayName } from "../helpers";
 
-import {profilePicture, displayName} from '../helpers';
+const PlayerUsername = ({
+  id,
+  displayName,
+  beforeText,
+  afterText,
+  linkToProfile
+}) => (
+  <span>
+    {beforeText}
+    <a href={FlowRouter.path("profile", { userId: id })}>{displayName}</a>
+    {afterText}
+  </span>
+);
 
-export const PlayerUsername = createReactClass({
-    displayName: 'PlayerUsername',
-    mixins: [ReactMeteorData],
+export const PlayerUsernameWrapper = withTracker(({ id }) => {
+  return {
+    displayName: displayName(id)
+  };
+})(PlayerUsername);
 
-    propTypes: {
-        id: PropTypes.string.isRequired,
-        beforeText: PropTypes.string,
-        afterText: PropTypes.string,
-        linkToProfile: PropTypes.bool
-    },
+const PlayerImage = ({ profilePicture }) => <img src={profilePicture} />;
 
-    getMeteorData() {
-        const data = {
-            displayName: displayName(this.props.id)
-        };
+export const PlayerImageContainer = withTracker(({ id, size }) => {
+  return {
+    profilePicture: profilePicture(id, size || 50)
+  };
+})(PlayerImage);
 
-        return data;
-    },
+const userFlag = user => {
+  if (user.profile && user.profile.country) {
+    return <i className={user.profile.country + " flag"} />;
+  }
+};
 
-    render() {
-        if (!this.data.displayName) {
-            return false;
-        } else {
-            return <span>
-                {this.props.beforeText}
-                <a href={FlowRouter.path('profile', {userId: this.props.id})}>{this.data.displayName}</a>
-                {this.props.afterText}
-            </span>
-        }
-    },
-});
+export const PlayerLabel = ({ user, isFriend, hideCountry, size }) => {
+  if (!user) {
+    return (
+      <div className="ui label">
+        <div className="ui inline active mini loader" />
+      </div>
+    );
+  }
 
-export const PlayerImage = createReactClass({
-    displayName: 'PlayerImage',
-    mixins: [ReactMeteorData],
+  const labelClass = `ui ${isFriend ? "green" : ""} ${
+    size ? size : ""
+  } image label userProfilePicture`;
 
-    propTypes: {
-        id: PropTypes.string.isRequired,
-        size: PropTypes.number
-    },
+  return (
+    <a
+      href={FlowRouter.path("profile", { userId: user._id })}
+      className={labelClass}
+    >
+      <img src={profilePicture(user, 50)} />
+      {displayName(user)}&nbsp;
+      {hideCountry ? null : userFlag(user)}
+    </a>
+  );
+};
 
-    getMeteorData() {
-        const data = {
-            profilePicture: profilePicture(this.props.id, this.props.size || 50)
-        };
+PlayerLabel.propTypes = {
+  user: PropTypes.object,
+  isFriend: PropTypes.bool,
+  hideCountry: PropTypes.bool,
+  size: PropTypes.string
+};
 
-        return data;
-    },
+export const PlayerLabelContainer = withTracker(({ id }) => {
+  Meteor.subscribe("otherPlayers", [id]);
+  return {
+    user: Meteor.users.findOne(id)
+  };
+})(PlayerLabel);
 
-    render() {
-        return <img src={this.data.profilePicture} />
-    },
-});
+const isFriend = (userId, thisUser) => {
+  if (thisUser && thisUser.profile && thisUser.profile.friends) {
+    return thisUser.profile.friends.indexOf(userId) > -1;
+  }
 
-export const PlayerLabel = createReactClass({
-    displayName: 'PlayerLabel',
-    mixins: [ReactMeteorData],
+  return false;
+};
 
-    propTypes: {
-        id: PropTypes.string.isRequired,
-        size: PropTypes.string,
-        hideCountry: PropTypes.bool
-    },
+const OnlinePlayers = ({ ready, onlinePlayers, thisUser }) => {
+  if (!ready) {
+    return <div className="ui active inline centered loader" />;
+  }
 
-    getMeteorData() {
-        const data = {
-            profilePicture: profilePicture(this.props.id, 50),
-            displayName: displayName(this.props.id),
-            ready: false
-        };
+  const playerCount = onlinePlayers.length;
 
-        const user = Meteor.users.findOne(this.props.id);
+  return (
+    <div>
+      <h3 className="ui header">
+        {playerCount +
+          (playerCount === 1 ? " player " : " players ") +
+          " online"}
+      </h3>
+      {onlinePlayers.map((player, index) => (
+        <PlayerLabel
+          key={player._id}
+          user={player}
+          isFriend={isFriend(player._id, thisUser)}
+        />
+      ))}
+    </div>
+  );
+};
 
-        if (user) {
-            data.ready = true;
-            data.online = user.status ? user.status.online : false;
-            data.profile = user.profile;
-        } else {
-            Meteor.subscribe('otherPlayers', [this.props.id]);
-            data.ready = false;
-        }
+OnlinePlayers.propTypes = {
+  ready: PropTypes.bool.isRequired,
+  onlinePlayers: PropTypes.array.isRequired,
+  thisUser: PropTypes.object
+};
 
-        return data;
-    },
+export const OnlinePlayersContainer = withTracker(() => {
+  const handle = Meteor.subscribe("allOnlinePlayers");
 
-    userFlag() {
-        if (this.data.profile && this.data.profile.country) {
-            return <i className={this.data.profile.country + ' flag'}></i>;
-        }
-    },
-
-    render() {
-        if (this.data.ready) {
-            const labelClass = `ui ${this.props.isFriend ? "green" : ""} ${this.props.size ? this.props.size : ""} image label userProfilePicture`;
-
-            return (
-                <a href={FlowRouter.path('profile', {userId: this.props.id})} className={labelClass} ref={(ref) => this.label = ref}>
-                    <img src={this.data.profilePicture} />
-                    {this.data.displayName}&nbsp;
-                    {this.props.hideCountry ? null : this.userFlag()}
-                </a>
-            );
-        } else {
-            return <div className="ui label"><div className="ui inline active mini loader"></div></div>;
-        }
-    },
-});
-
-export const OnlinePlayers = createReactClass({
-    displayName: 'OnlinePlayers',
-    mixins: [ReactMeteorData],
-
-    getMeteorData() {
-        var handle = Meteor.subscribe('allOnlinePlayers');
-
-        var data = {
-            ready: handle.ready(),
-            onlinePlayers: Meteor.users.find({'status.online':true}).fetch(),
-            thisUser: Meteor.user()
-        };
-
-        data.playerCount = data.onlinePlayers.length;
-
-        return data;
-    },
-
-    isFriend(id) {
-        if (this.data.thisUser && this.data.thisUser.profile && this.data.thisUser.profile.friends) {
-            return (this.data.thisUser.profile.friends.indexOf(id) > -1);
-        } else {
-            return false;
-        }
-    },
-
-    render() {
-        if (this.data.ready) {
-            return (
-                <div>
-                    <h3 className="ui header">{this.data.playerCount + ((this.data.playerCount === 1) ? ' player ' : ' players ') + ' online'}</h3>
-                    {this.data.onlinePlayers.map((player, index) => <PlayerLabel key={index} id={player._id} isFriend={this.isFriend(player._id)} />)}
-                </div>
-            )
-        } else {
-            return <div className="ui active inline centered loader"></div>
-        }
-    },
-});
+  return {
+    ready: handle.ready(),
+    onlinePlayers: Meteor.users.find({ "status.online": true }).fetch(),
+    thisUser: Meteor.user()
+  };
+})(OnlinePlayers);

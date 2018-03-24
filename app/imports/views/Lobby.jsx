@@ -4,7 +4,7 @@ import { Meteor } from "meteor/meteor";
 import { withTracker } from "meteor/react-meteor-data";
 import classNames from "classnames";
 
-import { LobbyFeedComponent } from "../components/Feeds";
+import { LobbyFeedComponentContainer } from "../components/Feeds";
 import { CountdownSpan } from "../components/Countdown";
 
 import { AcrofeverCategoryPhase } from "../components/acrofever/CategoryPhase";
@@ -19,19 +19,17 @@ import {
   profilePicture,
   displayName,
   acrofeverAnalytics,
-  isUserBanned
+  isUserBanned,
+  findUserById
 } from "../helpers";
 import { Games, Lobbies } from "../collections";
 import { lobbySubs } from "../subsManagers";
-
-const findUser = (users, userId) => {
-  return _.find(users, u => u._id === userId) || { _id: userId };
-};
 
 class GameWindowInner extends Component {
   static propTypes = {
     game: PropTypes.object.isRequired,
     endTime: PropTypes.instanceOf(Date),
+    users: PropTypes.array.isRequired,
     config: PropTypes.object
   };
 
@@ -97,6 +95,7 @@ class GameWindowInner extends Component {
                 endTime={this.props.endTime}
                 gameId={this.props.game._id}
                 config={this.props.config}
+                users={this.props.users}
               />
             );
 
@@ -123,6 +122,7 @@ class GameWindowInner extends Component {
               <AcrofeverEndRoundPhase
                 round={this.props.game.rounds[this.props.game.currentRound - 1]}
                 endTime={this.props.endTime}
+                users={this.props.users}
               />
             );
 
@@ -134,6 +134,8 @@ class GameWindowInner extends Component {
                 currentRound={this.props.game.currentRound}
                 winner={this.props.game.gameWinner}
                 endTime={this.props.endTime}
+                users={this.props.users}
+                gameId={this.props.game._id}
               />
             );
         }
@@ -171,7 +173,7 @@ class GameWindow extends React.Component {
     }
 
     return this.props.playerIds.map(playerId =>
-      findUser(this.props.users, playerId)
+      findUserById(this.props.users, playerId)
     );
   }
 
@@ -182,6 +184,7 @@ class GameWindow extends React.Component {
           game={this.props.game}
           endTime={this.props.endTime}
           config={this.props.config}
+          users={this.props.users}
         />
       );
     }
@@ -258,7 +261,7 @@ const ScoresTable = ({ scores, users, playerIds }) => {
     id: userId,
     score: scores[userId],
     active: playerIds.indexOf(userId) > -1,
-    user: findUser(users, userId)
+    user: findUserById(users, userId)
   }));
 
   sortedScores.sort((a, b) => b.score - a.score);
@@ -546,7 +549,7 @@ class LobbyView extends Component {
           </div>
           <div className="ui hidden divider" />
           <div className="semiTransparentWhiteBG">
-            <LobbyFeedComponent lobbyId={this.props.lobbyId} />
+            <LobbyFeedComponentContainer lobbyId={this.props.lobbyId} />
           </div>
         </div>
       </div>
