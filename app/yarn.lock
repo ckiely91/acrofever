@@ -183,7 +183,7 @@ core-util-is@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
 
-create-react-class@^15.5.2, create-react-class@^15.6.0:
+create-react-class@^15.5.2:
   version "15.6.3"
   resolved "https://registry.yarnpkg.com/create-react-class/-/create-react-class-15.6.3.tgz#2d73237fb3f970ae6ebe011a9e66f46dbca80036"
   dependencies:
@@ -254,14 +254,6 @@ ecc-jsbn@~0.1.1:
 ee-first@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
-
-emojione-picker@^0.3.5:
-  version "0.3.6"
-  resolved "https://registry.yarnpkg.com/emojione-picker/-/emojione-picker-0.3.6.tgz#aaa47e560f7719d12f90fc6991f48c81dc6d2684"
-  dependencies:
-    emojione "^2.1.4"
-    store "^1.3.20"
-    underscore "^1.8.3"
 
 emojione@^2.1.4:
   version "2.2.7"
@@ -344,7 +336,7 @@ fast-json-stable-stringify@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/fast-json-stable-stringify/-/fast-json-stable-stringify-2.0.0.tgz#d5142c0caee6b1189f87d3a76111064f86c8bbf2"
 
-fbjs@^0.8.16, fbjs@^0.8.4, fbjs@^0.8.9:
+fbjs@^0.8.16, fbjs@^0.8.9:
   version "0.8.16"
   resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.16.tgz#5e67432f550dc41b572bf55847b8aca64e5337db"
   dependencies:
@@ -446,9 +438,9 @@ hawk@~6.0.2:
     hoek "4.x.x"
     sntp "2.x.x"
 
-highcharts@^4.2.3:
-  version "4.2.7"
-  resolved "https://registry.yarnpkg.com/highcharts/-/highcharts-4.2.7.tgz#45cbed8e99c9c042e95f9c51076726496f686862"
+highcharts@^6.0.4, highcharts@^6.0.7:
+  version "6.0.7"
+  resolved "https://registry.yarnpkg.com/highcharts/-/highcharts-6.0.7.tgz#fd5c4f24fdc61a04ae155a5b70830a96c8f70919"
 
 hoek@2.x.x:
   version "2.16.3"
@@ -688,7 +680,7 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.5.10, prop-types@^15.6.1:
+prop-types@^15.6.0, prop-types@^15.6.1:
   version "15.6.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.1.tgz#36644453564255ddda391191fb3a125cbdf654ca"
   dependencies:
@@ -728,37 +720,30 @@ raw-body@2.3.2:
     iconv-lite "0.4.19"
     unpipe "1.0.0"
 
-react-addons-pure-render-mixin@^15.0.1:
-  version "15.6.2"
-  resolved "https://registry.yarnpkg.com/react-addons-pure-render-mixin/-/react-addons-pure-render-mixin-15.6.2.tgz#6b83f40b6b36ee40735cbd6125eb3f13ce1cddc9"
-  dependencies:
-    fbjs "^0.8.4"
-    object-assign "^4.1.0"
-
 react-autolink@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/react-autolink/-/react-autolink-0.2.1.tgz#a487774b3d8cbed64208cfa827c0d94e287b7f8e"
   dependencies:
     object-assign "^2.0.0"
 
-react-dom@^15.0.1:
-  version "15.6.2"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-15.6.2.tgz#41cfadf693b757faf2708443a1d1fd5a02bef730"
+react-dom@^16.2.0:
+  version "16.2.0"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.2.0.tgz#69003178601c0ca19b709b33a83369fe6124c044"
   dependencies:
-    fbjs "^0.8.9"
+    fbjs "^0.8.16"
     loose-envify "^1.1.0"
-    object-assign "^4.1.0"
-    prop-types "^15.5.10"
+    object-assign "^4.1.1"
+    prop-types "^15.6.0"
 
 react-emojione@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/react-emojione/-/react-emojione-5.0.0.tgz#230fef5e85aa9e1183b9506a15fff37d59ef472f"
 
-react-highcharts@^9.0.0:
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/react-highcharts/-/react-highcharts-9.0.0.tgz#9e9b1f9f282454d2e889e9aa36e43c4cdfee4a84"
+react-highcharts@^16.0.2:
+  version "16.0.2"
+  resolved "https://registry.yarnpkg.com/react-highcharts/-/react-highcharts-16.0.2.tgz#7bdae039f9abb3f753ba88b6578d52630c18537a"
   dependencies:
-    highcharts "^4.2.3"
+    highcharts "^6.0.4"
 
 react-mounter@^1.1.0:
   version "1.2.0"
@@ -767,27 +752,25 @@ react-mounter@^1.1.0:
     babel-runtime "6.x.x"
     domready "1.x.x"
 
-react-slick@^0.14.5:
-  version "0.14.11"
-  resolved "https://registry.yarnpkg.com/react-slick/-/react-slick-0.14.11.tgz#c2cbdbe3728c66a2ff4929be96d457e3ea0d80f3"
+react-slick@^0.22.2:
+  version "0.22.2"
+  resolved "https://registry.yarnpkg.com/react-slick/-/react-slick-0.22.2.tgz#8c2183bf88bb0ab316984e14b85b05e8d446ee27"
   dependencies:
     can-use-dom "^0.1.0"
     classnames "^2.2.5"
     create-react-class "^15.5.2"
     enquire.js "^2.1.6"
     json2mq "^0.2.0"
-    object-assign "^4.1.0"
-    slick-carousel "^1.6.0"
+    resize-observer-polyfill "^1.5.0"
 
-react@^15.0.1:
-  version "15.6.2"
-  resolved "https://registry.yarnpkg.com/react/-/react-15.6.2.tgz#dba0434ab439cfe82f108f0f511663908179aa72"
+react@^16.2.0:
+  version "16.2.0"
+  resolved "https://registry.yarnpkg.com/react/-/react-16.2.0.tgz#a31bd2dab89bff65d42134fa187f24d054c273ba"
   dependencies:
-    create-react-class "^15.6.0"
-    fbjs "^0.8.9"
+    fbjs "^0.8.16"
     loose-envify "^1.1.0"
-    object-assign "^4.1.0"
-    prop-types "^15.5.10"
+    object-assign "^4.1.1"
+    prop-types "^15.6.0"
 
 regenerator-runtime@^0.11.0, regenerator-runtime@^0.11.1:
   version "0.11.1"
@@ -847,6 +830,10 @@ request@^2.60.0, request@^2.72.0:
     tunnel-agent "^0.6.0"
     uuid "^3.1.0"
 
+resize-observer-polyfill@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/resize-observer-polyfill/-/resize-observer-polyfill-1.5.0.tgz#660ff1d9712a2382baa2cad450a4716209f9ca69"
+
 safe-buffer@5.1.1, safe-buffer@^5.0.1, safe-buffer@^5.1.1:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.1.tgz#893312af69b2123def71f57889001671eeb2c853"
@@ -899,10 +886,6 @@ setprototypeof@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/setprototypeof/-/setprototypeof-1.1.0.tgz#d0bd85536887b6fe7c0d818cb962d9d91c54e656"
 
-slick-carousel@^1.6.0:
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/slick-carousel/-/slick-carousel-1.8.1.tgz#a4bfb29014887bb66ce528b90bd0cda262cc8f8d"
-
 smtpapi@^1.2.0:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/smtpapi/-/smtpapi-1.3.1.tgz#187429eb4ed27df4a3cffd23f0e0245cdfe687d4"
@@ -940,10 +923,6 @@ sshpk@^1.7.0:
 statuses@~1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/statuses/-/statuses-1.3.1.tgz#faf51b9eb74aaef3b3acf4ad5f61abf24cb7b93e"
-
-store@^1.3.20:
-  version "1.3.20"
-  resolved "https://registry.yarnpkg.com/store/-/store-1.3.20.tgz#13ea7e3fb2d6c239868265d686b1d84e99c5be3e"
 
 string-convert@^0.2.0:
   version "0.2.1"

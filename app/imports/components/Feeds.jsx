@@ -6,7 +6,7 @@ import { findUserById } from "../helpers";
 
 import { autolink } from "react-autolink";
 import { emojify } from "react-emojione";
-import EmojiPicker from "emojione-picker";
+// import EmojiPicker from "emojione-picker";
 
 import { MomentFromNow } from "./Countdown";
 import {
@@ -101,9 +101,9 @@ class ChatInput extends PureComponent {
             />
           </div>
         </form>
-        {this.state.showEmojiPicker ? (
+        {/* {this.state.showEmojiPicker ? (
           <EmojiPicker search={true} onChange={this.pickEmoji} />
-        ) : null}
+        ) : null} */}
       </div>
     );
   }
