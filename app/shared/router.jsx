@@ -13,6 +13,14 @@ import { ProfileViewContainer } from "../imports/views/Profile";
 import { FriendsViewContainer } from "../imports/views/Friends";
 import { PageNotFound } from "../imports/views/PageNotFound";
 import {
+  LoginContainer,
+  SignupContainer,
+  ForgotPassword,
+  ValidateEmail,
+  ResetPassword,
+  ChangePassword
+} from "../imports/views/Accounts";
+import {
   AdminMain,
   AdminHome,
   AdminHallOfFameContainer,
@@ -22,11 +30,82 @@ import {
 } from "../imports/views/Admin";
 import { ModeratorMain } from "../imports/views/Moderators";
 
+const ensureSignedIn = (context, redirect) => {
+  if (!Meteor.userId()) {
+    redirect("/sign-in");
+  }
+};
+
+const ensureNotSignedIn = (context, redirect) => {
+  if (Meteor.userId()) {
+    redirect("/");
+  }
+};
+
 FlowRouter.route("/", {
   name: "home",
   action: function() {
     mount(Layout, {
       content: () => <HomeView />
+    });
+  }
+});
+
+FlowRouter.route("/sign-in", {
+  name: "signin",
+  triggersEnter: [ensureNotSignedIn],
+  action: function() {
+    mount(Layout, {
+      content: () => <LoginContainer />
+    });
+  }
+});
+
+FlowRouter.route("/sign-up", {
+  name: "signup",
+  triggersEnter: [ensureNotSignedIn],
+  action: function() {
+    mount(Layout, {
+      content: () => <SignupContainer />
+    });
+  }
+});
+
+FlowRouter.route("/forgot-password", {
+  name: "forgotpassword",
+  triggersEnter: [ensureNotSignedIn],
+  action: function() {
+    mount(Layout, {
+      content: () => <ForgotPassword />
+    });
+  }
+});
+
+FlowRouter.route("/reset-password/:token", {
+  name: "resetpassword",
+  triggersEnter: [ensureNotSignedIn],
+  action: function(params) {
+    mount(Layout, {
+      content: () => <ResetPassword token={params.token} />
+    });
+  }
+});
+
+FlowRouter.route("/change-password", {
+  name: "changepassword",
+  triggersEnter: [ensureSignedIn],
+  action: function() {
+    mount(Layout, {
+      content: () => <ChangePassword />
+    });
+  }
+});
+
+FlowRouter.route("/verify-email/:token", {
+  name: "verifyemail",
+  action: function(params) {
+    mount(Layout, {
+      content: () => <ValidateEmail token={params.token} />
     });
   }
 });
@@ -47,7 +126,7 @@ lobbyRoutes.route("/", {
 
 lobbyRoutes.route("/:lobbyId", {
   name: "lobby",
-  triggersEnter: [AccountsTemplates.ensureSignedIn],
+  triggersEnter: [ensureSignedIn],
   action: function(params) {
     mount(Layout, {
       content: () => <LobbyViewContainer lobbyId={params.lobbyId} />
@@ -84,7 +163,7 @@ FlowRouter.route("/profile/:userId", {
 
 FlowRouter.route("/friends", {
   name: "friends",
-  triggersEnter: [AccountsTemplates.ensureSignedIn],
+  triggersEnter: [ensureSignedIn],
   action: function() {
     mount(Layout, {
       content: () => <FriendsViewContainer />
@@ -105,7 +184,7 @@ FlowRouter.notFound = {
 const moderatorRoutes = FlowRouter.group({
   prefix: "/moderators",
   name: "moderators",
-  triggersEnter: [AccountsTemplates.ensureSignedIn]
+  triggersEnter: [ensureSignedIn]
 });
 
 moderatorRoutes.route("/", {
@@ -138,7 +217,7 @@ moderatorRoutes.route("/halloffame", {
 const adminRoutes = FlowRouter.group({
   prefix: "/admin",
   name: "admin",
-  triggersEnter: [AccountsTemplates.ensureSignedIn]
+  triggersEnter: [ensureSignedIn]
 });
 
 adminRoutes.route("/", {
@@ -190,10 +269,3 @@ adminRoutes.route("/categories", {
     });
   }
 });
-
-AccountsTemplates.configureRoute("changePwd");
-AccountsTemplates.configureRoute("forgotPwd");
-AccountsTemplates.configureRoute("resetPwd");
-AccountsTemplates.configureRoute("signIn");
-AccountsTemplates.configureRoute("signUp");
-AccountsTemplates.configureRoute("verifyEmail");

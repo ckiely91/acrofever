@@ -22,7 +22,6 @@ fortawesome:fontawesome
 kadira:flow-router
 meteorhacks:subs-manager
 reactive-var@1.0.11
-useraccounts:semantic-ui
 semantic:ui
 flemay:less-autoprefixer
 miktam:loggly
@@ -45,7 +44,6 @@ standard-minifier-js@2.3.1
 lbee:moment-helpers
 momentjs:moment
 react-meteor-data
-useraccounts:flow-routing-ck
 gadicohen:sitemaps
 mrt:jquery-color-animation
 shell-server@0.3.1
