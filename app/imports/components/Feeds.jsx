@@ -6,7 +6,6 @@ import { findUserById } from "../helpers";
 
 import { autolink } from "react-autolink";
 import { emojify } from "react-emojione";
-// import EmojiPicker from "emojione-picker";
 
 import { MomentFromNow } from "./Countdown";
 import {
@@ -18,96 +17,47 @@ import {
 } from "../helpers";
 import { GlobalFeed, LobbyFeed } from "../collections";
 
-class ChatInput extends PureComponent {
-  static propTypes = {
-    lobbyId: PropTypes.string
-  };
+const submitChat = (evt, lobbyId) => {
+  evt.preventDefault();
+  if (Meteor.userId()) {
+    const form = $(evt.currentTarget);
+    const message = form.form("get values").message;
 
-  state = {
-    showEmojiPicker: false
-  };
-
-  handleSubmit = evt => {
-    evt.preventDefault();
-    if (Meteor.userId()) {
-      const form = $(evt.currentTarget);
-      const message = form.form("get values").message;
-
-      if (this.props.lobbyId) {
-        Meteor.call("addLobbyFeedChat", this.props.lobbyId, message);
-        acrofeverAnalytics.track("addLobbyChat");
-      } else {
-        Meteor.call("addGlobalFeedChat", message);
-        acrofeverAnalytics.track("addGlobalChat");
-        $(".feedChatDiv .feedInner").scrollTop(0);
-      }
-
-      form.trigger("reset");
+    if (lobbyId) {
+      Meteor.call("addLobbyFeedChat", lobbyId, message);
+      acrofeverAnalytics.track("addLobbyChat");
     } else {
-      FlowRouter.go("/sign-in");
+      Meteor.call("addGlobalFeedChat", message);
+      acrofeverAnalytics.track("addGlobalChat");
+      $(".feedChatDiv .feedInner").scrollTop(0);
     }
-  };
 
-  watchForClicks = evt => {
-    if (!$(evt.target).closest(".emoji-dialog").length) {
-      this.setState({ showEmojiPicker: false });
-      $(document).unbind("click", this.watchForClicks);
-    }
-  };
-
-  toggleEmojiPicker = evt => {
-    evt.preventDefault();
-    if (this.state.showEmojiPicker) {
-      this.setState({ showEmojiPicker: false });
-      $(document).unbind("click", this.watchForClicks);
-    } else {
-      this.setState({ showEmojiPicker: true });
-      $(document).bind("click", this.watchForClicks);
-    }
-  };
-
-  pickEmoji = data => {
-    this.setState({ showEmojiPicker: false });
-    $(document).unbind("click", this.watchForClicks);
-
-    const input = $(this.inputField);
-    input.val(
-      `${input.val().length > 0 ? input.val() + " " : ""}${data.shortname} `
-    );
-    input.focus();
-  };
-
-  render() {
-    return (
-      <div>
-        <form
-          id="chat-input-form"
-          className="ui form"
-          onSubmit={this.handleSubmit}
-        >
-          <div className="ui fluid icon input">
-            <input
-              type="text"
-              id="chat-input-box"
-              name="message"
-              placeholder="Type here to chat..."
-              autoComplete="off"
-              required="true"
-              ref={ref => (this.inputField = ref)}
-            />
-            <i
-              className="circular smile link icon"
-              onClick={this.toggleEmojiPicker}
-            />
-          </div>
-        </form>
-        {/* {this.state.showEmojiPicker ? (
-          <EmojiPicker search={true} onChange={this.pickEmoji} />
-        ) : null} */}
-      </div>
-    );
+    form.trigger("reset");
+  } else {
+    FlowRouter.go("/sign-in");
   }
-}
+};
+
+const ChatInput = ({ lobbyId }) => (
+  <div>
+    <form
+      id="chat-input-form"
+      className="ui form"
+      onSubmit={evt => submitChat(evt, lobbyId)}
+    >
+      <div className="ui fluid icon input">
+        <input
+          type="text"
+          id="chat-input-box"
+          name="message"
+          placeholder="Type here to chat..."
+          autoComplete="off"
+          required="true"
+        />
+      </div>
+    </form>
+  </div>
+);
 
 ChatInput.propTypes = {
   lobbyId: PropTypes.string

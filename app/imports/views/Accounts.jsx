@@ -518,7 +518,7 @@ export class Signup extends PureComponent {
                   </div>
                 </div>
                 <div className="ui error message" />
-                <div>
+                <div style={{ marginBottom: "10px" }}>
                   <p>
                     <a href="/forgot-password">Forgot your password?</a>
                   </p>
@@ -619,7 +619,7 @@ export class Login extends PureComponent {
                 </div>
                 <div className="ui error message" />
                 <div>
-                  <p>
+                  <p style={{ marginBottom: "10px" }}>
                     <a href="/forgot-password">Forgot your password?</a>
                   </p>
                 </div>
