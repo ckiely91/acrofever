@@ -16,7 +16,7 @@ const handleVote = (evt, id, gameId) => {
 const AcroVotingSelectionItem = ({ id, gameId, acro, votedForThis }) => (
   <div
     className={`item ${votedForThis ? "active" : ""}`}
-    onClick={evt => this.handleVote(evt, id, gameId)}
+    onClick={evt => handleVote(evt, id, gameId)}
   >
     <div className="content">
       {acro} {votedForThis ? <i className="check icon" /> : null}

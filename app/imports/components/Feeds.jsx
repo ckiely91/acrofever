@@ -116,7 +116,7 @@ const SingleEvent = ({ user, icon, timestamp, summary, detail }) => {
     usernameOrSummary = (
       <span>
         <a
-          href={FlowRouter.path("profile", { userId: user })}
+          href={FlowRouter.path("profile", { userId: user._id })}
           target="_blank"
           className="userProfilePicture"
         >
