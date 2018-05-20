@@ -41,7 +41,7 @@ export class CountdownIconHeader extends React.Component {
   componentWillMount() {
     this.interval = setInterval(() => {
       const diff = getDiff(this.props.endTime);
-      const isPulsing = diff <= 50000;
+      const isPulsing = diff <= 10000;
       this.setState({
         diff,
         isPulsing

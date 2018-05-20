@@ -247,20 +247,18 @@ export const GlobalFeedComponentContainer = withTracker(() => {
     users: []
   };
 
-  if (handle.ready()) {
-    let playerIds = [];
+  let playerIds = [];
 
-    for (let i = 0; i < data.events.length; i++) {
-      if (data.events[i].user) {
-        playerIds.push(data.events[i].user);
-      }
+  for (let i = 0; i < data.events.length; i++) {
+    if (data.events[i].user) {
+      playerIds.push(data.events[i].user);
     }
+  }
 
-    playerIds = _.uniq(playerIds);
-    if (playerIds.length > 0) {
-      Meteor.subscribe("otherPlayers", playerIds);
-      data.users = Meteor.users.find({ _id: { $in: playerIds } }).fetch();
-    }
+  playerIds = _.uniq(playerIds);
+  if (playerIds.length > 0) {
+    Meteor.subscribe("otherPlayers", playerIds);
+    data.users = Meteor.users.find({ _id: { $in: playerIds } }).fetch();
   }
 
   return data;
@@ -348,19 +346,17 @@ export const LobbyFeedComponentContainer = withTracker(({ lobbyId }) => {
     users: []
   };
 
-  if (handle.ready()) {
-    let playerIds = [];
-    for (let i = 0; i < data.events.length; i++) {
-      if (data.events[i].user) {
-        playerIds.push(data.events[i].user);
-      }
+  let playerIds = [];
+  for (let i = 0; i < data.events.length; i++) {
+    if (data.events[i].user) {
+      playerIds.push(data.events[i].user);
     }
+  }
 
-    if (playerIds.length > 0) {
-      playerIds = _.uniq(playerIds);
-      Meteor.subscribe("otherPlayers", playerIds);
-      data.users = Meteor.users.find({ _id: { $in: playerIds } }).fetch();
-    }
+  if (playerIds.length > 0) {
+    playerIds = _.uniq(playerIds);
+    Meteor.subscribe("otherPlayers", playerIds);
+    data.users = Meteor.users.find({ _id: { $in: playerIds } }).fetch();
   }
 
   return data;

@@ -81,9 +81,9 @@ export class HomeView extends PureComponent {
     return (
       <div className="ui stackable grid">
         <div className="sixteen wide center aligned column">
-          <h1 className="ui header" id="homeHeader">
-            Acrofever!
-          </h1>
+          <div className="ui header" id="homeHeader">
+            <img src="/images/acrofever-logo-new.png" alt="acrofever logo" />
+          </div>
           <h2 className="ui header" id="homeSubHeader">
             The acronym word game for witty humans.
           </h2>

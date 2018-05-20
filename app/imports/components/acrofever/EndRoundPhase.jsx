@@ -19,19 +19,20 @@ class PointsPopup extends PureComponent {
 
   componentDidMount() {
     $(this.label).popup({
-      inline: true
+      inline: true,
+      position: "left center"
     });
   }
 
   render() {
     return (
-      <div>
+      <div className="points-popup">
         <a className="ui grey circular label" ref={ref => (this.label = ref)}>
           {this.props.totalPoints > 0
             ? "+" + this.props.totalPoints
             : this.props.totalPoints}
         </a>
-        <div className="ui flowing left popup">
+        <div className="ui flowing popup">
           <div className="header">
             {(this.props.totalPoints > 0 ? "+" : "") + this.props.totalPoints}
           </div>

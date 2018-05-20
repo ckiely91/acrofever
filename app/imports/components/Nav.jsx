@@ -5,7 +5,7 @@ import { profilePicture, displayName, acrofeverAnalytics } from "../helpers";
 
 const BrandHeader = () => (
   <a href={FlowRouter.path("home")} id="brandHeader" className="header item">
-    Acrofever!
+    <img src="/images/acrofever-logo-new-inverted-260.png" alt="acrofever logo" />
   </a>
 );
 

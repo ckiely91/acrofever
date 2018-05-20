@@ -13,17 +13,16 @@ div.clear {
 #brandHeader,
 #brandHeader.active,
 #homeHeader {
-  font-family: "Pacifico";
-  font-size: 2em;
-  font-weight: 400;
   padding: 10px 15px 15px 10px;
-  color: @primaryColor !important;
-  text-shadow: 2px 2px #171719;
 }
 
 #homeHeader {
   font-size: 4em;
   text-shadow: 1px 1px #171719;
+
+  img {
+    width: 320px;
+  }
 }
 
 #homeSubHeader {
@@ -40,17 +39,31 @@ div.clear {
   @media screen and (min-width: @tabletBreakpoint) {
     display: block;
   }
-  background-image: url("/images/asfalt-light.png");
+
+  background-color: #132137;
+  // background-image: url("/images/asfalt-light.png");
+
+  #brandHeader img {
+    width: 130px;
+  }
 }
 
 #mobileNav {
   margin-bottom: 0;
+
+  .ui.inverted.menu {
+    background-color: #132137;
+  }
 
   @media screen and (min-width: @tabletBreakpoint) {
     display: none;
   }
 
   #brandHeader {
+    img {
+      width: 130px;
+    }
+
     border: none;
     &:before {
       background: none;
@@ -311,7 +324,7 @@ img.ui.image.inline {
 /* RESPONSIVE TABLE CSS */
 .scrollTable {
   width: 100%;
-  overflow-y: auto;
+  overflow-y: visible;
   margin: 0 0 1em;
 
   /* iOS Hax */
@@ -364,6 +377,11 @@ img.ui.image.inline {
     margin-top: 1rem !important;
     margin-bottom: 1rem !important;
   }
+}
+
+.points-popup {
+  overflow: visible;
+  position: relative;
 }
 
 /*******************************
