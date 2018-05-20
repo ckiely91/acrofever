@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 import Sentry from "sentry-expo";
 import { uniq as _uniq, difference as _difference } from "lodash";
 import { StatusBar } from "react-native";
+import { AdMobInterstitial } from "expo";
+
 import {
   Container,
   Text,
@@ -24,15 +26,15 @@ import { colors } from "../../styles/base";
 import styles from "./styles";
 import AcrofeverBG from "../../components/AcrofeverBG";
 
-const getUserChatIds = (chats) => {
+const getUserChatIds = chats => {
   const ids = [];
-  chats.forEach((c) => {
+  chats.forEach(c => {
     if (c.user) {
       ids.push(c._id);
     }
   });
   return ids;
-}
+};
 
 class Lobby extends Component {
   static propTypes = {
@@ -52,7 +54,15 @@ class Lobby extends Component {
       currentTab: "game",
       newChats: 0,
       joinLeaveLoading: false
-    }
+    };
+  }
+
+  componentWillMount() {
+    AdMobInterstitial.addEventListener("interstitialDidClose", () => {
+      AdMobInterstitial.requestAdAsync();
+    });
+
+    AdMobInterstitial.requestAdAsync();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -66,37 +76,61 @@ class Lobby extends Component {
         }));
       }
     }
+
+    if (
+      this.props.game &&
+      nextProps.game &&
+      this.props.game.currentPhase !== "endgame" &&
+      nextProps.game.currentPhase === "endgame"
+    ) {
+      AdMobInterstitial.showAdAsync();
+    }
+  }
+
+  componentWillUnmount() {
+    AdMobInterstitial.removeAllListeners();
   }
 
   isInLobby = () => {
-    return (this.props.lobby && this.props.lobby.players && this.props.lobby.players.indexOf(this.props.user._id) > -1);
-  }
+    return (
+      this.props.lobby &&
+      this.props.lobby.players &&
+      this.props.lobby.players.indexOf(this.props.user._id) > -1
+    );
+  };
 
   joinOrLeaveLobby = () => {
     this.setState({ joinLeaveLoading: true });
     const isInLobby = this.isInLobby();
-    Meteor.call('joinOrLeaveOfficialLobby', this.props.lobby._id, !isInLobby, (err) => {
-      this.setState({ joinLeaveLoading: false });
-      if (err) {
-        Sentry.captureException(new Error("error in joinOrLeaveOfficialLobby: " + err.message));
-        Toast.show({
-          type: "danger",
-          text: isInLobby ? "Failed to leave lobby" : "Failed to join lobby",
-          position: "bottom",
-          buttonText: "Okay",
-          duration: 5000
-        });
+    Meteor.call(
+      "joinOrLeaveOfficialLobby",
+      this.props.lobby._id,
+      !isInLobby,
+      err => {
+        this.setState({ joinLeaveLoading: false });
+        if (err) {
+          Sentry.captureException(
+            new Error("error in joinOrLeaveOfficialLobby: " + err.message)
+          );
+          Toast.show({
+            type: "danger",
+            text: isInLobby ? "Failed to leave lobby" : "Failed to join lobby",
+            position: "bottom",
+            buttonText: "Okay",
+            duration: 5000
+          });
+        }
       }
-    });
-  }
+    );
+  };
 
-  switchTab = (tab) => {
+  switchTab = tab => {
     const newState = { currentTab: tab };
     if (tab === "chat") {
       newState.newChats = 0;
     }
     this.setState(newState);
-  }
+  };
 
   numPlayers = () => {
     const num = this.props.lobby ? this.props.lobby.players.length : 0;
@@ -105,19 +139,39 @@ class Lobby extends Component {
     }
 
     return `${num} players`;
-  }
+  };
 
   render() {
     let content;
-    switch(this.state.currentTab) {
+    switch (this.state.currentTab) {
       case "game":
-        content = <LobbyGame lobby={this.props.lobby} game={this.props.game} user={this.props.user} users={this.props.users} />;
+        content = (
+          <LobbyGame
+            lobby={this.props.lobby}
+            game={this.props.game}
+            user={this.props.user}
+            users={this.props.users}
+          />
+        );
         break;
       case "chat":
-        content = <LobbyChat lobbyId={this.props.lobbyId} chats={this.props.chats} users={this.props.users} getMoreChats={this.props.getMoreChats} />;
+        content = (
+          <LobbyChat
+            lobbyId={this.props.lobbyId}
+            chats={this.props.chats}
+            users={this.props.users}
+            getMoreChats={this.props.getMoreChats}
+          />
+        );
         break;
       case "scores":
-        content = <LobbyScores scores={this.props.game ? this.props.game.scores : {}} users={this.props.users} players={this.props.lobby.players || []} />;
+        content = (
+          <LobbyScores
+            scores={this.props.game ? this.props.game.scores : {}}
+            users={this.props.users}
+            players={this.props.lobby.players || []}
+          />
+        );
         break;
       case "settings":
       default:
@@ -127,39 +181,62 @@ class Lobby extends Component {
     return (
       <Container>
         <StatusBar barStyle="light-content" backgroundColor={colors.red} />
-        <StandardHeader 
-          goBack 
-          navigation={this.props.navigation} 
+        <StandardHeader
+          goBack
+          navigation={this.props.navigation}
           title={this.props.lobbyName}
           subtitle={this.numPlayers()}
-          rightContent={(
-            <Button 
+          rightContent={
+            <Button
               transparent
               disabled={this.state.joinLeaveLoading}
               onPress={this.joinOrLeaveLobby}
             >
-              <Text style={styles.headerButtonText}>{this.isInLobby() ? "Leave" : "Join"}</Text>
+              <Text style={styles.headerButtonText}>
+                {this.isInLobby() ? "Leave" : "Join"}
+              </Text>
             </Button>
-          )}
+          }
         />
         <AcrofeverBG>
           {content}
           <Footer>
             <FooterTab>
-              <Button vertical active={this.state.currentTab === "game"} onPress={() => this.switchTab("game")}>
+              <Button
+                vertical
+                active={this.state.currentTab === "game"}
+                onPress={() => this.switchTab("game")}
+              >
                 <Icon name="flash" />
                 <Text>Game</Text>
               </Button>
-              <Button vertical active={this.state.currentTab === "scores"} onPress={() => this.switchTab("scores")}>
+              <Button
+                vertical
+                active={this.state.currentTab === "scores"}
+                onPress={() => this.switchTab("scores")}
+              >
                 <Icon active name="list" />
                 <Text>Scores</Text>
               </Button>
-              <Button badge={(this.state.newChats > 0)} vertical active={this.state.currentTab === "chat"} onPress={() => this.switchTab("chat")}>
-                {(this.state.newChats > 0) && <Badge><Text>{this.state.newChats}</Text></Badge>}
+              <Button
+                badge={this.state.newChats > 0}
+                vertical
+                active={this.state.currentTab === "chat"}
+                onPress={() => this.switchTab("chat")}
+              >
+                {this.state.newChats > 0 && (
+                  <Badge>
+                    <Text>{this.state.newChats}</Text>
+                  </Badge>
+                )}
                 <Icon name="chatbubbles" />
                 <Text>Chat</Text>
               </Button>
-              <Button vertical active={this.state.currentTab === "settings"} onPress={() => this.switchTab("settings")}>
+              <Button
+                vertical
+                active={this.state.currentTab === "settings"}
+                onPress={() => this.switchTab("settings")}
+              >
                 <Icon name="information-circle" />
                 <Text>Info</Text>
               </Button>
@@ -176,11 +253,14 @@ const LobbyContainer = createContainer(({ lobbyId, feedLimit }) => {
   Meteor.subscribe("lobbyFeed", lobbyId, feedLimit);
   let playerIds = [];
 
-  const data = { 
+  const data = {
     lobby: Meteor.collection("lobbies").findOne(lobbyId),
-    chats: Meteor.collection("lobbyFeed").find({ lobbyId }, { sort: { timestamp: -1 } }),
+    chats: Meteor.collection("lobbyFeed").find(
+      { lobbyId },
+      { sort: { timestamp: -1 } }
+    ),
     user: Meteor.user()
-  }
+  };
 
   if (data.lobby) {
     Meteor.subscribe("currentGame", data.lobby.currentGame);
@@ -193,7 +273,7 @@ const LobbyContainer = createContainer(({ lobbyId, feedLimit }) => {
   }
 
   if (data.chats) {
-    data.chats.forEach((chat) => {
+    data.chats.forEach(chat => {
       if (chat.user) {
         playerIds.push(chat.user);
       }
@@ -217,7 +297,10 @@ export default class extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.navigation.state.params.id !== this.props.navigation.state.params.id) {
+    if (
+      nextProps.navigation.state.params.id !==
+      this.props.navigation.state.params.id
+    ) {
       this.setState({ feedLimit: 20 });
     }
   }
@@ -226,17 +309,17 @@ export default class extends Component {
     if (this.state.feedLimit <= 180) {
       this.setState(state => ({ feedLimit: state.feedLimit + 20 }));
     }
-  }
-  
+  };
+
   render() {
     return (
       <LobbyContainer
         navigation={this.props.navigation}
         lobbyId={this.props.navigation.state.params.id}
         lobbyName={this.props.navigation.state.params.name}
-        getMoreChats={this.getMoreChats} 
-        feedLimit={this.state.feedLimit} 
+        getMoreChats={this.getMoreChats}
+        feedLimit={this.state.feedLimit}
       />
-    )
+    );
   }
 }

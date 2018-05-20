@@ -4,6 +4,8 @@ import { Platform } from "react-native";
 import { View, Root } from "native-base";
 import { StackNavigator, DrawerNavigator } from "react-navigation";
 
+import envVars from "./env";
+
 import { colors } from "./styles/base";
 
 import Home from "./screens/home";
@@ -28,7 +30,7 @@ const Drawer = DrawerNavigator(
 const AppNavigator = StackNavigator(
   {
     Drawer: { screen: Drawer },
-    Lobby: { screen: Lobby },
+    Lobby: { screen: Lobby }
   },
   {
     initialRouteName: "Drawer",
@@ -36,12 +38,27 @@ const AppNavigator = StackNavigator(
   }
 );
 
-const App = () => (
-  <Root>
-    <View style={{ flex: 1, paddingTop: Platform.OS === "ios" ? 0 : Expo.Constants.statusBarHeight }}>
-      <AppNavigator />
-    </View>
-  </Root>
-);
+const App = () => {
+  const { adMobBannerIdAndroid, adMobBannerIdIOS } = envVars;
+
+  return (
+    <Root>
+      <View
+        style={{
+          flex: 1,
+          paddingTop: Platform.OS === "ios" ? 0 : Expo.Constants.statusBarHeight
+        }}
+      >
+        <AppNavigator />
+      </View>
+      <Expo.AdMobBanner
+        bannerSize="smartBannerPortrait"
+        adUnitID={
+          Platform.OS === "ios" ? adMobBannerIdIOS : adMobBannerIdAndroid
+        }
+      />
+    </Root>
+  );
+};
 
 export default App;
