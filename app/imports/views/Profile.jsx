@@ -46,7 +46,9 @@ const UserStats = ({ stats, user, halloffame }) => {
 
   return (
     <div className="ui two statistics">
-      {formattedStats.map(stat => <Statistic key={stat.label} {...stat} />)}
+      {formattedStats.map(stat => (
+        <Statistic key={stat.label} {...stat} />
+      ))}
     </div>
   );
 };
@@ -560,18 +562,18 @@ class ProfileView extends Component {
     }
   }
 
-  banUser() {
+  banUser = () => {
     const reason = prompt(
       "Why do you want to shadowban this user? Please provide details."
     );
     if (reason && reason.length > 0) {
       Meteor.call("adminShadowbanUser", this.props.userId, true, reason);
     }
-  }
+  };
 
-  unbanUser() {
+  unbanUser = () => {
     Meteor.call("adminShadowbanUser", this.props.userId, false);
-  }
+  };
 
   openInviteModal() {
     if (Meteor.userId()) {
