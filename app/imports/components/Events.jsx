@@ -250,7 +250,9 @@ const UpcomingEvents = ({ ready, events }) => {
     if (events.length > 0) {
       events = (
         <div className="ui divided items">
-          {events.map(item => <SingleEvent key={item._id} {...item} />)}
+          {events.map(item => (
+            <SingleEvent key={item._id} {...item} />
+          ))}
         </div>
       );
     } else {
@@ -355,6 +357,8 @@ class HofBanner extends PureComponent {
     if (this.state.loading || this.state.error) {
       return false;
     }
+
+    return null;
 
     return (
       <div id="eventBanner" className="hofBanner hiddenOnMobile">

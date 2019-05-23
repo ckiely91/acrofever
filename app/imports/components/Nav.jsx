@@ -5,7 +5,10 @@ import { profilePicture, displayName, acrofeverAnalytics } from "../helpers";
 
 const BrandHeader = () => (
   <a href={FlowRouter.path("home")} id="brandHeader" className="header item">
-    <img src="/images/acrofever-logo-new-inverted-260.png" alt="acrofever logo" />
+    <img
+      src="/images/acrofever-logo-new-inverted-260.png"
+      alt="acrofever logo"
+    />
   </a>
 );
 
@@ -288,12 +291,12 @@ export class NavComponent extends Component {
             <HeaderItem path="play" icon="search">
               Find a lobby
             </HeaderItem>
-            <HeaderItem path="halloffame" icon="trophy">
+            {/* <HeaderItem path="halloffame" icon="trophy">
               Hall of Fame
-            </HeaderItem>
-            <HeaderItem path="leaderboard" icon="star">
+            </HeaderItem> */}
+            {/* <HeaderItem path="leaderboard" icon="star">
               Leaderboard
-            </HeaderItem>
+            </HeaderItem> */}
             <HeaderItem
               href="#"
               icon="question"
@@ -331,12 +334,12 @@ export class NavComponent extends Component {
               <HeaderItem path="play" icon="search">
                 Find a lobby
               </HeaderItem>
-              <HeaderItem path="halloffame" icon="trophy">
+              {/* <HeaderItem path="halloffame" icon="trophy">
                 Hall of Fame
-              </HeaderItem>
-              <HeaderItem path="leaderboard" icon="star">
+              </HeaderItem> */}
+              {/* <HeaderItem path="leaderboard" icon="star">
                 Leaderboard
-              </HeaderItem>
+              </HeaderItem> */}
               <HeaderItem
                 href="#"
                 icon="question"

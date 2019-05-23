@@ -26,7 +26,7 @@ export class FooterComponent extends React.Component {
     return (
       <div>
         <div className="ui hidden divider" />
-        <a
+        {/* <a
           href="https://play.google.com/store/apps/details?id=com.acrofever.android&utm_source=acrofever.com&utm_medium=referral&utm_campaign=footerbadge"
           target="_blank"
         >
@@ -35,9 +35,9 @@ export class FooterComponent extends React.Component {
             alt="Get it on Google Play"
             src="https://play.google.com/intl/en_us/badges/images/apps/en-play-badge.png"
           />
-        </a>
+        </a> */}
         <p className="footer">
-          Created by{" "}
+          {/* Created by{" "}
           <a href="mailto:christian@acrofever.com">Christian Kiely</a> | Version{" "}
           {appVersion} | Last updated {appLastUpdated} |{" "}
           <a
@@ -48,7 +48,7 @@ export class FooterComponent extends React.Component {
           >
             Star on GitHub
           </a>{" "}
-          |{" "}
+          |{" "} */}
           <a
             href="//www.iubenda.com/privacy-policy/7785507"
             className="iubenda-white iubenda-embed"

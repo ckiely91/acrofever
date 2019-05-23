@@ -106,13 +106,13 @@ export class HomeView extends PureComponent {
             <div className="ui hidden divider" />
           </div>
           <div className="row">
-            <a
+            {/* <a
               className="ui labeled icon button mobileBottomMargin"
               href={FlowRouter.path("halloffame")}
             >
               <i className="trophy icon" />
               Hall of Fame
-            </a>
+            </a> */}
             <button className="ui labeled icon button" onClick={this.howToPlay}>
               <i className="question icon" />
               Learn to play
@@ -165,13 +165,6 @@ export class HomeView extends PureComponent {
               new features will be added soon. User-created content is not
               currently moderated so leave any delicate sensibilities at the
               door!
-            </p>
-            <p>
-              For bug reports, feature requests, feedback or just to say 'I love
-              you', please contact the overlord at{" "}
-              <a href="mailto:christian@acrofever.com">
-                christian@acrofever.com
-              </a>.
             </p>
           </div>
         </div>

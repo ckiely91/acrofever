@@ -134,23 +134,23 @@ lobbyRoutes.route("/:lobbyId", {
   }
 });
 
-FlowRouter.route("/halloffame", {
-  name: "halloffame",
-  action: function() {
-    mount(Layout, {
-      content: () => <HallOfFameView />
-    });
-  }
-});
+// FlowRouter.route("/halloffame", {
+//   name: "halloffame",
+//   action: function() {
+//     mount(Layout, {
+//       content: () => <HallOfFameView />
+//     });
+//   }
+// });
 
-FlowRouter.route("/leaderboard", {
-  name: "leaderboard",
-  action: function() {
-    mount(Layout, {
-      content: () => <LeaderboardViewContainer />
-    });
-  }
-});
+// FlowRouter.route("/leaderboard", {
+//   name: "leaderboard",
+//   action: function() {
+//     mount(Layout, {
+//       content: () => <LeaderboardViewContainer />
+//     });
+//   }
+// });
 
 FlowRouter.route("/profile/:userId", {
   name: "profile",
