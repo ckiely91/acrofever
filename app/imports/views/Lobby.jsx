@@ -531,9 +531,9 @@ class LobbyView extends Component {
               <LobbySettings {...this.props.lobby.config} />
             </div>
           </div>
-          <div className="ui segment hiddenOnMobile">
+          {/* <div className="ui segment hiddenOnMobile">
             <Beggar />
-          </div>
+          </div> */}
         </div>
         <div className="eleven wide column">
           <div className="ui raised segment">

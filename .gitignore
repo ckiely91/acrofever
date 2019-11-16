@@ -24,3 +24,4 @@ config/
 /app/buildandroid.sh
 
 yarn-error.log
+.vscode
