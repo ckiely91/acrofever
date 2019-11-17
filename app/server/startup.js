@@ -22,7 +22,7 @@ Meteor.startup(function() {
     });
 
     cf.zones
-      .purgeCache(settings.cloudflare.zoneId, {
+      .purgeCache(Meteor.settings.cloudflare.zoneId, {
         purge_everything: true
       })
       .catch(error => console.error(error));
