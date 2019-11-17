@@ -14,7 +14,7 @@ export class CountdownSpan extends PureComponent {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.interval = setInterval(() => {
       this.setState({ diff: getDiff(this.props.endTime) });
     }, 500);
@@ -38,7 +38,7 @@ export class CountdownIconHeader extends React.Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.interval = setInterval(() => {
       const diff = getDiff(this.props.endTime);
       const isPulsing = diff <= 10000;
@@ -106,7 +106,7 @@ export class MomentFromNow extends PureComponent {
     time: PropTypes.instanceOf(Date)
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.interval = setInterval(
       () => this.setState({ time: Date.now() }),
       60000

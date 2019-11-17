@@ -107,7 +107,7 @@ export class HallOfFameAcrosContainer extends PureComponent {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     Meteor.call("hallOfFameAcroCount", this.props.userId, (err, res) => {
       if (err) return console.error(err);
       this.setState({ totalAcros: res });
@@ -132,7 +132,7 @@ export class HallOfFameAcrosContainer extends PureComponent {
 }
 
 export class HallOfFameView extends PureComponent {
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     //SEO stuff
     var title = "Hall of Fame - Acrofever";
     var description =

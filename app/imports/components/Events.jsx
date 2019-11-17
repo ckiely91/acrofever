@@ -308,7 +308,7 @@ class HofBanner extends PureComponent {
     loading: true
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     // Grab a sample of 5 random HOFs
     Meteor.call("getSampleHofEntries", 5, (err, res) => {
       if (err) {

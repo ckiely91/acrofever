@@ -76,7 +76,7 @@ export class ValidateEmail extends PureComponent {
     error: null
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     Accounts.verifyEmail(this.props.token, err => {
       if (err) {
         this.setState({ loading: false, error: err.reason });

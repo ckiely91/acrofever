@@ -21,7 +21,7 @@ export class ModeratorMain extends PureComponent {
     isModerator: false
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     Meteor.call("isModerator", (err, res) => {
       this.setState({ loading: false, isModerator: res });
     });

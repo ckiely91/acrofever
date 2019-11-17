@@ -434,7 +434,7 @@ class ProfileView extends Component {
     isModerator: false
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.refreshStats();
 
     Meteor.call("isAdminUserOrModerator", (err, res) =>

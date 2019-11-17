@@ -191,7 +191,7 @@ Meteor.methods({
         _.each(stats, function(value, key) {
           const newKey = moment(key, "YYYY-MM-DD").valueOf();
           if (value.won > 0) {
-            value.winRate = Math.round(value.won / value.played * 100);
+            value.winRate = Math.round((value.won / value.played) * 100);
           } else {
             value.winRate = 0;
           }
@@ -225,7 +225,7 @@ Meteor.methods({
           scoreSum += score;
           gamesCount++;
           scoresArr.push([time, score]);
-          const avg = Math.round(scoreSum / gamesCount * 100) / 100;
+          const avg = Math.round((scoreSum / gamesCount) * 100) / 100;
           averageArr.push([time, avg]);
         });
 
@@ -397,3 +397,21 @@ Meteor.methods({
       .count();
   }
 });
+
+if (Meteor.isServer) {
+  // Rate limit joining or leaving a lobby to once every 5 seconds
+  DDPRateLimiter.addRule(
+    {
+      name(name) {
+        return name === "joinOrLeaveOfficialLobby";
+      },
+
+      // Rate limit per connection ID
+      connectionId() {
+        return true;
+      }
+    },
+    1,
+    5000
+  );
+}

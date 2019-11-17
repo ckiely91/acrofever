@@ -8,7 +8,7 @@ import { lobbySubs } from "../subsManagers";
 import { acrofeverAnalytics } from "../helpers";
 
 class GoogleAd extends PureComponent {
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     DocHead.loadScript(
       "//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
     );
@@ -34,7 +34,7 @@ class GoogleAd extends PureComponent {
 }
 
 export class HomeView extends PureComponent {
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     lobbySubs.subscribe("lobbies");
 
     //SEO stuff

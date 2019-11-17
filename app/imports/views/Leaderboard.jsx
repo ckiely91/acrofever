@@ -196,7 +196,7 @@ export class LeaderboardViewContainer extends PureComponent {
     total: Infinity
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     Meteor.call("getTotalRankedCount", (err, res) => {
       if (err) {
         console.error("Error getting total ranked count");

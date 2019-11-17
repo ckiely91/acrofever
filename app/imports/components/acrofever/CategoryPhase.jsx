@@ -21,7 +21,7 @@ class ChooseCategory extends PureComponent {
     randomCategories: null
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     Meteor.call("getRandomCategories", 4, (err, res) => {
       if (err) {
         console.error(err);

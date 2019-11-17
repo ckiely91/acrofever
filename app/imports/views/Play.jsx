@@ -83,7 +83,7 @@ class PlayView extends PureComponent {
     lobbies: PropTypes.array.isRequired
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     //SEO stuff
     var title = "Find Lobbies - Acrofever";
     var description =

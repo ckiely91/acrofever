@@ -257,7 +257,7 @@ ScoresTableRow.propTypes = {
 };
 
 const ScoresTable = ({ scores, users, playerIds }) => {
-  const sortedScores = Object.keys(scores).map(userId => ({
+  const sortedScores = Object.keys(scores || {}).map(userId => ({
     id: userId,
     score: scores[userId],
     active: playerIds.indexOf(userId) > -1,
@@ -395,7 +395,7 @@ class LobbyView extends Component {
     game: PropTypes.object
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.notifications = Lobbies.find({
       _id: this.props.lobbyId
     }).observeChanges({
@@ -434,7 +434,7 @@ class LobbyView extends Component {
     this.notifications.stop();
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (
       nextProps.lobby &&
       (!this.props.lobby ||

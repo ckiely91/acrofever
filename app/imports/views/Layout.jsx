@@ -18,7 +18,7 @@ export class Layout extends PureComponent {
     content: PropTypes.any.isRequired
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     DocHead.setTitle("Acrofever");
 
     headerMeta.map(item => DocHead.addMeta(item));
