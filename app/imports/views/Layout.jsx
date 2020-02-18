@@ -1,13 +1,15 @@
 import PropTypes from "prop-types";
 import React, { PureComponent } from "react";
-
+import { withTracker } from "meteor/react-meteor-data";
 import { NavComponent } from "../components/Nav";
 import { NagsComponentContainer } from "../components/Nags";
 import { FooterComponent } from "../components/Footer";
+import TermsOfUse from "./TermsOfUse";
 import {
   HowToPlayModal,
   PageDimmer,
-  NotificationInfoModal
+  NotificationInfoModal,
+  TermsOfUseModal
 } from "../components/Modals";
 import { EventBannerContainer } from "../components/Events";
 
@@ -15,7 +17,8 @@ import { headerMeta, headerLinks } from "../statics";
 
 export class Layout extends PureComponent {
   static propTypes = {
-    content: PropTypes.any.isRequired
+    content: PropTypes.any.isRequired,
+    currentUser: PropTypes.object
   };
 
   UNSAFE_componentWillMount() {
@@ -61,6 +64,21 @@ export class Layout extends PureComponent {
   }
 
   render() {
+    if (
+      this.props.currentUser &&
+      !this.props.currentUser.profile.termsOfUseAccepted
+    ) {
+      return (
+        <div>
+          <NavComponent />
+          <div className="ui main container">
+            <TermsOfUse />
+            <FooterComponent />
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div>
         <NavComponent />
@@ -73,9 +91,16 @@ export class Layout extends PureComponent {
           <FooterComponent />
         </div>
         <HowToPlayModal />
+        <TermsOfUseModal />
         <PageDimmer />
         {this.notificationsSupported() ? <NotificationInfoModal /> : null}
       </div>
     );
   }
 }
+
+export default withTracker(() => {
+  return {
+    currentUser: Meteor.user()
+  };
+})(Layout);

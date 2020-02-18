@@ -3,7 +3,7 @@
 import React from "react";
 import { mount } from "react-mounter";
 
-import { Layout } from "../imports/views/Layout";
+import Layout from "../imports/views/Layout";
 import { HomeView } from "../imports/views/Home";
 import { PlayViewContainer } from "../imports/views/Play";
 import { LobbyViewContainer } from "../imports/views/Lobby";

@@ -22,6 +22,11 @@ export class FooterComponent extends React.Component {
     })(window, document);
   }
 
+  openTermsOfUse = e => {
+    e.preventDefault();
+    $("#termsOfUseModal").modal("show");
+  };
+
   render() {
     return (
       <div>
@@ -49,6 +54,10 @@ export class FooterComponent extends React.Component {
             Star on GitHub
           </a>{" "}
           |{" "} */}
+          <a href="#" onClick={this.openTermsOfUse}>
+            Terms of Use
+          </a>{" "}
+          |{" "}
           <a
             href="//www.iubenda.com/privacy-policy/7785507"
             className="iubenda-white iubenda-embed"

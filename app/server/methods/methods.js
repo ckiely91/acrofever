@@ -395,6 +395,11 @@ Meteor.methods({
         }
       })
       .count();
+  },
+  acceptTermsOfUse() {
+    Meteor.users.update(this.userId, {
+      $set: { "profile.termsOfUseAccepted": true }
+    });
   }
 });
 

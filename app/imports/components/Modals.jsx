@@ -1,4 +1,5 @@
 import React from "react";
+import { TermsOfUseText } from "../views/TermsOfUse";
 
 export class HowToPlayModal extends React.Component {
   componentDidMount() {
@@ -32,7 +33,8 @@ export class HowToPlayModal extends React.Component {
           </p>
           <p>
             <em>
-              How'd Santa fit in the chimney?<br />
+              How'd Santa fit in the chimney?
+              <br />
               O. T. F.
             </em>
           </p>
@@ -120,7 +122,32 @@ export class NotificationInfoModal extends React.Component {
             target="_blank"
           >
             follow these instructions
-          </a>.
+          </a>
+          .
+        </div>
+      </div>
+    );
+  }
+}
+
+export class TermsOfUseModal extends React.Component {
+  componentDidMount() {
+    $(this.modal).modal({
+      detachable: false,
+      observeChanges: true
+    });
+  }
+
+  render() {
+    return (
+      <div
+        className="ui modal"
+        id="termsOfUseModal"
+        ref={ref => (this.modal = ref)}
+      >
+        <div className="content">
+          <h2 className="ui header">Acrofever Terms of Use</h2>
+          {TermsOfUseText}
         </div>
       </div>
     );
