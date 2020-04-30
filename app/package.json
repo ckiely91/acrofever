@@ -12,7 +12,7 @@
     "cron": "^1.1.0",
     "emojione": "^2.1.4",
     "highcharts": "^6.0.7",
-    "jquery": "^3.3.1",
+    "jquery": "^3.5.0",
     "load-script": "^1.0.0",
     "lodash": "^4.17.3",
     "meteor-node-stubs": "^1.0.0",
