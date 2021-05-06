@@ -29,7 +29,7 @@
     "timesync": "^0.4.2",
     "trueskill": "0.0.2",
     "twitter": "^1.2.5",
-    "underscore": "^1.8.3",
+    "underscore": "^1.12.1",
     "wdt-emoji-bundle": "^0.2.1"
   }
 }
