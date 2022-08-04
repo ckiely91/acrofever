@@ -25,3 +25,5 @@ config/
 
 yarn-error.log
 .vscode
+
+app/.deploy
